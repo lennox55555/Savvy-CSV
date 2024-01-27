@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSV Applicator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div>
+    <label for="columns">Number of Columns:</label>
+    <input type="number" id="columns" min="1" value="3" onchange="updateColumnInputs()">
+
+    <label for="rows">Number of Rows:</label>
+    <input type="number" id="rows" min="1" value="3">
+</div>
+
+<div id="columnNames"></div>
+
+<button onclick="generateCSV()">Generate CSV</button>
+<button onclick="downloadCSV()">Download CSV</button>
+
+<div id="csvDisplay"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
