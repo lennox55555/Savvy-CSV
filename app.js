@@ -1,10 +1,10 @@
 function updateColumnInputs() {
-    var numberOfColumns = document.getElementById("columns").value;
-    var columnNamesDiv = document.getElementById("columnNames");
+    let numberOfColumns = document.getElementById("columns").value;
+    let columnNamesDiv = document.getElementById("columnNames");
     columnNamesDiv.innerHTML = '';
 
-    for (var i = 0; i < numberOfColumns; i++) {
-        var input = document.createElement("input");
+    for (let i = 0; i < numberOfColumns; i++) {
+        let input = document.createElement("input");
         input.type = "text";
         input.placeholder = "Column " + (i + 1);
         input.id = "columnName" + i;
@@ -13,22 +13,22 @@ function updateColumnInputs() {
 }
 
 function generateCSV() {
-    var numberOfColumns = document.getElementById("columns").value;
-    var numberOfRows = document.getElementById("rows").value;
-    var csvContent = "<table border='1'>";
+    let numberOfColumns = document.getElementById("columns").value;
+    let numberOfRows = document.getElementById("rows").value;
+    let csvContent = "<table border='1'>";
 
     // Add column headers
     csvContent += "<tr>";
-    for (var i = 0; i < numberOfColumns; i++) {
-        var columnName = document.getElementById("columnName" + i).value || "Column " + (i + 1);
+    for (let i = 0; i < numberOfColumns; i++) {
+        let columnName = document.getElementById("columnName" + i).value || "Column " + (i + 1);
         csvContent += "<th>" + columnName + "</th>";
     }
     csvContent += "</tr>";
 
     // Add rows
-    for (var row = 0; row < numberOfRows; row++) {
+    for (let row = 0; row < numberOfRows; row++) {
         csvContent += "<tr>";
-        for (var column = 0; column < numberOfColumns; column++) {
+        for (let column = 0; column < numberOfColumns; column++) {
             csvContent += "<td>Row " + (row + 1) + " Col " + (column + 1) + "</td>";
         }
         csvContent += "</tr>";
@@ -39,21 +39,21 @@ function generateCSV() {
 }
 
 function downloadCSV() {
-    var numberOfColumns = document.getElementById("columns").value;
-    var numberOfRows = document.getElementById("rows").value;
-    var csvString = "";
+    let numberOfColumns = document.getElementById("columns").value;
+    let numberOfRows = document.getElementById("rows").value;
+    let csvString = "";
 
     // Add column headers
-    for (var i = 0; i < numberOfColumns; i++) {
-        var columnName = document.getElementById("columnName" + i).value || "Column " + (i + 1);
+    for (let i = 0; i < numberOfColumns; i++) {
+        let columnName = document.getElementById("columnName" + i).value || "Column " + (i + 1);
         csvString += '"' + columnName.replace(/"/g, '""') + '",';
     }
     csvString = csvString.substring(0, csvString.length - 1); // Remove last comma
     csvString += "\r\n";
 
     // Add rows
-    for (var row = 0; row < numberOfRows; row++) {
-        for (var column = 0; column < numberOfColumns; column++) {
+    for (let row = 0; row < numberOfRows; row++) {
+        for (let column = 0; column < numberOfColumns; column++) {
             csvString += '"Cell ' + (row + 1) + '-' + (column + 1) + '",';
         }
         csvString = csvString.substring(0, csvString.length - 1); // Remove last comma
@@ -61,15 +61,25 @@ function downloadCSV() {
     }
 
     // Create a link and download the file
-    var blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
+    let blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement("a");
     a.href = url;
     a.download = "generatedCSV.csv";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
 }
+
+document.getElementById('checkbox').addEventListener('change', function(event) {
+    if (event.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
+});
+
+
 
 window.onload = function() {
     updateColumnInputs();
