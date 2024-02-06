@@ -22,13 +22,11 @@ function updateColumnInputs() {
 function generateCSV() {
     let numberOfRows = parseInt(document.getElementById("rowsDisplay").textContent);
 
-    // Initialize the CSV content with zoom controls
     let csvContent = "<div class='zoom-controls'>" +
         "<button id='increaseSize' onclick='adjustZoom(true)'>+</button>" +
         "<button id='decreaseSize' onclick='adjustZoom(false)'>-</button>" +
         "</div>";
 
-    // Start building the table
     csvContent += "<table border='1' style='width:100%;'>";
 
     // Add column headers
@@ -50,12 +48,14 @@ function generateCSV() {
 
     document.getElementById("csvDisplay").innerHTML = csvContent;
 
+    closeModal()
+
 }
 
 function updateColumnNamesDisplay() {
     // Update UI for column names
     const columnNamesDiv = document.getElementById("columnNames");
-    columnNamesDiv.innerHTML = ''; // Clear existing inputs
+    columnNamesDiv.innerHTML = '';
 
     columnNames.forEach((name, index) => {
         const input = document.createElement("input");
@@ -83,26 +83,24 @@ function removeColumn() {
 }
 
 
-
 function downloadCSV() {
-    let numberOfColumns = parseInt(document.getElementById("columnsDisplay").textContent);
-    let numberOfRows = parseInt(document.getElementById("rowsDisplay").textContent);
     let csvString = "";
 
-    for (let i = 0; i < numberOfColumns; i++) {
-        let columnNameInput = document.getElementById("columnName" + i);
-        let columnName = columnNameInput && columnNameInput.value ? columnNameInput.value : "Column " + (i + 1);
+    // Use the columnNames array to get the updated column names
+    columnNames.forEach((columnName) => {
         csvString += '"' + columnName.replace(/"/g, '""') + '",';
-    }
-    csvString = csvString.slice(0, -1);
+    });
+    csvString = csvString.slice(0, -1); // Remove the last comma
     csvString += "\r\n";
+
+    let numberOfRows = parseInt(document.getElementById("rowsDisplay").textContent);
 
     // Generate rows data
     for (let row = 0; row < numberOfRows; row++) {
-        for (let column = 0; column < numberOfColumns; column++) {
+        for (let column = 0; column < columnNames.length; column++) {
             csvString += '"Cell ' + (row + 1) + '-' + (column + 1) + '",';
         }
-        csvString = csvString.slice(0, -1);
+        csvString = csvString.slice(0, -1); // Remove the last comma
         csvString += "\r\n";
     }
 
@@ -116,6 +114,7 @@ function downloadCSV() {
     a.click();
     document.body.removeChild(a);
 }
+
 
 
 function deleteTable() {
@@ -164,20 +163,6 @@ function decreaseRows() {
     rowsDisplay.textContent = Math.max(1, parseInt(rowsDisplay.textContent) - 1); // Prevent going below 1
 }
 
-function addZoomControlListeners() {
-    // Ensure the DOM has been updated
-    setTimeout(() => {
-        // Increase size button listener
-        document.getElementById("increaseSize").addEventListener("click", function() {
-            adjustZoom(true);
-        });
-
-        // Decrease size button listener
-        document.getElementById("decreaseSize").addEventListener("click", function() {
-            adjustZoom(false);
-        });
-    }, 0);
-}
 
 function adjustZoom(increase) {
     zoomLevel += increase ? 10 : -10;
@@ -196,24 +181,22 @@ document.getElementById("decreaseSize").addEventListener("click", function() {
     adjustZoom(false);
 });
 
+function openModal() {
+    document.getElementById('modal').style.display = 'flex';
+    document.getElementById('csvDisplay').style.filter = 'blur(7px)';
+    document.getElementById('openModalButton').style.filter = 'blur(7px)';
+    document.getElementById('downloadCSVButton').style.filter = 'blur(7px)';
+    document.getElementById('deleteTableBtn').style.filter = 'blur(7px)';
 
-document.addEventListener('DOMContentLoaded', function() {
-    const themeCheckbox = document.getElementById('themeCheckbox');
+}
 
-    // Initialize theme from localStorage
-    const currentTheme = localStorage.getItem('theme') || 'light'; // Default to 'light' theme
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    themeCheckbox.checked = currentTheme === 'dark';
-
-    // Toggle theme on change
-    themeCheckbox.addEventListener('change', function() {
-        const theme = this.checked ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-    });
-});
-
-
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('csvDisplay').style.filter = 'blur(0px)';
+    document.getElementById('openModalButton').style.filter = 'blur(0px)';
+    document.getElementById('downloadCSVButton').style.filter = 'blur(0px)';
+    document.getElementById('deleteTableBtn').style.filter = 'blur(0px)';
+}
 
 
 window.onload = function() {
@@ -224,3 +207,5 @@ window.onload = function() {
     document.querySelector(".increase.columns").addEventListener("click", increaseColumns);
     document.querySelector(".decrease.columns").addEventListener("click", decreaseColumns);
 };
+
+
