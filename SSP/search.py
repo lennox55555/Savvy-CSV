@@ -39,3 +39,4 @@ for result in top_search_results:
     print(result['title'])
     print(result['link'])
     print()
+    print()
