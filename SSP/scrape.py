@@ -1,55 +1,60 @@
-import requests
-from bs4 import BeautifulSoup
+import json
 
-def scrape_text_tables_and_all_rows_content(url):
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
-    }
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status() 
+column_headers = [
+    "Washington State Population 2000-2023",
+    "Washington State Emissions Data 2000-2023",
+    "Washington State Voting Data 2000-2023"
+]
 
-        soup = BeautifulSoup(response.content, 'html.parser')
+queries = [
+    "Washington State Population 2000-2023",
+    "Washington State Emissions Data 2000-2023",
+    "Washington State Voting Data 2000-2023"
+]
+
+def get_top_google_search_results(*queries):
+    api_key = 'AIzaSyBsHn5nFSod0M9rHsk2ywuq9ejf3vyQgQA'
+    search_engine_id = 'b190372f94a7140b2'
+    all_results = {}
+    
+    for query in queries:
+        url = "https://www.googleapis.com/customsearch/v1"
+        params = {'q': query, 'key': api_key, 'cx': search_engine_id, 'num': 5}
         
-        text = ' '.join(soup.stripped_strings)
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            search_results = response.json()
+            top_results = [item['link'] for item in search_results.get('items', [])]
+            all_results[query] = top_results
+        else:
+            print(f"Failed to retrieve search results for '{query}'")
+            all_results[query] = []
+    return all_results
+
+
+
+def create_csv_json(column_headers, all_top_search_results):
+    table_json = {"table": []}
+    
+    for header in column_headers:
+        header_data = {"query": header, "results": []}
         
-        tables = soup.find_all('table')
-        print(f"Number of <table> tags: {len(tables)}")
+        if header in all_top_search_results:
+            for link in all_top_search_results[header]:
+                header_data["results"].append({"link": link, "web-content": ""})
+        else:
+            header_data["results"].append({"link": "", "web-content": "No data"})
         
-        all_rows_content = []
-        for table in tables:
-            rows = table.find_all('tr')
-            for row in rows:
-                cells = row.find_all(['th', 'td'])
-                row_content = [cell.get_text(strip=True) for cell in cells]
-                all_rows_content.append(row_content)
-        
-        return text, all_rows_content
-    except requests.RequestException as e:
-        return f"An error occurred: {e}", []
-
-url = "https://ww2.arb.ca.gov/ghg-inventory-data"
-text, all_rows_content = scrape_text_tables_and_all_rows_content(url)
-print(f"Text scraped from the page: {text[:100]}...")  
-print("Contents of each row in the table(s):")
-for row_content in all_rows_content:
-    print(row_content)
+        table_json["table"].append(header_data)
+    
+    json_string = json.dumps(table_json, indent=2)
+    return json_string
 
 
-#import pandas as pd
-#import requests
-#from bs4 import BeautifulSoup
+all_top_search_results = get_top_google_search_results(*queries) 
 
-#page = requests.get('https://en.wikipedia.org/wiki/Colorado').text
-#soup = BeautifulSoup(page, 'html.parser')
-#tables = soup.find_all('table', class_='wikitable sortable')
-#tableNum = 1
+csv_json_string = create_csv_json(column_headers, all_top_search_results)
 
-#for table in tables:
-	#title = "ColoradoData" + str(tableNum) + ".csv"
-	#df = pd.read_html(str(table))
-	#df = pd.concat(df)
-	#print(df)
-	#df.to_csv(title, index=False)
-	#tableNum = tableNum + 1
+print(csv_json_string)
+
 
