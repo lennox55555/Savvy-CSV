@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import json
 
 def scrape_text_tables_and_all_rows_content(url):
     headers = {
@@ -7,14 +8,13 @@ def scrape_text_tables_and_all_rows_content(url):
     }
     try:
         response = requests.get(url, headers=headers)
-        response.raise_for_status() 
+        response.raise_for_status()
 
         soup = BeautifulSoup(response.content, 'html.parser')
         
         text = ' '.join(soup.stripped_strings)
         
         tables = soup.find_all('table')
-        print(f"Number of <table> tags: {len(tables)}")
         
         all_rows_content = []
         for table in tables:
@@ -28,28 +28,18 @@ def scrape_text_tables_and_all_rows_content(url):
     except requests.RequestException as e:
         return f"An error occurred: {e}", []
 
-url = "https://ww2.arb.ca.gov/ghg-inventory-data"
-text, all_rows_content = scrape_text_tables_and_all_rows_content(url)
-print(f"Text scraped from the page: {text[:100]}...")  
-print("Contents of each row in the table(s):")
-for row_content in all_rows_content:
-    print(row_content)
+def add_web_content_to_json(csv_json_string):
+    csv_json = json.loads(csv_json_string)
+    
+    for query in csv_json["table"]:
+        for result in query["results"]:
+            url = result["link"]
+            if url: 
+                text, all_rows_content = scrape_text_tables_and_all_rows_content(url)
+                result["web-content"] = {"text": text[:100], "tables": all_rows_content}  # Example: only adding first 100 characters of text for brevity
 
+    return json.dumps(csv_json, indent=2)
 
-#import pandas as pd
-#import requests
-#from bs4 import BeautifulSoup
+updated_csv_json_string = add_web_content_to_json(csv_json_string)
 
-#page = requests.get('https://en.wikipedia.org/wiki/Colorado').text
-#soup = BeautifulSoup(page, 'html.parser')
-#tables = soup.find_all('table', class_='wikitable sortable')
-#tableNum = 1
-
-#for table in tables:
-	#title = "ColoradoData" + str(tableNum) + ".csv"
-	#df = pd.read_html(str(table))
-	#df = pd.concat(df)
-	#print(df)
-	#df.to_csv(title, index=False)
-	#tableNum = tableNum + 1
-
+print(updated_csv_json_string)
