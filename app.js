@@ -207,5 +207,5 @@ window.onload = function() {
     document.querySelector(".increase.columns").addEventListener("click", increaseColumns);
     document.querySelector(".decrease.columns").addEventListener("click", decreaseColumns);
 };
-
+//Test
 
