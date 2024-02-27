@@ -13,8 +13,8 @@ queries = [
 ]
 
 def get_top_google_search_results(*queries):
-    api_key = 'AIzaSyBsHn5nFSod0M9rHsk2ywuq9ejf3vyQgQA'
-    search_engine_id = 'b190372f94a7140b2'
+    api_key = ''
+    search_engine_id = ''
     all_results = {}
     
     for query in queries:
