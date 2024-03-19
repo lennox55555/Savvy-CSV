@@ -25,7 +25,7 @@ For inquiries related to business use, partnerships, or API access, please conta
 
 ### <span style="color: #FE6B78;">Lennox Anderson - Lead Engineer</span>
 
-![Lennox Anderson](https://example.com/lennox-anderson.jpg)  
+![Lennox Anderson](https://savvycsv.com/lennox.jpg)  
 Background: Lennox is a seasoned software engineer with a passion for developing innovative data processing tools. With a decade of experience in AI and machine learning, Lennox leads the technical development of Savvy CSV.
 
 ### <span style="color: #FE6B78;">David Bosse - Project Manager</span>
