@@ -1,5 +1,10 @@
 # <span style="color: #b5ce61;">Savvy CSV</span>
 
+
+# [![Savvy CSV](https://cdn.jsdelivr.net/gh/sindresorhus/awesome@d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome#readme)
+
+
+
 Welcome to Savvy CSV, the cutting-edge application that leverages the power of Artificial Intelligence and web scraping to create the perfect CSV file for your needs. Whether you're consolidating data for business analytics, compiling research, or simply organizing information, Savvy CSV streamlines the process, delivering customized, accurate, and ready-to-use CSV files.
 
 ## <span style="color: #57d6ff;">Features</span>
@@ -25,7 +30,7 @@ For inquiries related to business use, partnerships, or API access, please conta
 
 ### <span style="color: #FE6B78;">Lennox Anderson - Lead Engineer</span>
 
-![Lennox Anderson](https://savvycsv.com/lennox.jpg)  
+![Lennox Anderson]([https://example.com/lennox-anderson.jpg](http://savvycsv.com/images/Lennox.jpg))  
 Background: Lennox is a seasoned software engineer with a passion for developing innovative data processing tools. With a decade of experience in AI and machine learning, Lennox leads the technical development of Savvy CSV.
 
 ### <span style="color: #FE6B78;">David Bosse - Project Manager</span>
