@@ -59,28 +59,31 @@ For inquiries related to business use, partnerships, or API access, please conta
 
 ## <span style="color: #57d6ff;">Creators</span>
 
-### <span style="color: #FE6B78;">Lennox Anderson - Lead Engineer</span>
+
 
 <div style="display: flex; align-items: center;">
+  <h3><span style="color: #FE6B78;">Lennox Anderson - Lead Engineer</span></h3>
   <img src="http://savvycsv.com/images/Lennox.jpg" width="100" height="120" alt="Lennox Anderson" style="margin-right: 20px;"> 
   <div>
     <p>Background: Lennox is a seasoned software engineer with a passion for developing innovative data processing tools. With a decade of experience in AI and machine learning, Lennox leads the technical development of Savvy CSV.</p>
-    <h3><span style="color: #FE6B78;">David Bosse - Project Manager</span></h3>
   </div>
 </div>
 
 
+<div style="display: flex; align-items: center;">
+  <h3><span style="color: #FE6B78;">Will Guaci - Prompt Engineer</span></h3>
+  <img src="http://savvycsv.com/images/Will.jpg" width="100" height="120" alt="Will Guaci" style="margin-right: 20px;"> 
+  <div>
+    <p>Background: Will specializes in AI model training and prompt engineering. His work focuses on optimizing the data extraction process to produce highly accurate and relevant CSV outputs.</p>
+  </div>
+</div>
 
+
+### <span style="color: #FE6B78;">David Bosse - Project Manager</span>
 ![David Bosse](https://example.com/david-bosse.jpg)  
 Background: David is the strategic planner behind Savvy CSV, ensuring the project aligns with user needs and industry standards. His expertise in agile project management has been pivotal in bringing Savvy CSV to market.
 
-### <span style="color: #FE6B78;">Will Guaci - Prompt Engineer</span>
-
-![Will Guaci](https://example.com/will-guaci.jpg)  
-Background: Will specializes in AI model training and prompt engineering. His work focuses on optimizing the data extraction process to produce highly accurate and relevant CSV outputs.
-
 ### <span style="color: #FE6B78;">Kyle Furgeson - UX Strategist</span>
-
 ![Kyle Furgeson](https://example.com/kyle-furgeson.jpg)  
 Background: Kyle's role involves designing the user experience for Savvy CSV. With a keen eye for detail and user feedback, Kyle ensures the interface is intuitive and efficient.
 
