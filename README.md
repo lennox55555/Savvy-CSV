@@ -1,43 +1,23 @@
 # <span style="color: #b5ce61;">Savvy CSV</span>
 
-<img src="https://savvycsv.com/images/homepage.png" width="650" height="400" alt="Lennox Anderson" style="margin-right: 20px;"> 
-
-# [![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-# [![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-# [![Savvy CSV](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-# [![Savvy CSV](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-# [![Savvy CSV](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+| ![Lennox Anderson](https://savvycsv.com/images/homepage.png) | Welcome to Savvy CSV, the cutting-edge application that leverages the power of Artificial Intelligence and web scraping to create the perfect CSV file for your needs. Whether you're consolidating data for business analytics, compiling research, or simply organizing information, Savvy CSV streamlines the process, delivering customized, accurate, and ready-to-use CSV files. |
+|:---:|:---|
 
 
-# [![Savvy CSV](https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-# [![Savvy CSV](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-# [![Savvy CSV](https://img.shields.io/badge/Microsoft_Excel-217346?style=for-the-badge&logo=microsoft-excel&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-
-
-# [![Savvy CSV](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sindresorhus/awesome#readme)
-
-# [![Savvy CSV](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-# [![Savvy CSV](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-
-# [![Savvy CSV](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sindresorhus/awesome#readme)
-
-# [![Savvy CSV](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-# [![Savvy CSV](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-
-
-
-Welcome to Savvy CSV, the cutting-edge application that leverages the power of Artificial Intelligence and web scraping to create the perfect CSV file for your needs. Whether you're consolidating data for business analytics, compiling research, or simply organizing information, Savvy CSV streamlines the process, delivering customized, accurate, and ready-to-use CSV files.
+[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/Microsoft_Excel-217346?style=for-the-badge&logo=microsoft-excel&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
 ## <span style="color: #57d6ff;">Features</span>
 
@@ -51,16 +31,11 @@ Welcome to Savvy CSV, the cutting-edge application that leverages the power of A
 
 1. **Sign Up/Login**: Create an account or log in to access Savvy CSV's features.
 2. **Specify Data Source**: Enter the URLs of the websites you wish to scrape data from.
-3. **Customize Your CSV**: Choose from our templates or customize your own format.
-4. **Generate Your CSV**: Click 'Generate' and let AI do the rest. Download your perfect CSV file.
+3. **Generate Your CSV**: Click 'Generate' and let AI do the rest. Download your perfect CSV file.
+4. **Download CSV File**: Upon a press of a button, a CSV file belongs to you. The possibilities are endless!
 
-## <span style="color: #b5ce61;">Business Query</span>
-
-For inquiries related to business use, partnerships, or API access, please contact us at business@savvycsv.com. Our team is dedicated to providing solutions that cater to your specific business needs, ensuring that Savvy CSV seamlessly integrates into your workflow.
 
 ## <span style="color: #57d6ff;">Creators</span>
-
-
 
 <div style="display: flex; align-items: center;">
   <h3><span style="color: #FE6B78;">Lennox Anderson - Lead Engineer</span></h3>
@@ -106,3 +81,28 @@ For inquiries related to business use, partnerships, or API access, please conta
 
 [![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kferguson4594/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
+## Savvy CSV - A Product of Onyx AI LLC
+
+Savvy CSV is proudly developed and maintained by Onyx AI LLC, a company dedicated to leveraging artificial intelligence to streamline data management and analysis processes. Our commitment to innovation and excellence has made Savvy CSV a leading tool in data processing and analysis.
+
+### Business Inquiries
+
+We welcome business proposals, partnerships, and any form of corporate collaboration. If you are interested in working with us or have any business-related inquiries, please reach out to us at:
+
+- **Email**: business@savvycsv.com
+
+Our team is eager to explore new opportunities and will respond to your inquiry as promptly as possible.
+
+### Legal Information
+
+Onyx AI LLC holds the intellectual property rights to Savvy CSV and actively protects its assets and interests. Any unauthorized use, reproduction, or distribution of Savvy CSV software will be met with appropriate legal action to enforce our rights and protect our property.
+
+For legal inquiries or to report a violation of our intellectual property rights, please contact:
+
+- **Email**: legal@savvycsv.com
+
+We take these matters very seriously and are committed to maintaining the integrity and security of our products and services.
+
+---
+
+Onyx AI LLC is dedicated to advancing the field of data management with innovative solutions like Savvy CSV. We appreciate your interest and support as we continue to develop and improve our offerings.
