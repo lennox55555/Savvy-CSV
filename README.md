@@ -1,5 +1,6 @@
 # <span style="color: #b5ce61;">Savvy CSV</span>
 
+<img src="https://savvycsv.com/images/savvycsvscreenshot.png" width="650" height="400" alt="Lennox Anderson" style="margin-right: 20px;"> 
 
 # [![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
@@ -63,7 +64,7 @@ For inquiries related to business use, partnerships, or API access, please conta
 
 <div style="display: flex; align-items: center;">
   <h3><span style="color: #FE6B78;">Lennox Anderson - Lead Engineer</span></h3>
-  <img src="http://savvycsv.com/images/Lennox.jpg" width="100" height="120" alt="Lennox Anderson" style="margin-right: 20px;"> 
+  <img src="http://savvycsv.com/images/Lennox.jpg" width="100" height="100" alt="Lennox Anderson" style="margin-right: 20px;"> 
   <div>
     <p>Background: Lennox is a seasoned software engineer with a passion for developing innovative data processing tools. With a decade of experience in AI and machine learning, Lennox leads the technical development of Savvy CSV.</p>
   </div>
@@ -74,7 +75,7 @@ For inquiries related to business use, partnerships, or API access, please conta
 
 <div style="display: flex; align-items: center;">
   <h3><span style="color: #FE6B78;">William Guanci - Prompt Engineer</span></h3>
-  <img src="http://savvycsv.com/images/Will.jpg" width="100" height="120" alt="Will Guaci" style="margin-right: 20px;"> 
+  <img src="http://savvycsv.com/images/Will.jpg" width="100" height="100" alt="Will Guaci" style="margin-right: 20px;"> 
   <div>
     <p>Background: William specializes in AI model training and prompt engineering. His work focuses on optimizing the data extraction process to produce highly accurate and relevant CSV outputs.</p>
   </div>
@@ -83,25 +84,25 @@ For inquiries related to business use, partnerships, or API access, please conta
 [![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/william-guanci/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
 
-
-### <span style="color: #FE6B78;">David Bosse - Project Manager</span>
-![David Bosse](https://example.com/david-bosse.jpg)  
-Background: David is the strategic planner behind Savvy CSV, ensuring the project aligns with user needs and industry standards. His expertise in agile project management has been pivotal in bringing Savvy CSV to market.
+<div style="display: flex; align-items: center;">
+  <h3><span style="color: #FE6B78;">David Bosse - Project Manager</span></h3>
+  <img src="http://savvycsv.com/images/David.jpg" width="100" height="100" alt="Will Guaci" style="margin-right: 20px;"> 
+  <div>
+    <p>Background: David is the strategic planner behind Savvy CSV, ensuring the project aligns with user needs and industry standards. His expertise in agile project management has been pivotal in bringing Savvy CSV to market.</p>
+  </div>
+</div>
 
 [![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/david-bosse/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
-### <span style="color: #FE6B78;">Kyle Furgeson - UX Strategist</span>
-![Kyle Furgeson](https://example.com/kyle-furgeson.jpg)  
-Background: Kyle's role involves designing the user experience for Savvy CSV. With a keen eye for detail and user feedback, Kyle ensures the interface is intuitive and efficient.
+
+<div style="display: flex; align-items: center;">
+  <h3><span style="color: #FE6B78;">Kyle Furgeson - UX Strategist</span></h3>
+  <img src="http://savvycsv.com/images/Kyle.jpg" width="100" height="100" alt="Will Guaci" style="margin-right: 20px;"> 
+  <div>
+    <p>Background: Kyle's role involves designing the user experience for Savvy CSV. With a keen eye for detail and user feedback, Kyle ensures the interface is intuitive and efficient.</p>
+  </div>
+</div>
+
 
 [![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kferguson4594/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
-## <span style="color: #b5ce61;">Main Picture Page</span>
-
-Our website is designed to be as user-friendly and informative as possible. For a glimpse into the Savvy CSV user interface and to explore its features, please visit our main picture page:
-
-[![Savvy CSV Website](https://savvycsv.com/images/savvycsvscreenshot.png)](https://www.savvycsv.com)
-
-*Note: The link will direct you to a page where you can view a high-quality image of the Savvy CSV website interface, showcasing its sleek design and user-friendly navigation.*
-
-For support, feedback, or more information, please visit our website at [www.savvycsv.com](https://www.savvycsv.com) or contact our support team at support@savvycsv.com. Join us in revolutionizing data compilation with Savvy CSV.
