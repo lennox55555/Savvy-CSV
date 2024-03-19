@@ -1,7 +1,38 @@
 # <span style="color: #b5ce61;">Savvy CSV</span>
 
 
-# [![Savvy CSV](https://cdn.jsdelivr.net/gh/sindresorhus/awesome@d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome#readme)
+# [![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+# [![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+# [![Savvy CSV](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+# [![Savvy CSV](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+# [![Savvy CSV](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+
+# [![Savvy CSV](https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+# [![Savvy CSV](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+# [![Savvy CSV](https://img.shields.io/badge/Microsoft_Excel-217346?style=for-the-badge&logo=microsoft-excel&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+
+
+# [![Savvy CSV](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sindresorhus/awesome#readme)
+
+# [![Savvy CSV](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+# [![Savvy CSV](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+
+# [![Savvy CSV](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sindresorhus/awesome#readme)
+
+# [![Savvy CSV](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+# [![Savvy CSV](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
 
 
 
@@ -30,10 +61,15 @@ For inquiries related to business use, partnerships, or API access, please conta
 
 ### <span style="color: #FE6B78;">Lennox Anderson - Lead Engineer</span>
 
-![Lennox Anderson]([https://example.com/lennox-anderson.jpg](http://savvycsv.com/images/Lennox.jpg))  
-Background: Lennox is a seasoned software engineer with a passion for developing innovative data processing tools. With a decade of experience in AI and machine learning, Lennox leads the technical development of Savvy CSV.
+<div style="display: flex; align-items: center;">
+  <img src="http://savvycsv.com/images/Lennox.jpg" width="100" height="120" alt="Lennox Anderson" style="margin-right: 20px;"> 
+  <div>
+    <p>Background: Lennox is a seasoned software engineer with a passion for developing innovative data processing tools. With a decade of experience in AI and machine learning, Lennox leads the technical development of Savvy CSV.</p>
+    <h3><span style="color: #FE6B78;">David Bosse - Project Manager</span></h3>
+  </div>
+</div>
 
-### <span style="color: #FE6B78;">David Bosse - Project Manager</span>
+
 
 ![David Bosse](https://example.com/david-bosse.jpg)  
 Background: David is the strategic planner behind Savvy CSV, ensuring the project aligns with user needs and industry standards. His expertise in agile project management has been pivotal in bringing Savvy CSV to market.
