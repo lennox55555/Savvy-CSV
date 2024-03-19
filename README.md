@@ -1,6 +1,6 @@
 # <span style="color: #b5ce61;">Savvy CSV</span>
 
-<img src="https://savvycsv.com/images/savvycsvscreenshot.png" width="650" height="400" alt="Lennox Anderson" style="margin-right: 20px;"> 
+<img src="https://savvycsv.com/images/homepage.png" width="650" height="400" alt="Lennox Anderson" style="margin-right: 20px;"> 
 
 # [![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
