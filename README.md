@@ -100,7 +100,7 @@ Background: Kyle's role involves designing the user experience for Savvy CSV. Wi
 
 Our website is designed to be as user-friendly and informative as possible. For a glimpse into the Savvy CSV user interface and to explore its features, please visit our main picture page:
 
-[![Savvy CSV Website](https://savvycsv.com/images/savvycsvscreenshot.png)](https://www.savvycsv.com)
+[![Savvy CSV Website](https://savvycsv.com/images/savvycsvscreensho.png)](https://www.savvycsv.com)
 
 *Note: The link will direct you to a page where you can view a high-quality image of the Savvy CSV website interface, showcasing its sleek design and user-friendly navigation.*
 
