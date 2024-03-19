@@ -73,14 +73,14 @@ For inquiries related to business use, partnerships, or API access, please conta
 
 
 <div style="display: flex; align-items: center;">
-  <h3><span style="color: #FE6B78;">Will Guaci - Prompt Engineer</span></h3>
+  <h3><span style="color: #FE6B78;">William Guanci - Prompt Engineer</span></h3>
   <img src="http://savvycsv.com/images/Will.jpg" width="100" height="120" alt="Will Guaci" style="margin-right: 20px;"> 
   <div>
-    <p>Background: Will specializes in AI model training and prompt engineering. His work focuses on optimizing the data extraction process to produce highly accurate and relevant CSV outputs.</p>
+    <p>Background: William specializes in AI model training and prompt engineering. His work focuses on optimizing the data extraction process to produce highly accurate and relevant CSV outputs.</p>
   </div>
 </div>
 
-[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lennoxanderson/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/william-guanci/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
 
 
@@ -94,7 +94,7 @@ Background: David is the strategic planner behind Savvy CSV, ensuring the projec
 ![Kyle Furgeson](https://example.com/kyle-furgeson.jpg)  
 Background: Kyle's role involves designing the user experience for Savvy CSV. With a keen eye for detail and user feedback, Kyle ensures the interface is intuitive and efficient.
 
-[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/david-bosse/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kferguson4594/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
 ## <span style="color: #b5ce61;">Main Picture Page</span>
 
