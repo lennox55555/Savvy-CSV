@@ -69,6 +69,8 @@ For inquiries related to business use, partnerships, or API access, please conta
   </div>
 </div>
 
+[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lennoxanderson/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
 
 <div style="display: flex; align-items: center;">
   <h3><span style="color: #FE6B78;">Will Guaci - Prompt Engineer</span></h3>
@@ -78,14 +80,21 @@ For inquiries related to business use, partnerships, or API access, please conta
   </div>
 </div>
 
+[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lennoxanderson/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+
 
 ### <span style="color: #FE6B78;">David Bosse - Project Manager</span>
 ![David Bosse](https://example.com/david-bosse.jpg)  
 Background: David is the strategic planner behind Savvy CSV, ensuring the project aligns with user needs and industry standards. His expertise in agile project management has been pivotal in bringing Savvy CSV to market.
 
+[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/david-bosse/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
 ### <span style="color: #FE6B78;">Kyle Furgeson - UX Strategist</span>
 ![Kyle Furgeson](https://example.com/kyle-furgeson.jpg)  
 Background: Kyle's role involves designing the user experience for Savvy CSV. With a keen eye for detail and user feedback, Kyle ensures the interface is intuitive and efficient.
+
+[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/david-bosse/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
 ## <span style="color: #b5ce61;">Main Picture Page</span>
 
