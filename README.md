@@ -16,8 +16,6 @@
 [![Savvy CSV](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 [![Savvy CSV](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 [![Savvy CSV](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
 ## <span style="color: #57d6ff;">Features</span>
 
