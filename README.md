@@ -54,31 +54,3 @@
 </div>
 
 [![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/david-bosse/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-
-
-
-## Savvy CSV - A Product of Onyx AI LLC
-
-Savvy CSV is proudly developed and maintained by Onyx AI LLC, a company dedicated to leveraging artificial intelligence to streamline data management and analysis processes. Our commitment to innovation and excellence has made Savvy CSV a leading tool in data processing and analysis.
-
-### Business Inquiries
-
-We welcome business proposals, partnerships, and any form of corporate collaboration. If you are interested in working with us or have any business-related inquiries, please reach out to us at:
-
-- **Email**: business@savvycsv.com
-
-Our team is eager to explore new opportunities and will respond to your inquiry as promptly as possible.
-
-### Legal Information
-
-Onyx AI LLC holds the intellectual property rights to Savvy CSV and actively protects its assets and interests. Any unauthorized use, reproduction, or distribution of Savvy CSV software will be met with appropriate legal action to enforce our rights and protect our property.
-
-For legal inquiries or to report a violation of our intellectual property rights, please contact:
-
-- **Email**: legal@savvycsv.com
-
-We take these matters very seriously and are committed to maintaining the integrity and security of our products and services.
-
----
-
-Onyx AI LLC is dedicated to advancing the field of data management with innovative solutions like Savvy CSV. We appreciate your interest and support as we continue to develop and improve our offerings.
