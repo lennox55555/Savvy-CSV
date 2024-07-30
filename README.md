@@ -4,18 +4,6 @@
 |:---:|:---|
 
 
-[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/Microsoft_Excel-217346?style=for-the-badge&logo=microsoft-excel&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
-[![Savvy CSV](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sindresorhus/awesome#readme)
 
 ## <span style="color: #57d6ff;">Features</span>
 
