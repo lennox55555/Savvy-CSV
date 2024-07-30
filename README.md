@@ -56,16 +56,6 @@
 [![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/david-bosse/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
 
-<div style="display: flex; align-items: center;">
-  <h3><span style="color: #FE6B78;">Kyle Furgeson - UX Strategist</span></h3>
-  <img src="http://savvycsv.com/images/Kyle.jpg" width="100" height="100" alt="Will Guaci" style="margin-right: 20px;"> 
-  <div>
-    <p>Background: Kyle's role involves designing the user experience for Savvy CSV. With a keen eye for detail and user feedback, Kyle ensures the interface is intuitive and efficient.</p>
-  </div>
-</div>
-
-
-[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kferguson4594/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
 
 ## Savvy CSV - A Product of Onyx AI LLC
 
