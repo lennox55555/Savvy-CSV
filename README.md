@@ -21,7 +21,7 @@
 4. **Download CSV File**: Upon a press of a button, a CSV file belongs to you. The possibilities are endless!
 
 
-## <span style="color: #57d6ff;">Creators</span>
+## <span style="color: #57d6ff;">Our Team</span>
 
 <div style="display: flex; align-items: center;">
   <h3><span style="color: #FE6B78;">Lennox Anderson - Lead Engineer</span></h3>
