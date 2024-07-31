@@ -3,6 +3,7 @@
 | ![Lennox Anderson](https://savvycsv.com/images/savvyHomepage.png) | Welcome to Savvy CSV, the cutting-edge application that leverages the power of Artificial Intelligence and web scraping to create the perfect CSV file for your needs. Whether you're consolidating data for business analytics, compiling research, or simply organizing information, Savvy CSV streamlines the process, delivering customized, accurate, and ready-to-use CSV files. |
 |:---:|:---|
 
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
 
 
 ## <span style="color: #57d6ff;">Features</span>
