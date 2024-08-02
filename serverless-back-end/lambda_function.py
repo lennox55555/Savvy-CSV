@@ -43,12 +43,16 @@ def lambda_handler(event, context):
                 "-------------------------------------PROCESSED JSON TO DICTIONARY RESULT:------------------------------")
             processed_dict = process_json_data(added_metrics_to_json)
             print(json.dumps(processed_dict, indent=4))
-            print(
-                "--------------------------------------------FILTERED TABLE RESULT:-------------------------------------")
-            bestTable = filterTables(json.dumps(processed_dict), prompt_type[1])
-            print(bestTable)
-            selected_table = lookup_best_table_web_route(bestTable, updated_json_structure)
-            print(json.dumps(selected_table, indent=4))
+
+            rankedList = rank_tables(processed_dict, prompt_type[1])
+            rankedList_dict = json.loads(rankedList.replace("'", '"'))
+            print(rankedList_dict)
+            print(type(processed_dict))
+
+
+
+            final = add_ranks_to_data(processed_dict, rankedList_dict)
+            print(json.dumps(final, indent=4))
 
 
 
@@ -164,7 +168,7 @@ def get_top_google_search_results(queries):
     found_urls = set()
 
     for query in queries:
-        url = "https://www.googleapis.com/customsearch/v1"
+        url = ""
         params = {'q': query, 'key': api_key, 'cx': search_engine_id, 'num': 8}
 
         response = requests.get(url, params=params)
@@ -191,8 +195,8 @@ def get_top_cdc_search_results(query):
     top_results = []
     found_urls = set()
 
-    site_query = f"site:data.cdc.gov {query}"
-    url = "https://www.googleapis.com/customsearch/v1"
+    site_query =  {query}"
+    url = ""
     params = {'q': site_query, 'key': api_key, 'cx': search_engine_id, 'num': 10}
 
     response = requests.get(url, params=params)
@@ -453,7 +457,13 @@ def split_data_into_dict(json_data_string):
 
 
 def process_json_data(json_data):
-    split_dict = {}
+    split_dict = {
+        "QueryStartDate": json_data.get("QueryStartDate", ""),
+        "QueryEndDate": json_data.get("QueryEndDate", ""),
+        "CSVDataPercentage": json_data.get("CSVDataPercentage", ""),
+        "ImageDataPercentage": json_data.get("ImageDataPercentage", ""),
+        "TableDataPercentage": json_data.get("TableDataPercentage", "")
+    }
     result_count = 1
 
     for query, websites in json_data.items():
@@ -467,17 +477,69 @@ def process_json_data(json_data):
                 sample_data = website_data.get("csvSample", [])
                 if not sample_data:
                     continue
+                split_dict[str(result_count)] = {
+                    "type": data_type,
+                    "numberTableOnWebsite": 1,
+                    "rankOfTable": 0,
+                    "website": url,
+                    "SampleTableData": sample_data[0] if sample_data else ""
+                }
+                result_count += 1
             else:
                 data_type = "Website"
                 url = website_data.get("LandingURL", "")
-                sample_data = list(website_data.get("TableHTML", {}).values())
-                if not sample_data:
-                    continue
-
-            split_dict[result_count] = [(data_type, url), sample_data]
-            result_count += 1
+                tables = website_data.get("TableHTML", {})
+                table_index = 1
+                for table_id, table_html in list(tables.items())[:5]:  # Limit to first 5 tables
+                    split_dict[str(result_count)] = {
+                        "type": data_type,
+                        "numberTableOnWebsite": table_index,
+                        "rankOfTable": 0,
+                        "website": url,
+                        "SampleTableData": table_html
+                    }
+                    result_count += 1
+                    table_index += 1
 
     return split_dict
+
+
+def rank_tables(data, prompt):
+    table_data = {k: v["SampleTableData"] for k, v in data.items() if k.isdigit()}
+    table_strings = "\n\n".join([f"Table {k}: {v}" for k, v in table_data.items()])
+
+    client = openai.OpenAI(api_key="")
+
+    full_prompt = f"Rank the following tables based on their relevance to the prompt. . BE SURE TO ONLY RETURN THE DICTIONARY. EXAMPLE OUTPUT {{1:2,2:1,3:3}}: '{prompt}'.\n\n{table_strings}\n\nProvide the ranks in the format: {{'(table_number)': rank}}"
+
+    try:
+        chat_completion = client.chat.completions.create(
+            model="gpt-4-turbo",
+            messages=[
+                {"role": "system",
+                 "content": "You are an assistant that ranks tables based on relevance to a given prompt."},
+                {"role": "user", "content": full_prompt}
+            ]
+        )
+
+        ranked_tables_text = chat_completion.choices[0].message.content
+
+        return ranked_tables_text
+
+    except json.JSONDecodeError as e:
+        return f"An error occurred while parsing JSON: {str(e)}"
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
+
+
+def add_ranks_to_data(processed_data, rank_data):
+    # Iterate over each section in the processed data
+    for index, rank in rank_data.items():
+        if index in processed_data:
+            processed_data[index]["rankOfTable"] = rank
+    return processed_data
+
+
 
 
 def filterTables(dict, prompt):
@@ -491,7 +553,7 @@ def filterTables(dict, prompt):
                     "content": (
                         "Given the python dictionary containing series of key and values. Keys being the index of how "
                         "many tables, and values being objects that contain information about the tables. Return the key and only the key, "
-                        "that has the most relevance to the query. BE SURE TO ONLY RETURN THE KEY. The prompt"
+                        "that has the most relevance to the query. BE SURE TO ONLY RETURN THE KEY, not the key in quotation marks but just the single interger. The prompt"
                         "is:" + prompt + ". The dictionary: " + dict
                     )
                 }
@@ -558,6 +620,7 @@ def lookup_best_table_cdc_route(best_table_key, urls, processed_dict):
             "url": best_url,
             "data": f"Failed to fetch data: {str(e)}"
         }
+
 
 
 def send_chunks(endpoint, connection_id, response_data, chunk_size=120000):
