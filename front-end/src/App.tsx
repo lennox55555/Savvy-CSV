@@ -1,9 +1,8 @@
 import './App.css'
-import { useState, useEffect } from 'react';
 import LandingPage from './pages/LandingPage/LandingPage'
 import SavvyService from './features/SavvyService/SavvyService';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 
 function App() {
 
