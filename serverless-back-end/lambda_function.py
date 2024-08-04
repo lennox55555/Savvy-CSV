@@ -10,6 +10,7 @@ import csv
 from urllib.parse import urljoin
 from io import StringIO
 import boto3
+import random
 
 def lambda_handler(event, context):
     try:
@@ -43,18 +44,25 @@ def lambda_handler(event, context):
                 "-------------------------------------PROCESSED JSON TO DICTIONARY RESULT:------------------------------")
             processed_dict = process_json_data(added_metrics_to_json)
             print(json.dumps(processed_dict, indent=4))
-
+            print(
+                "-------------------------------------RANKED DICTIONARY RESULT:----------------------------------------")
             rankedList = rank_tables(processed_dict, prompt_type[1])
             rankedList_dict = json.loads(rankedList.replace("'", '"'))
             print(rankedList_dict)
-            print(type(processed_dict))
+            print(
+                "-------------------------------------UPDATED JSON STRUCTURE WITH RANKS:----------------------------------")
 
+            completeJSON = add_ranks_to_data(processed_dict, rankedList_dict)
+            print(json.dumps(completeJSON, indent=4))
+            print(
+                "-------------------------------------SIMPLIFIED JSON STRUCTURE RESULT:------------------------------------")
+            jsonTopThree = filter_top_3_lowest_ranks(completeJSON)
+            print(json.dumps(jsonTopThree, indent=4))
 
-
-            final = add_ranks_to_data(processed_dict, rankedList_dict)
-            print(json.dumps(final, indent=4))
-
-
+            print(
+                "-------------------------------------FULL FINAL JSON STRUCTURE RESULT:------------------------------------")
+            fullTablesJson = fetch_rest_tables(jsonTopThree)
+            print(json.dumps(fullTablesJson, indent=4))
 
         elif(prompt_type[0] == 2):
             print("SEC")
@@ -168,7 +176,7 @@ def get_top_google_search_results(queries):
     found_urls = set()
 
     for query in queries:
-        url = ""
+        url = "https://www.googleapis.com/customsearch/v1"
         params = {'q': query, 'key': api_key, 'cx': search_engine_id, 'num': 8}
 
         response = requests.get(url, params=params)
@@ -190,13 +198,13 @@ def get_top_google_search_results(queries):
 
 
 def get_top_cdc_search_results(query):
-    api_key = ''
-    search_engine_id = ''
+    api_key = 'AIzaSyCXI-pxVlTM6dM5Fk4fpQZMZCf9ljWqG7A'
+    search_engine_id = '411b7b50a6d2848b2'
     top_results = []
     found_urls = set()
 
-    site_query =  {query}"
-    url = ""
+    site_query = f"site:data.cdc.gov {query}"
+    url = "https://www.googleapis.com/customsearch/v1"
     params = {'q': site_query, 'key': api_key, 'cx': search_engine_id, 'num': 10}
 
     response = requests.get(url, params=params)
@@ -248,7 +256,7 @@ def create_query_json_structure(search_results):
 
 
 def construct_api_endpoint(identifiers):
-    base_url = ""
+    base_url = "https://data.cdc.gov/resource/"
     endpoints = [f"{base_url}{identifier}.json" for identifier in identifiers]
     return endpoints
 
@@ -510,7 +518,7 @@ def rank_tables(data, prompt):
 
     client = openai.OpenAI(api_key="")
 
-    full_prompt = f"Rank the following tables based on their relevance to the prompt. . BE SURE TO ONLY RETURN THE DICTIONARY. EXAMPLE OUTPUT {{1:2,2:1,3:3}}: '{prompt}'.\n\n{table_strings}\n\nProvide the ranks in the format: {{'(table_number)': rank}}"
+    full_prompt = f"Rank the following tables based on their relevance to the prompt. NO 2 keys should have the same rank. BE SURE TO ONLY RETURN THE DICTIONARY. EXAMPLE OUTPUT {{1:2,2:1,3:3}}: '{prompt}'.\n\n{table_strings}\n\nProvide the ranks in the format: {{'(table_number)': rank}}"
 
     try:
         chat_completion = client.chat.completions.create(
@@ -540,7 +548,68 @@ def add_ranks_to_data(processed_data, rank_data):
     return processed_data
 
 
+def filter_top_3_lowest_ranks(data):
+    # Extract the keys and their corresponding rankOfTable values
+    ranks = {key: value['rankOfTable'] for key, value in data.items() if isinstance(value, dict)}
 
+    # Sort the keys by their rankOfTable values in ascending order
+    sorted_keys = sorted(ranks, key=ranks.get)
+
+    # Keep only the top 3 keys with the lowest ranks
+    top_3_keys = sorted_keys[:3]
+
+    # Create a new dictionary containing only the top 3 items
+    filtered_data = {key: data[key] for key in top_3_keys}
+
+    # Copy the remaining non-item keys to the filtered data
+    for key in data:
+        if key not in filtered_data and not isinstance(data[key], dict):
+            filtered_data[key] = data[key]
+
+    return filtered_data
+
+
+def add_query_end_date(data):
+    # Get the current Unix timestamp
+    current_timestamp = int(time.time())
+
+    # Add the Unix timestamp to the QueryEndDate field
+    data['QueryEndDate'] = current_timestamp
+
+    return data
+
+
+def fetch_rest_tables(data):
+    user_agents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
+    ]
+
+    for key in ['1', '2', '3']:
+        website = data[key]['website']
+        table_index = data[key]['numberTableOnWebsite'] - 1
+
+        headers = {
+            "User-Agent": random.choice(user_agents)
+        }
+        response = requests.get(website, headers=headers)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        tables = soup.find_all('table')
+        if table_index < len(tables):
+            table_html = str(tables[table_index])
+            data[key]['completedTableData'] = table_html
+            del data[key]['SampleTableData']
+        else:
+            print(f"Table index {table_index} out of range for website {website}")
+
+        # Wait for a random interval between requests to avoid being blocked
+        time.sleep(random.uniform(2, 5))
+
+    return data
 
 def filterTables(dict, prompt):
     client = openai.OpenAI(api_key="")
@@ -568,43 +637,6 @@ def filterTables(dict, prompt):
         return f"An error occurred in pre-prompt engineering: {str(e)}"
 
 
-def lookup_best_table_web_route(best_table_key, json_data):
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-        "DNT": "1",  # Do Not Track Request Header
-    }
-
-    for query, websites in json_data.items():
-        if query in ["QueryStartDate", "QueryEndDate", "CSVDataPercentage", "ImageDataPercentage", "TableDataPercentage"]:
-            continue
-
-        for website_key, website_data in websites.items():
-            if website_key == f"Website{best_table_key}":
-                landing_url = website_data.get("LandingURL", "")
-                print(f"Fetching table data from: {landing_url}")  # Logging the URL
-                try:
-                    response = requests.get(landing_url, headers=headers)
-                    response.raise_for_status()
-                    soup = BeautifulSoup(response.text, 'html.parser')
-                    table_html = {}
-                    tables = soup.find_all('table')
-                    if not tables:
-                        print(f"No tables found at: {landing_url}")
-                    for idx, table in enumerate(tables, 1):
-                        table_html[f"Table{idx}"] = str(table)
-                    return table_html
-                except requests.exceptions.RequestException as e:
-                    print(f"Error fetching table data from {landing_url}: {e}")
-                except Exception as e:
-                    print(f"Unexpected error processing {landing_url}: {e}")
-
-    return {}
-
-
 def lookup_best_table_cdc_route(best_table_key, urls, processed_dict):
     best_url = urls[int(best_table_key) - 1]
     try:
@@ -626,8 +658,8 @@ def lookup_best_table_cdc_route(best_table_key, urls, processed_dict):
 def send_chunks(endpoint, connection_id, response_data, chunk_size=120000):
     response_data_str = str(response_data)
 
-    client = boto3.client('',
-                          endpoint_url="")
+    client = boto3.client('apigatewaymanagementapi',
+                          endpoint_url="https://9f2wyu1469.execute-api.us-east-1.amazonaws.com/production")
 
     chunks = [response_data_str[i:i + chunk_size] for i in range(0, len(response_data_str), chunk_size)]
 
