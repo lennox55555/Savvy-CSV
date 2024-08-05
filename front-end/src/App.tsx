@@ -8,8 +8,8 @@ function App() {
 
   return (
     <Routes>
-      <Route path='' element={<LandingPage />}/>
-      <Route path='/savvy-service' element={<SavvyService />}/>
+      <Route path='/' element={<LandingPage />}/>
+      <Route path='/savvycsv' element={<SavvyService />}/>
       <Route path='*' element={<NotFoundPage />}/>
     </Routes>
   );
