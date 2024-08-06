@@ -11,11 +11,16 @@ from urllib.parse import urljoin
 from io import StringIO
 import boto3
 import random
+import requests
+import csv
+import io
+from sec_api import FloatApi
 
 def lambda_handler(event, context):
     try:
         print("--------------------------------- PROMPT CLASSIFICATION RESULT: ---------------------------------------")
-        prompt_type = prompt_classification(input("Enter a prompt that you would hope returns a csv file: "))
+        initPrompt = input("Enter a prompt that you would hope returns a csv file: ")
+        prompt_type = prompt_classification(initPrompt)
         print(prompt_type)
 
         if(prompt_type[0] == 1):
@@ -61,11 +66,28 @@ def lambda_handler(event, context):
 
             print(
                 "-------------------------------------FULL FINAL JSON STRUCTURE RESULT:------------------------------------")
-            fullTablesJson = fetch_rest_tables(jsonTopThree)
+            fullTablesJson = fetch_rest_tables(jsonTopThree, str(response))
             print(json.dumps(fullTablesJson, indent=4))
 
         elif(prompt_type[0] == 2):
-            print("SEC")
+            ticker = get_ticker(initPrompt)
+            typeOfFinance = classify_prompt(initPrompt)
+            print(ticker)
+            print(typeOfFinance)
+            if typeOfFinance == 1:
+                get_and_print_executive_compensation(ticker)
+            elif typeOfFinance == 2:
+                get_and_print_directors_csv(ticker)
+            elif typeOfFinance == 3:
+                get_and_print_subsidiaries(ticker)
+            elif typeOfFinance == 4:
+                get_and_print_sro_filings(ticker)
+            elif typeOfFinance == 5:
+                print(get_float_data(ticker))
+            elif typeOfFinance == 6:
+                prompt_type = 1
+
+
         elif(prompt_type[0] == 3):
             response = prepromptengineer_health(prompt_type[1])
             print(response)
@@ -190,7 +212,224 @@ def get_ticker(initPrompt):
     return ticker_symbol
 
 
+def classify_prompt(prompt):
+    client = openai.OpenAI(api_key="")
 
+    supportedFinanceQs = {
+        1: 'executive compensation',
+        2: 'directors & board members info',
+        3: 'companies subsidiaries',
+        4: 'SRO filings',
+        5: 'companies share',
+        6: "Doesn't match any subject"
+    }
+
+    classification_request = f"""
+    Please classify the following prompt into one of the following subjects:
+    1: executive compensation
+    2: directors & board members info
+    3: companies subsidiaries
+    4: SRO filings
+    5: companies share
+    6: Doesn't match any subject
+
+    Prompt: "{prompt}" # uncomment this"""
+
+    chat_completion = client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=[
+            {"role": "system", "content": "You are an expert in finance classification."},
+            {"role": "user", "content": classification_request}
+        ]
+    )
+
+    classification = chat_completion.choices[0].message.content
+
+    # Find the number that matches the classification
+    for key, value in supportedFinanceQs.items():
+        if value.lower() in classification.lower():
+            return key
+
+    return 6
+
+
+def get_and_print_executive_compensation(ticker):
+    API_KEY = ""
+    BASE_URL = "https://api.sec-api.io/compensation"
+
+    url = f"{BASE_URL}/{ticker}?token={API_KEY}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+
+        if data:
+            output = io.StringIO()
+            keys = data[0].keys()
+            dict_writer = csv.DictWriter(output, fieldnames=keys)
+            dict_writer.writeheader()
+            dict_writer.writerows(data)
+            print(output.getvalue())
+        else:
+            print("No executive compensation data retrieved.")
+    else:
+        print(f"Error: {response.status_code}")
+
+
+
+
+def get_and_print_directors_csv(company_ticker):
+    API_KEY = ""
+    BASE_URL = "https://api.sec-api.io/directors-and-board-members"
+
+    headers = {
+        "Authorization": API_KEY
+    }
+    query = {
+        "query": f"ticker:{company_ticker}",
+        "from": 0,
+        "size": 50,
+        "sort": [{"filedAt": {"order": "desc"}}]
+    }
+
+    response = requests.post(BASE_URL, headers=headers, json=query)
+
+    if response.status_code == 200:
+        data = response.json().get('data', [])
+        directors_info = []
+
+        for record in data:
+            for director in record.get('directors', []):
+                directors_info.append({
+                    "Company": record.get("entityName", ""),
+                    "Ticker": record.get("ticker", ""),
+                    "Name": director.get("name", ""),
+                    "Position": director.get("position", ""),
+                    "Age": director.get("age", ""),
+                    "Class": director.get("directorClass", ""),
+                    "Date First Elected": director.get("dateFirstElected", ""),
+                    "Independent": director.get("isIndependent", ""),
+                    "Committee Memberships": ", ".join(director.get("committeeMemberships", [])),
+                    "Qualifications": ", ".join(director.get("qualificationsAndExperience", []))
+                })
+
+        if directors_info:
+            output = io.StringIO()
+            writer = csv.DictWriter(output, fieldnames=directors_info[0].keys())
+            writer.writeheader()
+            writer.writerows(directors_info)
+            csv_content = output.getvalue().strip().split('\n')
+            for line in csv_content:
+                print(line)
+        else:
+            print("No director information retrieved.")
+    else:
+        print(f"Error: {response.status_code}")
+
+
+
+def get_and_print_subsidiaries(ticker):
+    API_KEY = ""
+    BASE_URL = "https://api.sec-api.io/subsidiaries"
+
+    url = f"{BASE_URL}?token={API_KEY}"
+    query = {
+        "query": f"ticker:{ticker}",
+        "from": 0,
+        "size": 50,
+        "sort": [{"filedAt": {"order": "desc"}}]
+    }
+
+    response = requests.post(url, json=query)
+
+    if response.status_code == 200:
+        data = response.json().get('data', [])
+        subsidiaries_info = []
+
+        for record in data:
+            company_name = record.get("companyName", "")
+            for subsidiary in record.get("subsidiaries", []):
+                subsidiary_info = [
+                    company_name,
+                    record.get("ticker", ""),
+                    subsidiary.get("name", ""),
+                    subsidiary.get("jurisdiction", "")
+                ]
+                subsidiaries_info.append(subsidiary_info)
+
+        if subsidiaries_info:
+            for info in subsidiaries_info:
+                print(info)
+        else:
+            print("No subsidiary information retrieved.")
+    else:
+        print(f"Error: {response.status_code}")
+
+
+
+def get_and_print_sro_filings(ticker):
+    API_KEY = ""
+    BASE_URL = "https://api.sec-api.io/sro"
+
+    headers = {
+        "Authorization": API_KEY
+    }
+    query = {
+        "query": f"sro:{ticker}",
+        "from": 0,
+        "size": 10,
+        "sort": [{"issueDate": {"order": "desc"}}]
+    }
+
+    response = requests.post(f"{BASE_URL}?token={API_KEY}", json=query)
+
+    if response.status_code == 200:
+        data = response.json()
+        filings_data = data.get('data', [])
+
+        filings_list = []
+        for record in filings_data:
+            filing_details = [
+                record.get("releaseNumber", ""),
+                record.get("issueDate", ""),
+                record.get("fileNumber", ""),
+                record.get("sro", ""),
+                record.get("details", ""),
+                record.get("commentsDue", ""),
+                [url.get("url", "") for url in record.get("urls", [])]
+            ]
+            filings_list.append(filing_details)
+
+        if filings_list:
+            for filing in filings_list:
+                print(filing)
+        else:
+            print("No SRO filings data retrieved.")
+    else:
+        print(f"Error: {response.status_code}")
+
+
+
+def get_float_data(ticker):
+    api_key = ''
+    floatApi = FloatApi(api_key)
+
+    response = floatApi.get_float(ticker=ticker)
+
+    table_data = ["ID, Tickers, CIK, Reported At, Period Of Report, Share Class, Outstanding Shares"]
+    for item in response['data']:
+        for share in item['float']['outstandingShares']:
+            table_data.append(
+                f"{item['id']}, "
+                f"{', '.join(item['tickers'])}, "
+                f"{item['cik']}, "
+                f"{item.get('reportedAt', 'N/A')}, "
+                f"{item.get('periodOfReport', 'N/A')}, "
+                f"{share['shareClass']}, "
+                f"{share['value']}"
+            )
+    return "\n".join(table_data)
+    
 
 def get_top_google_search_results(queries):
     api_key = ''
