@@ -169,6 +169,29 @@ def prepromptengineer_health(prompt):
         return f"An error occurred in pre-prompt engineering: {str(e)}"
 
 
+
+def get_ticker(initPrompt):
+    client = openai.OpenAI(api_key="")
+
+
+    prompt = f"Given the sentence below, What is the stock ticker symbol for the company listed? BE SURE TO ONLY RETURN THE TICKER AND NOTHING ELSE! Sentence: {initPrompt}"
+
+
+    chat_completion = client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=[
+            {"role": "system", "content": "You are a function. I will give you input of a prompt and you will give me a single output of a ticker"},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    ticker_symbol = chat_completion.choices[0].message.content
+
+    return ticker_symbol
+
+
+
+
 def get_top_google_search_results(queries):
     api_key = ''
     search_engine_id = ''
