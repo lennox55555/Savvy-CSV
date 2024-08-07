@@ -429,7 +429,171 @@ def get_float_data(ticker):
                 f"{share['value']}"
             )
     return "\n".join(table_data)
-    
+
+
+def get_stock_prices(ticker):
+    # Fetch the historical stock price data
+    stock = yf.Ticker(ticker)
+    hist = stock.history(period="max")
+
+    if hist.empty:
+        return "No data available for the given ticker."
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    # Write CSV header
+    writer.writerow(["Date", "Open", "High", "Low", "Close", "Volume"])
+
+    # Write stock price data
+    for date, row in hist.iterrows():
+        writer.writerow([
+            date.strftime("%Y-%m-%d"),
+            row["Open"],
+            row["High"],
+            row["Low"],
+            row["Close"],
+            row["Volume"]
+        ])
+
+    return output.getvalue()
+
+
+def get_nasdaq_companies_csv():
+    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    mappingApi = MappingApi(api_key=api_key)
+
+    all_nasdaq_listings_json = mappingApi.resolve('exchange', 'NASDAQ')
+
+    if not all_nasdaq_listings_json:
+        return "No data available for NASDAQ companies."
+
+    headers = [
+        "name", "ticker", "cik", "cusip", "exchange", "isDelisted",
+        "category", "sector", "industry", "sic", "sicSector", "sicIndustry",
+        "famaSector", "famaIndustry", "currency", "location", "id"
+    ]
+
+    csv_data = ",".join(headers) + "\n"
+
+    for company in all_nasdaq_listings_json:
+        row = []
+        for header in headers:
+            row.append(str(company.get(header, '')))
+        csv_data += ",".join(row) + "\n"
+
+    return csv_data
+
+
+def get_nysearca_companies_csv():
+    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    mappingApi = MappingApi(api_key=api_key)
+
+    all_nysearca_listings_json = mappingApi.resolve('exchange', 'NYSEARCA')
+
+    if not all_nysearca_listings_json:
+        return "No data available for NYSEARCA companies."
+
+    # Define the CSV headers
+    headers = [
+        "name", "ticker", "cik", "cusip", "exchange", "isDelisted",
+        "category", "sector", "industry", "sic", "sicSector", "sicIndustry",
+        "famaSector", "famaIndustry", "currency", "location", "id"
+    ]
+
+    # Create the CSV data
+    csv_data = ",".join(headers) + "\n"
+
+    for company in all_nysearca_listings_json:
+        row = []
+        for header in headers:
+            row.append(str(company.get(header, '')))
+        csv_data += ",".join(row) + "\n"
+
+    return csv_data
+
+
+def get_nyse_companies_csv():
+    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    mappingApi = MappingApi(api_key=api_key)
+
+    all_nyse_listings_json = mappingApi.resolve('exchange', 'NYSE')
+
+    if not all_nyse_listings_json:
+        return "No data available for NYSE companies."
+
+
+    headers = [
+        "name", "ticker", "cik", "cusip", "exchange", "isDelisted",
+        "category", "sector", "industry", "sic", "sicSector", "sicIndustry",
+        "famaSector", "famaIndustry", "currency", "location", "id"
+    ]
+
+
+    csv_data = ",".join(headers) + "\n"
+
+    for company in all_nyse_listings_json:
+        row = []
+        for header in headers:
+            row.append(str(company.get(header, '')))
+        csv_data += ",".join(row) + "\n"
+
+    return csv_data
+
+
+def get_nysemkt_companies_csv():
+    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    mappingApi = MappingApi(api_key=api_key)
+
+    all_nysemkt_listings_json = mappingApi.resolve('exchange', 'NYSEMKT')
+
+    if not all_nysemkt_listings_json:
+        return "No data available for NYSEMKT companies."
+
+    headers = [
+        "name", "ticker", "cik", "cusip", "exchange", "isDelisted",
+        "category", "sector", "industry", "sic", "sicSector", "sicIndustry",
+        "famaSector", "famaIndustry", "currency", "location", "id"
+    ]
+
+
+    csv_data = ",".join(headers) + "\n"
+
+    for company in all_nysemkt_listings_json:
+        row = []
+        for header in headers:
+            row.append(str(company.get(header, '')))
+        csv_data += ",".join(row) + "\n"
+
+    return csv_data
+
+
+def get_bats_companies_csv():
+    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    mappingApi = MappingApi(api_key=api_key)
+
+    all_bats_listings_json = mappingApi.resolve('exchange', 'BATS')
+
+    if not all_bats_listings_json:
+        return "No data available for BATS companies."
+
+    # Define the CSV headers
+    headers = [
+        "name", "ticker", "cik", "cusip", "exchange", "isDelisted",
+        "category", "sector", "industry", "sic", "sicSector", "sicIndustry",
+        "famaSector", "famaIndustry", "currency", "location", "id"
+    ]
+
+    csv_data = ",".join(headers) + "\n"
+
+    for company in all_bats_listings_json:
+        row = []
+        for header in headers:
+            row.append(str(company.get(header, '')))
+        csv_data += ",".join(row) + "\n"
+
+    return csv_data
+
 
 def get_top_google_search_results(queries):
     api_key = ''
@@ -921,7 +1085,7 @@ def send_chunks(endpoint, connection_id, response_data, chunk_size=120000):
     response_data_str = str(response_data)
 
     client = boto3.client('apigatewaymanagementapi',
-                          endpoint_url="https://9f2wyu1469.execute-api.us-east-1.amazonaws.com/production")
+                          endpoint_url="")
 
     chunks = [response_data_str[i:i + chunk_size] for i in range(0, len(response_data_str), chunk_size)]
 
