@@ -460,7 +460,7 @@ def get_stock_prices(ticker):
 
 
 def get_nasdaq_companies_csv():
-    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    api_key = ''
     mappingApi = MappingApi(api_key=api_key)
 
     all_nasdaq_listings_json = mappingApi.resolve('exchange', 'NASDAQ')
@@ -486,7 +486,7 @@ def get_nasdaq_companies_csv():
 
 
 def get_nysearca_companies_csv():
-    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    api_key = ''
     mappingApi = MappingApi(api_key=api_key)
 
     all_nysearca_listings_json = mappingApi.resolve('exchange', 'NYSEARCA')
@@ -514,7 +514,7 @@ def get_nysearca_companies_csv():
 
 
 def get_nyse_companies_csv():
-    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    api_key = ''
     mappingApi = MappingApi(api_key=api_key)
 
     all_nyse_listings_json = mappingApi.resolve('exchange', 'NYSE')
@@ -542,7 +542,7 @@ def get_nyse_companies_csv():
 
 
 def get_nysemkt_companies_csv():
-    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    api_key = ''
     mappingApi = MappingApi(api_key=api_key)
 
     all_nysemkt_listings_json = mappingApi.resolve('exchange', 'NYSEMKT')
@@ -569,7 +569,7 @@ def get_nysemkt_companies_csv():
 
 
 def get_bats_companies_csv():
-    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    api_key = ''
     mappingApi = MappingApi(api_key=api_key)
 
     all_bats_listings_json = mappingApi.resolve('exchange', 'BATS')
@@ -624,8 +624,8 @@ def get_top_google_search_results(queries):
 
 
 def get_top_cdc_search_results(query):
-    api_key = 'AIzaSyCXI-pxVlTM6dM5Fk4fpQZMZCf9ljWqG7A'
-    search_engine_id = '411b7b50a6d2848b2'
+    api_key = ''
+    search_engine_id = ''
     top_results = []
     found_urls = set()
 
