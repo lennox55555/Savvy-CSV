@@ -11,10 +11,12 @@ from urllib.parse import urljoin
 from io import StringIO
 import boto3
 import random
-import requests
 import csv
 import io
 from sec_api import FloatApi
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import yfinance as yf
+from sec_api import MappingApi
 
 def lambda_handler(event, context):
     try:
