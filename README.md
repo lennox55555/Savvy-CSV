@@ -25,7 +25,7 @@
 ## <span style="color: #57d6ff;">Our Team</span>
 
 <div style="display: flex; align-items: center;">
-  <h3><span style="color: #FE6B78;">Lennox Anderson - Chief Engineer</span></h3>
+  <h3><span style="color: #FE6B78;">Lennox Anderson - Founder</span></h3>
   <img src="http://savvycsv.com/images/Lennox.jpg" width="100" height="100" alt="Lennox Anderson" style="margin-right: 20px;"> 
   <div>
     <p>Background: Lennox is a seasoned software engineer with a passion for developing innovative data processing tools. With years of experience in AI and machine learning, Lennox leads the technical development of Savvy CSV.</p>
