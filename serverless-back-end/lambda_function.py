@@ -458,7 +458,7 @@ def get_stock_prices(ticker):
             row["Volume"]
         ])
 
-    return output.getvalue()
+    return output.getvalue() #
 
 
 def get_nasdaq_companies_csv():
