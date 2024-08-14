@@ -25,7 +25,7 @@
 ## <span style="color: #57d6ff;">Our Team</span>
 
 <div style="display: flex; align-items: center;">
-  <h3><span style="color: #FE6B78;">Lennox Anderson - Lead Engineer</span></h3>
+  <h3><span style="color: #FE6B78;">Lennox Anderson - Chief Engineer</span></h3>
   <img src="http://savvycsv.com/images/Lennox.jpg" width="100" height="100" alt="Lennox Anderson" style="margin-right: 20px;"> 
   <div>
     <p>Background: Lennox is a seasoned software engineer with a passion for developing innovative data processing tools. With years of experience in AI and machine learning, Lennox leads the technical development of Savvy CSV.</p>
@@ -55,3 +55,14 @@
 </div>
 
 [![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/david-bosse/)[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
+
+
+<div style="display: flex; align-items: center;">
+  <h3><span style="color: #FE6B78;">Jonah Mulcrone - Software Engineer</span></h3>
+  <img src="http://savvycsv.com/images/jonahm.jpg" width="100" height="100" alt="Will Guaci" style="margin-right: 20px;"> 
+  <div>
+    <p>Background: Jonah's background in computer science and finance brings significant value to Savvy CSV. His role as a software engineer demands expertise in full-stack development, encompassing back-end infrastructure, API development, front-end design, and user authentication.</p>
+  </div>
+</div>
+
+[![Savvy CSV](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)]([https://www.linkedin.com/in/david-bosse/](https://www.linkedin.com/in/jonah-mulcrone-964037198/))[![Savvy CSV](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](https://github.com/sindresorhus/awesome#readme)
