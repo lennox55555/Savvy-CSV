@@ -117,7 +117,7 @@ def lambda_handler(event, context):
 
 
 def prompt_classification(prompt):
-    client = openai.OpenAI(api_key="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")
+    client = openai.OpenAI(api_key="")
     try:
         chat_completion = client.chat.completions.create(
             model="gpt-4-turbo",
@@ -145,7 +145,7 @@ def prompt_classification(prompt):
 
 
 def prepromptengineer_google(prompt):
-    client = openai.OpenAI(api_key="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")
+    client = openai.OpenAI(api_key="")
     try:
         chat_completion = client.chat.completions.create(
             model="gpt-4-turbo",
@@ -173,7 +173,7 @@ def prepromptengineer_google(prompt):
 
 
 def prepromptengineer_health(prompt):
-    client = openai.OpenAI(api_key="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")
+    client = openai.OpenAI(api_key="")
     try:
         chat_completion = client.chat.completions.create(
             model="gpt-4-turbo",
@@ -200,7 +200,7 @@ def prepromptengineer_health(prompt):
 
 
 def get_ticker(initPrompt):
-    client = openai.OpenAI(api_key="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")
+    client = openai.OpenAI(api_key="")
 
 
     prompt = f"Given the sentence below, What is the stock ticker symbol for the company listed? BE SURE TO ONLY RETURN THE TICKER AND NOTHING ELSE! Sentence: {initPrompt}"
@@ -220,7 +220,7 @@ def get_ticker(initPrompt):
 
 
 def classify_prompt(prompt):
-    client = openai.OpenAI(api_key="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")
+    client = openai.OpenAI(api_key="")
 
     supportedFinanceQs = {
         1: 'executive compensation',
@@ -276,7 +276,7 @@ def classify_prompt(prompt):
 
 
 def get_and_print_executive_compensation(ticker):
-    API_KEY = "9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be"
+    API_KEY = ""
     BASE_URL = "https://api.sec-api.io/compensation"
 
     url = f"{BASE_URL}/{ticker}?token={API_KEY}"
@@ -1070,7 +1070,7 @@ def rank_tables(data, prompt):
     table_data = {k: v["SampleTableData"] for k, v in data.items() if k.isdigit()}
     table_strings = "\n\n".join([f"Table {k}: {v}" for k, v in table_data.items()])
 
-    client = openai.OpenAI(api_key="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")
+    client = openai.OpenAI(api_key="")
 
     full_prompt = f"Rank the following tables based on their relevance to the prompt. NO 2 keys should have the same rank. BE SURE TO ONLY RETURN THE DICTIONARY. EXAMPLE OUTPUT {{1:2,2:1,3:3}}: '{prompt}'.\n\n{table_strings}\n\nProvide the ranks in the format: {{'(table_number)': rank}}"
 
@@ -1182,7 +1182,7 @@ def fetch_table_data(key, website_data, user_agents, blacklist):
 
 
 def filterTables(dict, prompt):
-    client = openai.OpenAI(api_key="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")
+    client = openai.OpenAI(api_key="")
     try:
         chat_completion = client.chat.completions.create(
             model="gpt-4-turbo",
