@@ -1,0 +1,29 @@
+{
+    "1": {
+        "type": "Website",
+        "numberTableOnWebsite": 1,
+        "rankOfTable": 1,
+        "website": "https://chartmasters.org/most-successful-artists-by-decade/",
+        "SampleTableData": "<table><tr>\n<th class=\"wdtheader sort numdata integer rankings\" data-class=\"expand\" style=\"\">#</th> <th class=\"wdtheader sort image\" style=\"\">Pic</th> <th class=\"wdtheader sort\" style=\"\">Artist</th> <th class=\"wdtheader sort numdata integer numbersMain\" style=\"\">EAS</th> </tr><tr id=\"table_43_row_0\">\n<td style=\"\">1</td>\n<td style=\"\"><img alt=\"Elvis\" height=\"60\" presley=\"\" src=\"https://i.scdn.co/image/ab6761610000f1789a93e273380982dff84c0d7c\" width=\"60\"/></td>\n<td style=\"\"><a class=\"styledLink\" href=\"https://chartmasters.org/cspc-elvis-presley-popularity-analysis/\">Elvis Presley</a></td>\n<td style=\"\">128,692,000</td>\n</tr><tr id=\"table_43_row_1\">\n<td style=\"\">2</td>\n<td style=\"\"><img alt=\"Frank\" height=\"60\" sinatra=\"\" src=\"https://i.scdn.co/image/a283ecdc6252ae305c53d283846cae2e8b22e94c\" width=\"60\"/></td>\n<td style=\"\"><a class=\"styledLink\" href=\"https://chartmasters.org/frank-sinatra-albums-and-songs-sales/\">Frank Sinatra</a></td>\n<td style=\"\">85,297,000</td>\n</tr></table>"
+    },
+    "2": {
+        "type": "Website",
+        "numberTableOnWebsite": 2,
+        "rankOfTable": 2,
+        "website": "https://chartmasters.org/most-successful-artists-by-decade/",
+        "SampleTableData": "<table><tr>\n<th class=\"wdtheader sort numdata integer rankings\" data-class=\"expand\" style=\"\">#</th> <th class=\"wdtheader sort image\" style=\"\">Pic</th> <th class=\"wdtheader sort\" style=\"\">Artist</th> <th class=\"wdtheader sort numdata integer numbersMain\" style=\"\">EAS</th> </tr><tr id=\"table_43_row_0\">\n<td style=\"\">14</td>\n<td style=\"\"><img alt=\"Aretha\" franklin=\"\" height=\"60\" src=\"https://i.scdn.co/image/c5662abce23781f86275ea6540c6e299845f8d82\" width=\"60\"/></td>\n<td style=\"\"><a class=\"styledLink\" href=\"https://chartmasters.org/aretha-franklin-albums-and-songs-sales/\">Aretha Franklin</a></td>\n<td style=\"\">45,736,000</td>\n</tr><tr id=\"table_43_row_1\">\n<td style=\"\">30</td>\n<td style=\"\"><img alt=\"Blind\" faith=\"\" height=\"60\" src=\"https://i.scdn.co/image/1cec97204eaf887dd8c192cdbdb40138c0a754bc\" width=\"60\"/></td>\n<td style=\"\"><a class=\"styledLink\" href=\"https://chartmasters.org/blind-faith-albums-and-songs-sales/\">Blind Faith</a></td>\n<td style=\"\">10,129,000</td>\n</tr><tr id=\"table_43_row_2\">\n<td style=\"\">15</td>\n<td style=\"\"><img alt=\"Cream\" height=\"60\" src=\"https://i.scdn.co/image/7c7f6a3fef88d1aeacef8b8a8a9d632eb606d2b1\" width=\"60\"/></td>\n<td style=\"\"><a class=\"styledLink\" href=\"https://chartmasters.org/cream-albums-and-songs-sales/\">Cream</a></td>\n<td style=\"\">42,526,000</td>\n</tr><tr id=\"table_43_row_3\">\n<td style=\"\">13</td>\n<td style=\"\"><img alt=\"Creedence\" clearwater=\"\" height=\"60\" revival=\"\" src=\"https://i.scdn.co/image/ab6761610000f178d2e2b04b7ba5d60b72f54506\" width=\"60\"/></td>\n<td style=\"\"><a class=\"styledLink\" href=\"https://chartmasters.org/creedence-clearwater-revival-albums-and-songs-sales/\">Creedence Clearwater Revival</a></td>\n<td style=\"\">56,591,000</td>\n</tr></table>"
+    },
+    "5": {
+        "type": "Website",
+        "numberTableOnWebsite": 5,
+        "rankOfTable": 3,
+        "website": "https://chartmasters.org/most-successful-artists-by-decade/",
+        "SampleTableData": "<table><tr>\n<th class=\"wdtheader sort numdata integer rankings\" data-class=\"expand\" style=\"\">#</th> <th class=\"wdtheader sort image\" style=\"\">Pic</th> <th class=\"wdtheader sort\" style=\"\">Artist</th> <th class=\"wdtheader sort numdata integer numbersMain\" style=\"\">EAS</th> </tr><tr id=\"table_43_row_0\">\n<td style=\"\">11</td>\n<td style=\"\"><img alt=\"2Pac\" height=\"60\" src=\"https://i.scdn.co/image/ab6761610000f1787f5cc432c9c109248ebec1ac\" width=\"60\"/></td>\n<td style=\"\"><a class=\"styledLink\" href=\"https://chartmasters.org/2pac-albums-and-songs-sales/\">2Pac</a></td>\n<td style=\"\">66,711,000</td>\n</tr><tr id=\"table_43_row_1\">\n<td style=\"\">26</td>\n<td style=\"\"><img alt=\"Ace\" base=\"\" height=\"60\" of=\"\" src=\"https://i.scdn.co/image/df9a1dd7f15d98cdbef3ee8c44adae7dec4142d6\" width=\"60\"/></td>\n<td style=\"\"><a class=\"styledLink\" href=\"https://chartmasters.org/ace-of-base-albums-and-songs-sales/\">Ace Of Base</a></td>\n<td style=\"\">36,224,000</td>\n</tr><tr id=\"table_43_row_2\">\n<td style=\"\">53</td>\n<td style=\"\"><img alt=\"Ayumi\" hamasaki=\"\" height=\"60\" src=\"https://i.scdn.co/image/ab6761610000f17808132734f5756507e29fdf5b\" width=\"60\"/></td>\n<td style=\"\"><a class=\"styledLink\" href=\"https://chartmasters.org/ayumi-hamasaki-albums-and-songs-sales/\">Ayumi Hamasaki</a></td>\n<td style=\"\">18,183,000</td>\n</tr><tr id=\"table_43_row_3\">\n<td style=\"\">49</td>\n<td style=\"\"><img alt=\"Bj\u00f6rk\" height=\"60\" src=\"https://i.scdn.co/image/ab6761610000f178aeb5c04fdd8ec6273850d207\" width=\"60\"/></td>\n<td style=\"\"><a class=\"styledLink\" href=\"https://chartmasters.org/bjork-albums-and-songs-sales/\">Bj\u00f6rk</a></td>\n<td style=\"\">19,600,000</td>\n</tr></table>"
+    },
+    "QueryStartDate": 1722980677,
+    "QueryEndDate": 1722980700,
+    "CSVDataPercentage": 0.0,
+    "ImageDataPercentage": 0.58333,
+    "TableDataPercentage": 0.33333,
+    "Initial Query's": "['most listened to artist from 2000 to 2020', 'top music artists 2000-2020', 'most popular artist 2000-2020 CSV']"
+}

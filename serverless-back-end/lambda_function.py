@@ -10,55 +10,93 @@ import csv
 from urllib.parse import urljoin
 from io import StringIO
 import boto3
+import random
+import csv
+import io
+from sec_api import FloatApi
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import yfinance as yf
+from sec_api import MappingApi
+
 
 def lambda_handler(event, context):
     try:
         print("--------------------------------- PROMPT CLASSIFICATION RESULT: ---------------------------------------")
-        prompt_type = prompt_classification(input("Enter a prompt that you would hope returns a csv file: "))
+        initPrompt = input("Enter a prompt that you would hope returns a csv file: ")
+        prompt_type = prompt_classification(initPrompt)
         print(prompt_type)
 
-        if(prompt_type[0] == 1):
-            print(
-                "--------------------------------------PRE-PROMPT RESULT: ----------------------------------------------")
+        if prompt_type[0] == 1:
+            print("--------------------------------------PRE-PROMPT RESULT: ----------------------------------------------")
             response = prepromptengineer_google(prompt_type[1])
             print(response)
             print("--------------------------------------TOP SEARCH RESULT:-----------------------------------------------")
             top_search_results = get_top_google_search_results(response)
             print(top_search_results)
-            print(
-                "--------------------------------------JSON STRUCTURE RESULT:-------------------------------------------")
+            print("--------------------------------------JSON STRUCTURE RESULT:-------------------------------------------")
             json_structure = create_query_json_structure(top_search_results)
             print(json_structure)
-            print(
-                "-------------------------------------UPDATED JSON STRUCTURE RESULT:------------------------------------")
-            # Parse JSON string to dictionary
+            print("-------------------------------------UPDATED JSON STRUCTURE RESULT:------------------------------------")
             json_structure_dict = json.loads(json_structure)
             updated_json_structure = update_json_structure_with_csv_tables_images(json_structure_dict)
             print(json.dumps(updated_json_structure, indent=4))
-            print(
-                "-------------------------------------ADDED METRICS TO JSON RESULT:-------------------------------------")
+            print("-------------------------------------ADDED METRICS TO JSON RESULT:-------------------------------------")
             added_metrics_to_json = calculate_data_percentages(updated_json_structure)
             print(added_metrics_to_json)
-            print(
-                "-------------------------------------PROCESSED JSON TO DICTIONARY RESULT:------------------------------")
+            print("-------------------------------------PROCESSED JSON TO DICTIONARY RESULT:------------------------------")
             processed_dict = process_json_data(added_metrics_to_json)
             print(json.dumps(processed_dict, indent=4))
-
+            print("-------------------------------------RANKED DICTIONARY RESULT:----------------------------------------")
             rankedList = rank_tables(processed_dict, prompt_type[1])
             rankedList_dict = json.loads(rankedList.replace("'", '"'))
             print(rankedList_dict)
-            print(type(processed_dict))
+            print("-------------------------------------UPDATED JSON STRUCTURE WITH RANKS:----------------------------------")
+
+            completeJSON = add_ranks_to_data(processed_dict, rankedList_dict)
+            print(json.dumps(completeJSON, indent=4))
+            print("-------------------------------------SIMPLIFIED JSON STRUCTURE RESULT:------------------------------------")
+            jsonTopThree = filter_top_3_lowest_ranks(completeJSON)
+            print(json.dumps(jsonTopThree, indent=4))
+
+            print("-------------------------------------FULL FINAL JSON STRUCTURE RESULT:------------------------------------")
+            fullTablesJson = fetch_rest_tables(jsonTopThree, str(response))
+            print(json.dumps(fullTablesJson, indent=4))
+
+        elif prompt_type[0] == 2:
+            ticker = get_ticker(initPrompt)
+            typeOfFinance = classify_prompt(initPrompt)
+            print(ticker)
+            print(typeOfFinance)
+            if typeOfFinance == 1:
+                get_and_print_executive_compensation(ticker)
+            elif typeOfFinance == 2:
+                get_and_print_directors_csv(ticker)
+            elif typeOfFinance == 3:
+                get_and_print_subsidiaries(ticker)
+            elif typeOfFinance == 4:
+                get_and_print_sro_filings(ticker)
+            elif typeOfFinance == 5:
+                print(get_float_data(ticker))
+            elif typeOfFinance == 6:
+                prompt_type = 1
+            elif typeOfFinance == 7:
+                print(get_insider_trading_data(ticker))
+            elif typeOfFinance == 8:
+                print(get_stock_prices(ticker))
+            elif typeOfFinance == 9:
+                print(get_nasdaq_companies_csv())
+            elif typeOfFinance == 10:
+                print(get_nyse_companies_csv())
+            elif typeOfFinance == 11:
+                print(get_nysearca_companies_csv())
+            elif typeOfFinance == 12:
+                print(get_nysemkt_companies_csv())
+            elif typeOfFinance == 13:
+                print(get_bats_companies_csv())
 
 
 
-            final = add_ranks_to_data(processed_dict, rankedList_dict)
-            print(json.dumps(final, indent=4))
-
-
-
-        elif(prompt_type[0] == 2):
-            print("SEC")
-        elif(prompt_type[0] == 3):
+        elif prompt_type[0] == 3:
             response = prepromptengineer_health(prompt_type[1])
             print(response)
             top_cdc_results = get_top_cdc_search_results(response)
@@ -67,7 +105,7 @@ def lambda_handler(event, context):
             print(constructed_apiendpoints)
             processed_dict = get_first_5_rows_from_urls(constructed_apiendpoints)
             print(json.dumps(processed_dict, indent=4))
-            bestTable = filterTables(json.dumps(processed_dict),response[1])
+            bestTable = filterTables(json.dumps(processed_dict), response[1])
             print(bestTable)
             print("Final Result Here:")
             best_table_data = lookup_best_table_cdc_route(bestTable, constructed_apiendpoints, processed_dict)
@@ -88,10 +126,10 @@ def prompt_classification(prompt):
                     "role": "system",
                     "content": (
                         "You are an AI trained to only act as a function for a bigger application. "
-                        "Your job is to classify whether user generated prompt can be better answered using Google Search, The SEC,"
+                        "Your job is to classify whether user generated prompt can be better answered using Google Search, The Finance and SEC,"
                         "or The CDC. If the prompt can be better answered through the use of The use of Google Search, return the number 1."
-                        "If the prompt can be better answered through information on the SEC, return the number 2. And if the prompt can be"
-                        " better answered on through information on the cdc, return the number 3. Be sure to only return a number and nothing else."
+                        "If the prompt can relates to a finance question or SEC, return the number 2. And if the prompt can be"
+                        " better answered on through information on the or related to health, return the number 3. Be sure to only return a number and nothing else."
                         "Prompt: " + prompt
                     )
                 }
@@ -161,46 +199,557 @@ def prepromptengineer_health(prompt):
         return f"An error occurred in pre-prompt engineering: {str(e)}"
 
 
+def get_ticker(initPrompt):
+    client = openai.OpenAI(api_key="")
+
+
+    prompt = f"Given the sentence below, What is the stock ticker symbol for the company listed? BE SURE TO ONLY RETURN THE TICKER AND NOTHING ELSE! Sentence: {initPrompt}"
+
+
+    chat_completion = client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=[
+            {"role": "system", "content": "You are a function. I will give you input of a prompt and you will give me a single output of a ticker"},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    ticker_symbol = chat_completion.choices[0].message.content
+
+    return ticker_symbol
+
+
+def classify_prompt(prompt):
+    client = openai.OpenAI(api_key="")
+
+    supportedFinanceQs = {
+        1: 'executive compensation',
+        2: 'directors & board members info',
+        3: 'companies subsidiaries',
+        4: 'SRO filings',
+        5: 'companies share',
+        6: "Doesn't match any subject",
+        7: "Insider Trading",
+        8: "Stock Prices",
+        9: "NASDAQ",
+        10:"NYSE",
+        11:"NYSEARCA",
+        12:"NYSEMKT",
+        13:"BATS"
+    }
+
+    classification_request = f"""
+    Please classify the following prompt into one of the following subjects:
+    1: executive compensation
+    2: directors & board members info
+    3: companies subsidiaries
+    4: SRO filings
+    5: companies share
+    6: Doesn't match any subject
+    7: Insider Trading
+    8: Stock Prices
+    9: NASDAQ
+    10: NYSE
+    11: NYSEARCA
+    12: NYSEMKT
+    13: BATS
+
+    Prompt: "{prompt}"
+    """
+
+    chat_completion = client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=[
+            {"role": "system", "content": "You are an expert in finance classification."},
+            {"role": "user", "content": classification_request}
+        ]
+    )
+
+    classification = chat_completion.choices[0].message.content
+
+    # Find the number that matches the classification
+    for key, value in supportedFinanceQs.items():
+        if value.lower() in classification.lower():
+            return key
+
+    return 6
+
+
+def get_and_print_executive_compensation(ticker):
+    API_KEY = ""
+    BASE_URL = "https://api.sec-api.io/compensation"
+
+    url = f"{BASE_URL}/{ticker}?token={API_KEY}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+
+        if data:
+            output = io.StringIO()
+            keys = data[0].keys()
+            dict_writer = csv.DictWriter(output, fieldnames=keys)
+            dict_writer.writeheader()
+            dict_writer.writerows(data)
+            print(output.getvalue())
+        else:
+            print("No executive compensation data retrieved.")
+    else:
+        print(f"Error: {response.status_code}")
+
+
+
+
+def get_and_print_directors_csv(company_ticker):
+    API_KEY = "9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be"
+    BASE_URL = "https://api.sec-api.io/directors-and-board-members"
+
+    headers = {
+        "Authorization": API_KEY
+    }
+    query = {
+        "query": f"ticker:{company_ticker}",
+        "from": 0,
+        "size": 50,
+        "sort": [{"filedAt": {"order": "desc"}}]
+    }
+
+    response = requests.post(BASE_URL, headers=headers, json=query)
+
+    if response.status_code == 200:
+        data = response.json().get('data', [])
+        directors_info = []
+
+        for record in data:
+            for director in record.get('directors', []):
+                directors_info.append({
+                    "Company": record.get("entityName", ""),
+                    "Ticker": record.get("ticker", ""),
+                    "Name": director.get("name", ""),
+                    "Position": director.get("position", ""),
+                    "Age": director.get("age", ""),
+                    "Class": director.get("directorClass", ""),
+                    "Date First Elected": director.get("dateFirstElected", ""),
+                    "Independent": director.get("isIndependent", ""),
+                    "Committee Memberships": ", ".join(director.get("committeeMemberships", [])),
+                    "Qualifications": ", ".join(director.get("qualificationsAndExperience", []))
+                })
+
+        if directors_info:
+            output = io.StringIO()
+            writer = csv.DictWriter(output, fieldnames=directors_info[0].keys())
+            writer.writeheader()
+            writer.writerows(directors_info)
+            csv_content = output.getvalue().strip().split('\n')
+            for line in csv_content:
+                print(line)
+        else:
+            print("No director information retrieved.")
+    else:
+        print(f"Error: {response.status_code}")
+
+
+def get_and_print_subsidiaries(ticker):
+    API_KEY = "9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be"
+    BASE_URL = "https://api.sec-api.io/subsidiaries"
+
+    url = f"{BASE_URL}?token={API_KEY}"
+    query = {
+        "query": f"ticker:{ticker}",
+        "from": 0,
+        "size": 50,
+        "sort": [{"filedAt": {"order": "desc"}}]
+    }
+
+    response = requests.post(url, json=query)
+
+    if (response.status_code == 200):
+        data = response.json().get('data', [])
+        subsidiaries_info = []
+
+        for record in data:
+            company_name = record.get("companyName", "")
+            for subsidiary in record.get("subsidiaries", []):
+                subsidiary_info = [
+                    company_name,
+                    record.get("ticker", ""),
+                    subsidiary.get("name", ""),
+                    subsidiary.get("jurisdiction", "")
+                ]
+                subsidiaries_info.append(subsidiary_info)
+
+        if subsidiaries_info:
+            for info in subsidiaries_info:
+                print(info)
+        else:
+            print("No subsidiary information retrieved.")
+    else:
+        print(f"Error: {response.status_code}")
+
+
+def get_and_print_sro_filings(ticker):
+    API_KEY = "9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be"
+    BASE_URL = "https://api.sec-api.io/sro"
+
+    headers = {
+        "Authorization": API_KEY
+    }
+    query = {
+        "query": f"sro:{ticker}",
+        "from": 0,
+        "size": 10,
+        "sort": [{"issueDate": {"order": "desc"}}]
+    }
+
+    response = requests.post(f"{BASE_URL}?token={API_KEY}", json=query)
+
+    if response.status_code == 200:
+        data = response.json()
+        filings_data = data.get('data', [])
+
+        filings_list = []
+        for record in filings_data:
+            filing_details = [
+                record.get("releaseNumber", ""),
+                record.get("issueDate", ""),
+                record.get("fileNumber", ""),
+                record.get("sro", ""),
+                record.get("details", ""),
+                record.get("commentsDue", ""),
+                [url.get("url", "") for url in record.get("urls", [])]
+            ]
+            filings_list.append(filing_details)
+
+        if filings_list:
+            for filing in filings_list:
+                print(filing)
+        else:
+            print("No SRO filings data retrieved.")
+    else:
+        print(f"Error: {response.status_code}")
+
+
+def get_float_data(ticker):
+    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    floatApi = FloatApi(api_key)
+
+    response = floatApi.get_float(ticker=ticker)
+
+    table_data = ["ID, Tickers, CIK, Reported At, Period Of Report, Share Class, Outstanding Shares"]
+    for item in response['data']:
+        for share in item['float']['outstandingShares']:
+            table_data.append(
+                f"{item['id']}, "
+                f"{', '.join(item['tickers'])}, "
+                f"{item['cik']}, "
+                f"{item.get('reportedAt', 'N/A')}, "
+                f"{item.get('periodOfReport', 'N/A')}, "
+                f"{share['shareClass']}, "
+                f"{share['value']}"
+            )
+    return "\n".join(table_data)
+
+
+def get_insider_trading_data(ticker):
+    api_key = "9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be"
+    url = "https://api.sec-api.io/insider-trading"
+    headers = {
+        "Authorization": api_key
+    }
+    query = {
+        "query": f"issuer.tradingSymbol:{ticker}",
+        "from": 0,
+        "size": 50,
+        "sort": [{"filedAt": {"order": "desc"}}]
+    }
+
+    response = requests.post(url, headers=headers, json=query)
+
+    if response.status_code == 200:
+        data = response.json()
+        transactions = data.get('transactions', [])
+
+        if transactions:
+            output = io.StringIO()
+            csv_writer = csv.writer(output)
+
+            # Prepare the CSV header
+            headers = [
+                'id', 'accessionNo', 'filedAt', 'documentType', 'periodOfReport',
+                'issuer_cik', 'issuer_name', 'issuer_tradingSymbol', 'reportingOwner_cik',
+                'reportingOwner_name', 'reportingOwner_isDirector', 'reportingOwner_isOfficer',
+                'reportingOwner_officerTitle', 'reportingOwner_isTenPercentOwner', 'securityTitle',
+                'transactionDate', 'transactionCode', 'shares', 'pricePerShare', 'acquiredDisposedCode',
+                'sharesOwnedFollowingTransaction', 'directOrIndirectOwnership', 'natureOfOwnership'
+            ]
+            csv_writer.writerow(headers)
+
+            # Flatten the nested structure and prepare data for CSV
+            for transaction in transactions:
+                for non_derivative in transaction.get('nonDerivativeTable', {}).get('transactions', []):
+                    flattened_transaction = [
+                        transaction.get('id', ''),
+                        transaction.get('accessionNo', ''),
+                        transaction.get('filedAt', ''),
+                        transaction.get('documentType', ''),
+                        transaction.get('periodOfReport', ''),
+                        transaction['issuer'].get('cik', ''),
+                        transaction['issuer'].get('name', ''),
+                        transaction['issuer'].get('tradingSymbol', ''),
+                        transaction['reportingOwner'].get('cik', ''),
+                        transaction['reportingOwner'].get('name', ''),
+                        str(transaction['reportingOwner']['relationship'].get('isDirector', '')),
+                        str(transaction['reportingOwner']['relationship'].get('isOfficer', '')),
+                        transaction['reportingOwner']['relationship'].get('officerTitle', ''),
+                        str(transaction['reportingOwner']['relationship'].get('isTenPercentOwner', '')),
+                        non_derivative.get('securityTitle', ''),
+                        non_derivative.get('transactionDate', ''),
+                        non_derivative['coding'].get('code', ''),
+                        str(non_derivative['amounts'].get('shares', '')),
+                        str(non_derivative['amounts'].get('pricePerShare', '')),
+                        non_derivative['amounts'].get('acquiredDisposedCode', ''),
+                        str(non_derivative['postTransactionAmounts'].get('sharesOwnedFollowingTransaction', '')),
+                        non_derivative['ownershipNature'].get('directOrIndirectOwnership', ''),
+                        non_derivative['ownershipNature'].get('natureOfOwnership', '')
+                    ]
+                    csv_writer.writerow(flattened_transaction)
+
+            return output.getvalue()
+        else:
+            return "No transactions found."
+    else:
+        return f"Error: {response.status_code}"
+
+
+
+def get_stock_prices(ticker):
+    # Fetch the historical stock price data
+    stock = yf.Ticker(ticker)
+    hist = stock.history(period="max")
+
+    if hist.empty:
+        return "No data available for the given ticker."
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    # Write CSV header
+    writer.writerow(["Date", "Open", "High", "Low", "Close", "Volume"])
+
+    # Write stock price data
+    for date, row in hist.iterrows():
+        writer.writerow([
+            date.strftime("%Y-%m-%d"),
+            row["Open"],
+            row["High"],
+            row["Low"],
+            row["Close"],
+            row["Volume"]
+        ])
+
+    return output.getvalue()
+
+
+def get_nasdaq_companies_csv():
+    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    mappingApi = MappingApi(api_key=api_key)
+
+    all_nasdaq_listings_json = mappingApi.resolve('exchange', 'NASDAQ')
+
+    if not all_nasdaq_listings_json:
+        return "No data available for NASDAQ companies."
+
+    headers = [
+        "name", "ticker", "cik", "cusip", "exchange", "isDelisted",
+        "category", "sector", "industry", "sic", "sicSector", "sicIndustry",
+        "famaSector", "famaIndustry", "currency", "location", "id"
+    ]
+
+    csv_data = ",".join(headers) + "\n"
+
+    for company in all_nasdaq_listings_json:
+        row = []
+        for header in headers:
+            row.append(str(company.get(header, '')))
+        csv_data += ",".join(row) + "\n"
+
+    return csv_data
+
+
+def get_nysearca_companies_csv():
+    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    mappingApi = MappingApi(api_key=api_key)
+
+    all_nysearca_listings_json = mappingApi.resolve('exchange', 'NYSEARCA')
+
+    if not all_nysearca_listings_json:
+        return "No data available for NYSEARCA companies."
+
+    # Define the CSV headers
+    headers = [
+        "name", "ticker", "cik", "cusip", "exchange", "isDelisted",
+        "category", "sector", "industry", "sic", "sicSector", "sicIndustry",
+        "famaSector", "famaIndustry", "currency", "location", "id"
+    ]
+
+    # Create the CSV data
+    csv_data = ",".join(headers) + "\n"
+
+    for company in all_nysearca_listings_json:
+        row = []
+        for header in headers:
+            row.append(str(company.get(header, '')))
+        csv_data += ",".join(row) + "\n"
+
+    return csv_data
+
+
+def get_nyse_companies_csv():
+    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    mappingApi = MappingApi(api_key=api_key)
+
+    all_nyse_listings_json = mappingApi.resolve('exchange', 'NYSE')
+
+    if not all_nyse_listings_json:
+        return "No data available for NYSE companies."
+
+
+    headers = [
+        "name", "ticker", "cik", "cusip", "exchange", "isDelisted",
+        "category", "sector", "industry", "sic", "sicSector", "sicIndustry",
+        "famaSector", "famaIndustry", "currency", "location", "id"
+    ]
+
+
+    csv_data = ",".join(headers) + "\n"
+
+    for company in all_nyse_listings_json:
+        row = []
+        for header in headers:
+            row.append(str(company.get(header, '')))
+        csv_data += ",".join(row) + "\n"
+
+    return csv_data
+
+
+def get_nysemkt_companies_csv():
+    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    mappingApi = MappingApi(api_key=api_key)
+
+    all_nysemkt_listings_json = mappingApi.resolve('exchange', 'NYSEMKT')
+
+    if not all_nysemkt_listings_json:
+        return "No data available for NYSEMKT companies."
+
+    headers = [
+        "name", "ticker", "cik", "cusip", "exchange", "isDelisted",
+        "category", "sector", "industry", "sic", "sicSector", "sicIndustry",
+        "famaSector", "famaIndustry", "currency", "location", "id"
+    ]
+
+
+    csv_data = ",".join(headers) + "\n"
+
+    for company in all_nysemkt_listings_json:
+        row = []
+        for header in headers:
+            row.append(str(company.get(header, '')))
+        csv_data += ",".join(row) + "\n"
+
+    return csv_data
+
+
+def get_bats_companies_csv():
+    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    mappingApi = MappingApi(api_key=api_key)
+
+    all_bats_listings_json = mappingApi.resolve('exchange', 'BATS')
+
+    if not all_bats_listings_json:
+        return "No data available for BATS companies."
+
+    # Define the CSV headers
+    headers = [
+        "name", "ticker", "cik", "cusip", "exchange", "isDelisted",
+        "category", "sector", "industry", "sic", "sicSector", "sicIndustry",
+        "famaSector", "famaIndustry", "currency", "location", "id"
+    ]
+
+    # Create the CSV data
+    csv_data = ",".join(headers) + "\n"
+
+    for company in all_bats_listings_json:
+        row = []
+        for header in headers:
+            row.append(str(company.get(header, '')))
+        csv_data += ",".join(row) + "\n"
+
+    return csv_data
+
+
+# create get 10k fillings
+
+# creatae get 10q fillings
+
+# Another Backup health care route
+
+# Finish Building Enviromental Route
+
+
 def get_top_google_search_results(queries):
-    api_key = ''
-    search_engine_id = ''
+    api_key = 'AIzaSyCXI-pxVlTM6dM5Fk4fpQZMZCf9ljWqG7A'
+    search_engine_id = '411b7b50a6d2848b2'
     all_results = {}
     found_urls = set()
+    blacklist = ["marketwatch.com", "example.com"]
 
-    for query in queries:
-        url = ""
-        params = {'q': query, 'key': api_key, 'cx': search_engine_id, 'num': 8}
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {
+            executor.submit(fetch_google_results, query, api_key, search_engine_id, found_urls, blacklist): query
+            for query in queries
+        }
 
-        response = requests.get(url, params=params)
-        if response.status_code == 200:
-            search_results = response.json()
-            top_results = []
-            for item in search_results.get('items', []):
-                link = item['link']
-                if link not in found_urls:
-                    top_results.append(link)
-                    found_urls.add(link)
-                if len(top_results) == 4:
-                    break
-            all_results[query] = top_results
-        else:
-            all_results[query] = []
+        for future in as_completed(futures):
+            query = futures[future]
+            all_results[query] = future.result()
 
     return all_results
 
 
+def fetch_google_results(query, api_key, search_engine_id, found_urls, blacklist):
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {'q': query, 'key': api_key, 'cx': search_engine_id, 'num': 8}
+
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        search_results = response.json()
+        top_results = []
+        for item in search_results.get('items', []):
+            link = item['link']
+            if any(bl_site in link for bl_site in blacklist):
+                continue
+            if link not in found_urls:
+                top_results.append(link)
+                found_urls.add(link)
+            if len(top_results) == 4:
+                break
+        return top_results
+    else:
+        return []
+
+
 def get_top_cdc_search_results(query):
-    api_key = ''
-    search_engine_id = ''
+    api_key = 'AIzaSyCXI-pxVlTM6dM5Fk4fpQZMZCf9ljWqG7A'
+    search_engine_id = '411b7b50a6d2848b2'
     top_results = []
     found_urls = set()
 
-    site_query =  {query}"
-    url = ""
+    site_query = f"site:data.cdc.gov {query}"
+    url = "https://www.googleapis.com/customsearch/v1"
     params = {'q': site_query, 'key': api_key, 'cx': search_engine_id, 'num': 10}
 
     response = requests.get(url, params=params)
-    if (response.status_code == 200):
+    if response.status_code == 200:
         search_results = response.json()
         if 'items' in search_results:
             for item in search_results['items']:
@@ -248,40 +797,45 @@ def create_query_json_structure(search_results):
 
 
 def construct_api_endpoint(identifiers):
-    base_url = ""
+    base_url = "https://data.cdc.gov/resource/"
     endpoints = [f"{base_url}{identifier}.json" for identifier in identifiers]
     return endpoints
 
 
 def get_first_5_rows_from_urls(urls):
     result_dict = {}
-    for index, url in enumerate(urls, start=1):
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            data = response.json()
-            first_5_rows = data[:5] if len(data) >= 5 else data
-            result_dict[index] = first_5_rows
-        except Exception as e:
-            print(f"Failed to fetch data from {url}: {e}")
-            result_dict[index] = []
-
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {executor.submit(fetch_first_5_rows, url): index for index, url in enumerate(urls, start=1)}
+        for future in as_completed(futures):
+            index = futures[future]
+            result_dict[index] = future.result()
     return result_dict
+
+
+def fetch_first_5_rows(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        first_5_rows = data[:5] if len(data) >= 5 else data
+        return first_5_rows
+    except Exception as e:
+        print(f"Failed to fetch data from {url}: {e}")
+        return []
+
 
 def check_csv_links(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
-
         csv_links = [urljoin(url, a['href']) for a in soup.find_all('a', href=True) if 'csv' in a['href'].lower()]
         return csv_links
     except Exception:
-        return []  # Return an empty list if an error occurs
+        return []
 
 
 def check_table_tags(soup, num_rows=5):
-    """Check the parsed HTML for table tags and return the first few rows of their HTML content."""
     tables = soup.find_all('table')
     table_html = {}
     for idx, table in enumerate(tables, 1):
@@ -295,13 +849,11 @@ def check_table_tags(soup, num_rows=5):
 
 
 def check_image_tags(soup):
-    """Check the parsed HTML for image tags and return their src attributes."""
     image_hrefs = [img['src'] for img in soup.find_all('img', src=True)]
     return image_hrefs
 
 
 def download_csv_sample(url, num_lines=5):
-    """Download the first few lines of a CSV file."""
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -320,54 +872,70 @@ def download_csv_sample(url, num_lines=5):
 
 
 def update_json_structure_with_csv_tables_images(json_data):
-    for query, websites in json_data.items():
-        if query in ["QueryStartDate", "QueryEndDate"]:
-            continue
-
-        for website_key, website_data in websites.items():
-            landing_url = website_data.get("LandingURL", "")
-            try:
-                response = requests.get(landing_url)
-                response.raise_for_status()
-                soup = BeautifulSoup(response.text, 'html.parser')
-
-                csv_links = check_csv_links(landing_url)
-                if csv_links:
-                    website_data["HasCSVFile"] = True
-                    website_data["FileHref"] = csv_links[0]  # Add the first CSV link as the download location
-                    website_data["csvSample"] = download_csv_sample(csv_links[0])  # Add CSV sample
-                else:
-                    website_data["HasCSVFile"] = False
-                    website_data["FileHref"] = ""
-                    website_data["csvSample"] = []
-
-                table_html = check_table_tags(soup)
-                if table_html:
-                    website_data["HasUsefulTable"] = True
-                    website_data["TableHTML"] = table_html
-                else:
-                    website_data["HasUsefulTable"] = False
-                    website_data["TableHTML"] = {}
-
-                image_hrefs = check_image_tags(soup)
-                if image_hrefs:
-                    website_data["HasUsefulImage"] = True
-                    website_data["ImageHref"] = image_hrefs[0]  # Add the first image link as the download location
-                else:
-                    website_data["HasUsefulImage"] = False
-                    website_data["ImageHref"] = ""
-
-            except Exception as e:
-                print(f"Error processing {landing_url}: {e}")
-                website_data["HasCSVFile"] = False
-                website_data["FileHref"] = ""
-                website_data["csvSample"] = []
-                website_data["HasUsefulTable"] = False
-                website_data["TableHTML"] = {}
-                website_data["HasUsefulImage"] = False
-                website_data["ImageHref"] = ""
+    blacklist = ["marketwatch.com"]
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {
+            executor.submit(fetch_website_data, website_key, website_data, blacklist): (query, website_key)
+            for query, websites in json_data.items() if query not in ["QueryStartDate", "QueryEndDate"]
+            for website_key, website_data in websites.items()
+        }
+        for future in as_completed(futures):
+            query, website_key = futures[future]
+            json_data[query][website_key] = future.result()
 
     return json_data
+
+
+def fetch_website_data(website_key, website_data, blacklist):
+    landing_url = website_data.get("LandingURL", "")
+    if any(bl_site in landing_url for bl_site in blacklist):
+        print(f"Skipping blacklisted site: {landing_url}")
+        return {
+            "HasCSVFile": False,
+            "FileHref": "",
+            "csvSample": [],
+            "HasUsefulTable": False,
+            "TableHTML": {},
+            "HasUsefulImage": False,
+            "ImageHref": ""
+        }
+    try:
+        response = requests.get(landing_url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        csv_links = check_csv_links(landing_url)
+        if csv_links:
+            file_href = csv_links[0]
+            csv_sample = download_csv_sample(file_href)
+        else:
+            file_href = ""
+            csv_sample = []
+
+        table_html = check_table_tags(soup)
+        image_hrefs = check_image_tags(soup)
+
+        return {
+            "LandingURL": landing_url,
+            "HasCSVFile": bool(csv_links),
+            "FileHref": file_href,
+            "csvSample": csv_sample,
+            "HasUsefulTable": bool(table_html),
+            "TableHTML": table_html,
+            "HasUsefulImage": bool(image_hrefs),
+            "ImageHref": image_hrefs[0] if image_hrefs else ""
+        }
+    except Exception as e:
+        print(f"Error processing {landing_url}: {e}")
+        return {
+            "HasCSVFile": False,
+            "FileHref": "",
+            "csvSample": [],
+            "HasUsefulTable": False,
+            "TableHTML": {},
+            "HasUsefulImage": False,
+            "ImageHref": ""
+        }
 
 
 def calculate_data_percentages(json_data):
@@ -401,26 +969,21 @@ def calculate_data_percentages(json_data):
 
 
 def split_data_into_dict(json_data_string):
-    # Convert the JSON string back into a dictionary
     data = json.loads(json_data_string)
     split_dict = {}
     result_count = 1
 
-    # Check if 'table' key exists in data to prevent key errors
     if "table" not in data:
         print("Error: 'table' key not found in data")
         return split_dict
 
-    # Iterate through the primary table list
     for entry in data["table"]:
-        # Safeguard against missing keys in the entry
         if "query" not in entry or "results" not in entry:
             print("Error: Missing 'query' or 'results' keys in the data entry")
             continue
 
         query = entry["query"]
 
-        # Iterate through each result in the results list
         for result in entry["results"]:
             if "link" not in result or "web-content" not in result:
                 print("Error: Missing 'link' or 'web-content' keys in the results")
@@ -453,7 +1016,6 @@ def split_data_into_dict(json_data_string):
                 result_count += 1
 
     return split_dict
-
 
 
 def process_json_data(json_data):
@@ -490,7 +1052,7 @@ def process_json_data(json_data):
                 url = website_data.get("LandingURL", "")
                 tables = website_data.get("TableHTML", {})
                 table_index = 1
-                for table_id, table_html in list(tables.items())[:5]:  # Limit to first 5 tables
+                for table_id, table_html in list(tables.items())[:5]:
                     split_dict[str(result_count)] = {
                         "type": data_type,
                         "numberTableOnWebsite": table_index,
@@ -510,7 +1072,7 @@ def rank_tables(data, prompt):
 
     client = openai.OpenAI(api_key="")
 
-    full_prompt = f"Rank the following tables based on their relevance to the prompt. . BE SURE TO ONLY RETURN THE DICTIONARY. EXAMPLE OUTPUT {{1:2,2:1,3:3}}: '{prompt}'.\n\n{table_strings}\n\nProvide the ranks in the format: {{'(table_number)': rank}}"
+    full_prompt = f"Rank the following tables based on their relevance to the prompt. NO 2 keys should have the same rank. BE SURE TO ONLY RETURN THE DICTIONARY. EXAMPLE OUTPUT {{1:2,2:1,3:3}}: '{prompt}'.\n\n{table_strings}\n\nProvide the ranks in the format: {{'(table_number)': rank}}"
 
     try:
         chat_completion = client.chat.completions.create(
@@ -533,13 +1095,90 @@ def rank_tables(data, prompt):
 
 
 def add_ranks_to_data(processed_data, rank_data):
-    # Iterate over each section in the processed data
     for index, rank in rank_data.items():
         if index in processed_data:
             processed_data[index]["rankOfTable"] = rank
     return processed_data
 
 
+def filter_top_3_lowest_ranks(data):
+    ranks = {key: value['rankOfTable'] for key, value in data.items() if isinstance(value, dict)}
+
+    sorted_keys = sorted(ranks, key=ranks.get)
+
+    top_3_keys = sorted_keys[:3]
+
+    filtered_data = {key: data[key] for key in top_3_keys}
+
+    for key in data:
+        if key not in filtered_data and not isinstance(data[key], dict):
+            filtered_data[key] = data[key]
+
+    return filtered_data
+
+
+def add_query_end_date(data):
+    current_timestamp = int(time.time())
+
+    data['QueryEndDate'] = current_timestamp
+
+    return data
+
+
+def fetch_rest_tables(data, prompts):
+    user_agents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
+    ]
+
+    blacklist = ["marketwatch.com"]
+
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {
+            executor.submit(fetch_table_data, key, data[key], user_agents, blacklist): key
+            for key in ['1', '2', '3']
+        }
+        for future in as_completed(futures):
+            key = futures[future]
+            data[key] = future.result()
+
+    data["QueryEndDate"] = int(time.time())
+    data["prompts"] = prompts
+
+    return data
+
+
+def fetch_table_data(key, website_data, user_agents, blacklist):
+    website = website_data['website']
+    if any(bl_site in website for bl_site in blacklist):
+        print(f"Skipping blacklisted site: {website}")
+        return website_data
+
+    table_index = website_data['numberTableOnWebsite'] - 1
+    headers = {"User-Agent": random.choice(user_agents)}
+
+    try:
+        response = requests.get(website, headers=headers)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        tables = soup.find_all('table')
+        if table_index < len(tables):
+            table_html = str(tables[table_index])
+            website_data['completedTableData'] = table_html
+            del website_data['SampleTableData']
+        else:
+            print(f"Table index {table_index} out of range for website {website}")
+
+        time.sleep(random.uniform(2, 5))
+
+    except Exception as e:
+        print(f"Error fetching table data from {website}: {e}")
+
+    return website_data
 
 
 def filterTables(dict, prompt):
@@ -568,43 +1207,6 @@ def filterTables(dict, prompt):
         return f"An error occurred in pre-prompt engineering: {str(e)}"
 
 
-def lookup_best_table_web_route(best_table_key, json_data):
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-        "DNT": "1",  # Do Not Track Request Header
-    }
-
-    for query, websites in json_data.items():
-        if query in ["QueryStartDate", "QueryEndDate", "CSVDataPercentage", "ImageDataPercentage", "TableDataPercentage"]:
-            continue
-
-        for website_key, website_data in websites.items():
-            if website_key == f"Website{best_table_key}":
-                landing_url = website_data.get("LandingURL", "")
-                print(f"Fetching table data from: {landing_url}")  # Logging the URL
-                try:
-                    response = requests.get(landing_url, headers=headers)
-                    response.raise_for_status()
-                    soup = BeautifulSoup(response.text, 'html.parser')
-                    table_html = {}
-                    tables = soup.find_all('table')
-                    if not tables:
-                        print(f"No tables found at: {landing_url}")
-                    for idx, table in enumerate(tables, 1):
-                        table_html[f"Table{idx}"] = str(table)
-                    return table_html
-                except requests.exceptions.RequestException as e:
-                    print(f"Error fetching table data from {landing_url}: {e}")
-                except Exception as e:
-                    print(f"Unexpected error processing {landing_url}: {e}")
-
-    return {}
-
-
 def lookup_best_table_cdc_route(best_table_key, urls, processed_dict):
     best_url = urls[int(best_table_key) - 1]
     try:
@@ -622,16 +1224,16 @@ def lookup_best_table_cdc_route(best_table_key, urls, processed_dict):
         }
 
 
-
 def send_chunks(endpoint, connection_id, response_data, chunk_size=120000):
     response_data_str = str(response_data)
 
-    client = boto3.client('',
-                          endpoint_url="")
+    client = boto3.client('apigatewaymanagementapi',
+                          endpoint_url="https://9f2wyu1469.execute-api.us-east-1.amazonaws.com/production")
 
     chunks = [response_data_str[i:i + chunk_size] for i in range(0, len(response_data_str), chunk_size)]
 
     for chunk in chunks:
         client.post_to_connection(ConnectionId=connection_id, Data=chunk.encode('utf-8'))
+
 
 lambda_handler('test', 'test')
