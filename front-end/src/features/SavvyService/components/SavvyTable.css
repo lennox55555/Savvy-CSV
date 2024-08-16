@@ -1,0 +1,21 @@
+.table-container {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container th,
+.table-container td {
+    text-align: center; /* Center text horizontally */
+    vertical-align: middle; /* Center text vertically */
+    padding: 8px; /* Optional: adds padding for better spacing */
+}
+
+.table-header {
+    background: linear-gradient(to top, #46D085, #1D6F42);
+}
+
+
+.table-container td {
+    color: black;
+    border-bottom: 1px solid #ddd;
+}

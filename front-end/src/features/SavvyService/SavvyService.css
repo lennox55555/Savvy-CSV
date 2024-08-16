@@ -1,5 +1,6 @@
 html, body {
     overflow: hidden;
+    background: linear-gradient(to bottom, #bbbbc5 0%, #bbbbc5 2%, #F5F5F7 30%, #F5F5F7 100%);
 }
 
 * {
@@ -24,7 +25,7 @@ html, body {
     padding: 25px;
 }
 
-.savvy-title::before {
+/* .savvy-title::before {
     content: '';
     position: absolute;
     top: 0;
@@ -36,7 +37,7 @@ html, body {
     animation: shine 4s ease-in-out infinite;
     z-index: 1;
     pointer-events: none;
-}
+} */
 
 @keyframes shine {
     0% {
@@ -73,7 +74,7 @@ html, body {
     background: linear-gradient(to top, #46D085, #1D6F42);
     transition: transform 0.3s ease-in-out, width 0.3s ease-in-out, padding 0.2s;
     padding: 10px;
-    padding-top: 35px;
+    padding-top: 40px;
     white-space: nowrap;
     display: flex;
     flex-direction: column;
@@ -130,24 +131,15 @@ html, body {
     margin-bottom: 150px;
 }
 
+.chat-bot-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .full-height {
     display: flex;
     height: 94vh;
-}
-
-.settings {
-    position: relative;
-    padding-bottom: 50px;
-    padding-left: 12px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-}
-
-.settings-button {
-    background: transparent;
-    border: none;
-    background: linear-gradient(to top, #46D085, #1D6F42);
 }
 
 @media (max-width: 1000px) {
