@@ -3,6 +3,11 @@ import './SavvyTable'
 import SavvyTable from './SavvyTable';
 
 const SavvyBot: React.FC = () => {
+
+    const handleSubmit = () => {
+        //connect to websocket here
+    }
+
     return (
         <>
             <div style={{ background: '' }} className="savvybot-container">
@@ -42,7 +47,7 @@ const SavvyBot: React.FC = () => {
                 <div style={{ background: '' }} className="message-bar">
                     <div className="message-bar-wrapper">
                         <input type='text' placeholder='Enter message' />
-                        <button className='message-button'>
+                        <button className='message-button' onClick={handleSubmit}>
                             <i className="bi bi-arrow-return-left"></i>
                         </button>
                     </div>
