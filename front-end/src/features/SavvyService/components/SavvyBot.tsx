@@ -8,6 +8,10 @@ const SavvyBot: React.FC = () => {
         //connect to websocket here
     }
 
+    const buildTable = (jsonTableObject: any) => {
+        //add build table code here
+    }
+
     return (
         <>
             <div style={{ background: '' }} className="savvybot-container">
