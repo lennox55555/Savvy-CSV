@@ -10,6 +10,7 @@ const SavvyBot: React.FC = () => {
 
     const buildTable = (jsonTableObject: any) => {
         //add build table code here
+        // Thanks Jonah for the detailed commit
     }
 
     return (
