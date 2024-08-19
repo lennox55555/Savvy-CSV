@@ -1,17 +1,18 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import './SignInPage.css'; // Import the CSS file for styling
 import { Link } from 'react-router-dom';
+import './RegistrationPage.css'
 import googleLogo from '../../assets/Google_G_logo.svg.png'
 
-const SignInPage: React.FC = () => {
+const RegistrationPage: React.FC = () => {
+
     return (
         <Container fluid>
             <Row>
                 <Col md={7} className='form-column'>
                     <div className='form-container'>
                         <div className='title'>
-                            Welcome to SavvyCSV
+                            Create an account
                         </div>
                         <form className='sign-in-form'>
                             <div className='form-group'>
@@ -22,11 +23,15 @@ const SignInPage: React.FC = () => {
                                 <input type='password' id='password' name='password' />
                                 <div className='label'>Password</div>
                             </div>
+                            <div className='form-group'>
+                                <input type='password' id='password' name='password' />
+                                <div className='label'>Confirm password</div>
+                            </div>
                             <button type='submit'>Continue</button>
                         </form>
                         <div className='sign-up-link-container'>
                             <div className='sign-up-link'>
-                                Don't have account? <Link style={{ textDecoration: 'none' }} to='/register'>Sign up</Link>
+                                Already have account? <Link style={{ textDecoration: 'none' }} to='/signin'>Sign in</Link>
                             </div>
                         </div>
                         <hr className='divider' />
@@ -43,6 +48,6 @@ const SignInPage: React.FC = () => {
             </Row>
         </Container>
     );
-};
+}
 
-export default SignInPage;
+export default RegistrationPage
