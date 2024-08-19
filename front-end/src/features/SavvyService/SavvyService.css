@@ -1,6 +1,5 @@
 html, body {
     overflow: hidden;
-    background: linear-gradient(to bottom, #bbbbc5 0%, #bbbbc5 2%, #F5F5F7 30%, #F5F5F7 100%);
 }
 
 * {
@@ -23,32 +22,6 @@ html, body {
     font-size: 40px;
     line-height: 1;
     padding: 25px;
-}
-
-/* .savvy-title::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(120deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 60%);
-    transform: skewX(-20deg);
-    animation: shine 4s ease-in-out infinite;
-    z-index: 1;
-    pointer-events: none;
-} */
-
-@keyframes shine {
-    0% {
-        left: -50%;
-    }
-    50% {
-        left: 100%; 
-    }
-    100% {
-        left: 150%; 
-    }
 }
 
 .username.active, .username.inactive {

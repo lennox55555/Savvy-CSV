@@ -1,0 +1,139 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.container-fluid {
+    height: 100vh;
+    padding: 0;
+}
+
+.create-an-account {
+    background-image: linear-gradient(to bottom, #46D085, #1D6F42);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    font-size: 40px;
+    margin-bottom: 35px;
+}
+
+.form-column {
+    display: grid;
+    place-items: center;
+    height: 100vh; /* Full height of the column */
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25%;
+
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 1rem 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: transparent;
+    color: #333;
+    outline: none;
+}
+
+.label {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    background-color: white;
+    padding: 0 0.25rem;
+    color: #999;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    transform: translateY(-50%);
+}
+
+input:focus + .label,
+input:not(:placeholder-shown) + .label {
+    top: -0.75rem;
+    left: 0.75rem;
+    font-size: 15px;
+    color: #1D6F42;
+    transform: translateY(0);
+}
+
+form button {
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    color: #ffff;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+    background-color: #1D6F42;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+}
+
+form button:hover {
+    background-color: #1D6F42;
+}
+
+.sign-up-link-container {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sign-up-link {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+}
+
+.divider {
+    border-top: 1px solid #ccc;
+    width: 100%;
+    max-width: 500px; 
+    margin-top: 25px;
+}
+
+.google-button {
+    padding: 16px;
+    border: 1.5px solid #ccc;
+    border-radius: 10px;
+    color: black;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+    margin-top: 25px;
+    display: flex;
+    align-items: center;
+    gap: 25px; /* Space between the logo and text */
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.google-logo {
+    width: 24px; /* Adjust width of the logo */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.blank-column {
+    background-color: #edecec;
+    height: 100vh;
+}
