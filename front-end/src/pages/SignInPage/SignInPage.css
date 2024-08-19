@@ -27,7 +27,7 @@ body {
 .form-column {
     display: grid;
     place-items: center;
-    height: 100vh; /* Full height of the column */
+    height: 100vh;
 }
 
 .form-container {
@@ -107,6 +107,20 @@ form button:hover {
     font-size: 15px;
 }
 
+.success-message {
+    color: green;
+    margin-top: -25px;
+    margin-bottom: 25px;
+    font-size: 15px
+}
+
+.error-message {
+    color: red;
+    margin-top: -25px;
+    margin-bottom: 25px;
+    font-size: 15px
+}
+
 .divider {
     border-top: 1px solid #ccc;
     width: 100%;
@@ -127,14 +141,14 @@ form button:hover {
     margin-top: 25px;
     display: flex;
     align-items: center;
-    gap: 25px; /* Space between the logo and text */
+    gap: 25px;
     font-size: 18px;
     font-weight: 300;
 }
 
 .google-logo {
-    width: 24px; /* Adjust width of the logo */
-    height: auto; /* Maintain aspect ratio */
+    width: 24px; 
+    height: auto; 
 }
 
 .blank-column {

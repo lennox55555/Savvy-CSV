@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Form } from 'react-bootstrap';
 import './SignInPage.css'; // Import the CSS file for styling
 import { Link } from 'react-router-dom';
 import googleLogo from '../../assets/Google_G_logo.svg.png'
@@ -13,7 +13,7 @@ const SignInPage: React.FC = () => {
                         <div className='title'>
                             Welcome to SavvyCSV
                         </div>
-                        <form className='sign-in-form'>
+                        <Form className='sign-in-form'>
                             <div className='form-group'>
                                 <input type='text' id='email' name='email' />
                                 <div className='label'>Email address</div>
@@ -23,7 +23,7 @@ const SignInPage: React.FC = () => {
                                 <div className='label'>Password</div>
                             </div>
                             <button type='submit'>Continue</button>
-                        </form>
+                        </Form>
                         <div className='sign-up-link-container'>
                             <div className='sign-up-link'>
                                 Don't have account? <Link style={{ textDecoration: 'none' }} to='/register'>Sign up</Link>

@@ -1,10 +1,47 @@
-import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import React, { useState } from 'react';
+
+import { Container, Row, Col, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './RegistrationPage.css'
 import googleLogo from '../../assets/Google_G_logo.svg.png'
+import UserServiceAPI from '../../services/userServiceAPI';
 
 const RegistrationPage: React.FC = () => {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+        confirmPassword: ''
+    })
+
+    const [error, setError] = useState('')
+    const [accountCreated, setAccountCreated] = useState('')
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+
+        setFormData(prevState => ({ ...prevState, [name]: value }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        console.log(formData)
+        e.preventDefault();
+
+        if (formData.password != formData.confirmPassword) {
+            setError('Passwords do not match.');
+            return;
+        }
+
+        try {
+            await UserServiceAPI.getInstance().registerUser(formData);
+            setAccountCreated('Account successfully created.')
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('An error has occured!')
+            }
+        }
+    }
 
     return (
         <Container fluid>
@@ -14,21 +51,44 @@ const RegistrationPage: React.FC = () => {
                         <div className='title'>
                             Create an account
                         </div>
-                        <form className='sign-in-form'>
-                            <div className='form-group'>
-                                <input type='text' id='email' name='email' />
+                        <Form className='sign-in-form' onSubmit={handleSubmit}>
+                            <Form.Group className='form-group' controlId='email'>
+                                <Form.Control
+                                    type='text'
+                                    name='email'
+                                    onChange={handleChange}
+                                    required
+                                />
                                 <div className='label'>Email address</div>
-                            </div>
-                            <div className='form-group'>
-                                <input type='password' id='password' name='password' />
+                            </Form.Group>
+                            <Form.Group className='form-group' controlId='password'>
+                                <Form.Control
+                                    type='password'
+                                    name='password'
+                                    onChange={handleChange}
+                                    required
+                                />
                                 <div className='label'>Password</div>
-                            </div>
-                            <div className='form-group'>
-                                <input type='password' id='password' name='password' />
+                            </Form.Group>
+                            <Form.Group className='form-group' controlId='confirmPassword'>
+                                <Form.Control
+                                    type='password'
+                                    name='confirmPassword'
+                                    onChange={handleChange}
+                                    required
+                                />
                                 <div className='label'>Confirm password</div>
-                            </div>
+                            </Form.Group>
+                            {
+                                accountCreated &&
+                                <p className='success-message'>{accountCreated}</p>
+                            }
+                            {
+                                error &&
+                                <p className="error-message">{error}</p>
+                            }
                             <button type='submit'>Continue</button>
-                        </form>
+                        </Form>
                         <div className='sign-up-link-container'>
                             <div className='sign-up-link'>
                                 Already have account? <Link style={{ textDecoration: 'none' }} to='/signin'>Sign in</Link>
