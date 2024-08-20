@@ -1125,60 +1125,36 @@ def add_query_end_date(data):
     return data
 
 
-def fetch_rest_tables(data, prompts):
-    user_agents = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
-    ]
-
-    blacklist = ["marketwatch.com"]
-
-    with ThreadPoolExecutor(max_workers=5) as executor:
-        futures = {
-            executor.submit(fetch_table_data, key, data[key], user_agents, blacklist): key
-            for key in ['1', '2', '3']
-        }
-        for future in as_completed(futures):
-            key = futures[future]
-            data[key] = future.result()
-
-    data["QueryEndDate"] = int(time.time())
-    data["prompts"] = prompts
-
-    return data
-
-
-def fetch_table_data(key, website_data, user_agents, blacklist):
-    website = website_data['website']
-    if any(bl_site in website for bl_site in blacklist):
-        print(f"Skipping blacklisted site: {website}")
-        return website_data
-
-    table_index = website_data['numberTableOnWebsite'] - 1
-    headers = {"User-Agent": random.choice(user_agents)}
-
+def scrape_table_from_website(url, number_table_on_website):
     try:
-        response = requests.get(website, headers=headers)
+        response = requests.get(url)
         response.raise_for_status()
-        soup = BeautifulSoup(response.content, 'html.parser')
-
+        soup = BeautifulSoup(response.text, 'html.parser')
         tables = soup.find_all('table')
-        if table_index < len(tables):
-            table_html = str(tables[table_index])
-            website_data['completedTableData'] = table_html
-            del website_data['SampleTableData']
+
+        if len(tables) >= number_table_on_website:
+            return str(tables[number_table_on_website - 1])
         else:
-            print(f"Table index {table_index} out of range for website {website}")
-
-        time.sleep(random.uniform(2, 5))
-
+            print(f"No table found at index {number_table_on_website} for {url}")
+            return None
     except Exception as e:
-        print(f"Error fetching table data from {website}: {e}")
+        print(f"Error scraping table from {url}: {e}")
+        return None
 
-    return website_data
+
+def update_sample_table_data(data_object):
+    for key, value in data_object.items():
+        if isinstance(value, dict) and 'website' in value:
+            url = value.get("website")
+            number_table_on_website = value.get("numberTableOnWebsite", 1)
+            scraped_table = scrape_table_from_website(url, number_table_on_website)
+            if scraped_table:
+                value["SampleTableData"] = scraped_table
+                print(f"Updated SampleTableData for key {key}")
+            else:
+                print(f"Failed to scrape table for key {key}")
+
+    return data_object
 
 
 def filterTables(dict, prompt):
