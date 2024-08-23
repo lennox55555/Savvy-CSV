@@ -33,6 +33,7 @@ const RegistrationPage: React.FC = () => {
 
         try {
             await UserServiceAPI.getInstance().registerUser(formData);
+            setError('')
             setAccountCreated('Account successfully created.')
         } catch (err: unknown) {
             if (err instanceof Error) {
@@ -54,6 +55,7 @@ const RegistrationPage: React.FC = () => {
                         <Form className='sign-in-form' onSubmit={handleSubmit}>
                             <Form.Group className='form-group' controlId='email'>
                                 <Form.Control
+                                    className='email-input'
                                     type='text'
                                     name='email'
                                     onChange={handleChange}
@@ -63,6 +65,7 @@ const RegistrationPage: React.FC = () => {
                             </Form.Group>
                             <Form.Group className='form-group' controlId='password'>
                                 <Form.Control
+                                    className='password-input'
                                     type='password'
                                     name='password'
                                     onChange={handleChange}
@@ -72,6 +75,7 @@ const RegistrationPage: React.FC = () => {
                             </Form.Group>
                             <Form.Group className='form-group' controlId='confirmPassword'>
                                 <Form.Control
+                                    className='password-input'
                                     type='password'
                                     name='confirmPassword'
                                     onChange={handleChange}
@@ -91,7 +95,7 @@ const RegistrationPage: React.FC = () => {
                         </Form>
                         <div className='sign-up-link-container'>
                             <div className='sign-up-link'>
-                                Already have account? <Link style={{ textDecoration: 'none' }} to='/signin'>Sign in</Link>
+                                Already have an account? <Link style={{ textDecoration: 'none' }} to='/signin'>Sign in</Link>
                             </div>
                         </div>
                         <hr className='divider' />

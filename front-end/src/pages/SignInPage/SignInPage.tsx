@@ -35,6 +35,19 @@ const SignInPage: React.FC = () => {
         }
     }
 
+    const signInWithGoogle = async () => {
+        try {
+            await UserServiceAPI.getInstance().signInWithGoogle();
+            navigate('/savvycsv');
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError('Trouble signing in with Google. Please try again later.')
+            } else {
+                console.log('An error has occured.')
+            }
+        }
+    }
+
     return (
         <Container fluid>
             <Row>
@@ -46,6 +59,7 @@ const SignInPage: React.FC = () => {
                         <Form className='sign-in-form' onSubmit={handleSubmit}>
                             <Form.Group className='form-group'>
                                 <Form.Control
+                                    className='email-input'
                                     type='text'
                                     name='email'
                                     onChange={handleChange}
@@ -55,6 +69,7 @@ const SignInPage: React.FC = () => {
                             </Form.Group>
                             <Form.Group className='form-group'>
                                 <Form.Control
+                                    className='password-input'
                                     type='password'
                                     name='password'
                                     onChange={handleChange}
@@ -70,12 +85,12 @@ const SignInPage: React.FC = () => {
                         </Form>
                         <div className='sign-up-link-container'>
                             <div className='sign-up-link'>
-                                Don't have account? <Link style={{ textDecoration: 'none' }} to='/register'>Sign up</Link>
+                                Don't have an account? <Link style={{ textDecoration: 'none' }} to='/register'>Sign up</Link>
                             </div>
                         </div>
                         <hr className='divider' />
 
-                        <button className='google-button'>
+                        <button className='google-button' onClick={signInWithGoogle}>
                             <img src={googleLogo} alt="Google logo" className='google-logo' />
                             Continue with Google
                         </button>

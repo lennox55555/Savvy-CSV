@@ -1,5 +1,5 @@
 import { RegistrationFormData, SignInFormData } from "../utils/types";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 class UserServiceAPI {
     private static instance: UserServiceAPI;
@@ -45,6 +45,19 @@ class UserServiceAPI {
             console.log("User signed in:", userCredential.user);
         } catch (error) {
             console.error("Error signing in user:", error);
+            throw error;
+        }
+    }
+
+    public async signInWithGoogle() {
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+
+        try {
+            const userCredential = await signInWithPopup(auth, provider);
+            console.log('User signed in with Google:', userCredential.user)
+        } catch (error) {
+            console.error("Error signing in with Google:", error);
             throw error;
         }
     }
