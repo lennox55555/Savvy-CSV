@@ -8,10 +8,10 @@ const SavvyBot: React.FC = () => {
         //connect to websocket here
     }
 
-    const buildTable = (jsonTableObject: any) => {
+    //const buildTable = (jsonTableObject: any) => {
         //add build table code here
         // Thanks Jonah for the detailed commit
-    }
+    //}
 
     return (
         <>
