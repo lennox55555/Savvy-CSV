@@ -59,8 +59,14 @@ def lambda_handler(event, context):
             print(json.dumps(jsonTopThree, indent=4))
 
             print("-------------------------------------FULL FINAL JSON STRUCTURE RESULT:------------------------------------")
-            fullTablesJson = fetch_rest_tables(jsonTopThree, str(response))
-            print(json.dumps(fullTablesJson, indent=4))
+            updated_object = update_sample_table_data(jsonTopThree)
+            print(json.dumps(updated_object, indent=4))
+
+            print("-------------------------------------FINAL JSON STRUCTURE CSV RESULT:------------------------------------")
+
+            converted_dict = convert_sample_table_data_to_csv(updated_object)
+            print(json.dumps(converted_dict, indent=4))
+
 
         elif prompt_type[0] == 2:
             ticker = get_ticker(initPrompt)
@@ -117,7 +123,7 @@ def lambda_handler(event, context):
 
 
 def prompt_classification(prompt):
-    client = openai.OpenAI(api_key="")
+    client = openai.OpenAI(api_key="insert key here")
     try:
         chat_completion = client.chat.completions.create(
             model="gpt-4-turbo",
@@ -145,7 +151,7 @@ def prompt_classification(prompt):
 
 
 def prepromptengineer_google(prompt):
-    client = openai.OpenAI(api_key="")
+    client = openai.OpenAI(api_key="insert key here")
     try:
         chat_completion = client.chat.completions.create(
             model="gpt-4-turbo",
@@ -173,7 +179,7 @@ def prepromptengineer_google(prompt):
 
 
 def prepromptengineer_health(prompt):
-    client = openai.OpenAI(api_key="")
+    client = openai.OpenAI(api_key="insert key here")
     try:
         chat_completion = client.chat.completions.create(
             model="gpt-4-turbo",
@@ -200,7 +206,7 @@ def prepromptengineer_health(prompt):
 
 
 def get_ticker(initPrompt):
-    client = openai.OpenAI(api_key="")
+    client = openai.OpenAI(api_key="insert key here")
 
 
     prompt = f"Given the sentence below, What is the stock ticker symbol for the company listed? BE SURE TO ONLY RETURN THE TICKER AND NOTHING ELSE! Sentence: {initPrompt}"
@@ -220,7 +226,7 @@ def get_ticker(initPrompt):
 
 
 def classify_prompt(prompt):
-    client = openai.OpenAI(api_key="")
+    client = openai.OpenAI(api_key="insert key here")
 
     supportedFinanceQs = {
         1: 'executive compensation',
@@ -276,7 +282,7 @@ def classify_prompt(prompt):
 
 
 def get_and_print_executive_compensation(ticker):
-    API_KEY = ""
+    API_KEY = "insert key here"
     BASE_URL = "https://api.sec-api.io/compensation"
 
     url = f"{BASE_URL}/{ticker}?token={API_KEY}"
@@ -301,7 +307,7 @@ def get_and_print_executive_compensation(ticker):
 
 
 def get_and_print_directors_csv(company_ticker):
-    API_KEY = "9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be"
+    API_KEY = "insert key here"
     BASE_URL = "https://api.sec-api.io/directors-and-board-members"
 
     headers = {
@@ -350,7 +356,7 @@ def get_and_print_directors_csv(company_ticker):
 
 
 def get_and_print_subsidiaries(ticker):
-    API_KEY = "9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be"
+    API_KEY = "insert key here"
     BASE_URL = "https://api.sec-api.io/subsidiaries"
 
     url = f"{BASE_URL}?token={API_KEY}"
@@ -388,7 +394,7 @@ def get_and_print_subsidiaries(ticker):
 
 
 def get_and_print_sro_filings(ticker):
-    API_KEY = "9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be"
+    API_KEY = "insert key here"
     BASE_URL = "https://api.sec-api.io/sro"
 
     headers = {
@@ -430,7 +436,7 @@ def get_and_print_sro_filings(ticker):
 
 
 def get_float_data(ticker):
-    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    api_key = 'insert key here'
     floatApi = FloatApi(api_key)
 
     response = floatApi.get_float(ticker=ticker)
@@ -451,7 +457,7 @@ def get_float_data(ticker):
 
 
 def get_insider_trading_data(ticker):
-    api_key = "9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be"
+    api_key = "insert key here"
     url = "https://api.sec-api.io/insider-trading"
     headers = {
         "Authorization": api_key
@@ -551,7 +557,7 @@ def get_stock_prices(ticker):
 
 
 def get_nasdaq_companies_csv():
-    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    api_key = 'insert key here'
     mappingApi = MappingApi(api_key=api_key)
 
     all_nasdaq_listings_json = mappingApi.resolve('exchange', 'NASDAQ')
@@ -577,7 +583,7 @@ def get_nasdaq_companies_csv():
 
 
 def get_nysearca_companies_csv():
-    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    api_key = 'insert key here'
     mappingApi = MappingApi(api_key=api_key)
 
     all_nysearca_listings_json = mappingApi.resolve('exchange', 'NYSEARCA')
@@ -605,7 +611,7 @@ def get_nysearca_companies_csv():
 
 
 def get_nyse_companies_csv():
-    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    api_key = 'insert key here'
     mappingApi = MappingApi(api_key=api_key)
 
     all_nyse_listings_json = mappingApi.resolve('exchange', 'NYSE')
@@ -633,7 +639,7 @@ def get_nyse_companies_csv():
 
 
 def get_nysemkt_companies_csv():
-    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    api_key = 'insert key here'
     mappingApi = MappingApi(api_key=api_key)
 
     all_nysemkt_listings_json = mappingApi.resolve('exchange', 'NYSEMKT')
@@ -660,7 +666,7 @@ def get_nysemkt_companies_csv():
 
 
 def get_bats_companies_csv():
-    api_key = '9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be'
+    api_key = 'insert key here'
     mappingApi = MappingApi(api_key=api_key)
 
     all_bats_listings_json = mappingApi.resolve('exchange', 'BATS')
@@ -697,8 +703,8 @@ def get_bats_companies_csv():
 
 
 def get_top_google_search_results(queries):
-    api_key = 'AIzaSyCXI-pxVlTM6dM5Fk4fpQZMZCf9ljWqG7A'
-    search_engine_id = '411b7b50a6d2848b2'
+    api_key = ''
+    search_engine_id = ''
     all_results = {}
     found_urls = set()
     blacklist = ["marketwatch.com", "example.com"]
@@ -739,8 +745,8 @@ def fetch_google_results(query, api_key, search_engine_id, found_urls, blacklist
 
 
 def get_top_cdc_search_results(query):
-    api_key = 'AIzaSyCXI-pxVlTM6dM5Fk4fpQZMZCf9ljWqG7A'
-    search_engine_id = '411b7b50a6d2848b2'
+    api_key = ''
+    search_engine_id = '
     top_results = []
     found_urls = set()
 
@@ -885,11 +891,10 @@ def update_json_structure_with_csv_tables_images(json_data):
 
     return json_data
 
-
 def fetch_website_data(website_key, website_data, blacklist):
     landing_url = website_data.get("LandingURL", "")
     if any(bl_site in landing_url for bl_site in blacklist):
-        print(f"Skipping blacklisted site: {landing_url}")
+
         return {
             "HasCSVFile": False,
             "FileHref": "",
@@ -926,7 +931,7 @@ def fetch_website_data(website_key, website_data, blacklist):
             "ImageHref": image_hrefs[0] if image_hrefs else ""
         }
     except Exception as e:
-        print(f"Error processing {landing_url}: {e}")
+
         return {
             "HasCSVFile": False,
             "FileHref": "",
@@ -936,6 +941,7 @@ def fetch_website_data(website_key, website_data, blacklist):
             "HasUsefulImage": False,
             "ImageHref": ""
         }
+
 
 
 def calculate_data_percentages(json_data):
@@ -1070,7 +1076,7 @@ def rank_tables(data, prompt):
     table_data = {k: v["SampleTableData"] for k, v in data.items() if k.isdigit()}
     table_strings = "\n\n".join([f"Table {k}: {v}" for k, v in table_data.items()])
 
-    client = openai.OpenAI(api_key="")
+    client = openai.OpenAI(api_key="insert key here")
 
     full_prompt = f"Rank the following tables based on their relevance to the prompt. NO 2 keys should have the same rank. BE SURE TO ONLY RETURN THE DICTIONARY. EXAMPLE OUTPUT {{1:2,2:1,3:3}}: '{prompt}'.\n\n{table_strings}\n\nProvide the ranks in the format: {{'(table_number)': rank}}"
 
@@ -1125,64 +1131,67 @@ def add_query_end_date(data):
     return data
 
 
-def fetch_rest_tables(data, prompts):
-    user_agents = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
-    ]
-
-    blacklist = ["marketwatch.com"]
-
-    with ThreadPoolExecutor(max_workers=5) as executor:
-        futures = {
-            executor.submit(fetch_table_data, key, data[key], user_agents, blacklist): key
-            for key in ['1', '2', '3']
-        }
-        for future in as_completed(futures):
-            key = futures[future]
-            data[key] = future.result()
-
-    data["QueryEndDate"] = int(time.time())
-    data["prompts"] = prompts
-
-    return data
-
-
-def fetch_table_data(key, website_data, user_agents, blacklist):
-    website = website_data['website']
-    if any(bl_site in website for bl_site in blacklist):
-        print(f"Skipping blacklisted site: {website}")
-        return website_data
-
-    table_index = website_data['numberTableOnWebsite'] - 1
-    headers = {"User-Agent": random.choice(user_agents)}
-
+def scrape_table_from_website(url, number_table_on_website):
     try:
-        response = requests.get(website, headers=headers)
+        response = requests.get(url)
         response.raise_for_status()
-        soup = BeautifulSoup(response.content, 'html.parser')
-
+        soup = BeautifulSoup(response.text, 'html.parser')
         tables = soup.find_all('table')
-        if table_index < len(tables):
-            table_html = str(tables[table_index])
-            website_data['completedTableData'] = table_html
-            del website_data['SampleTableData']
+
+        if len(tables) >= number_table_on_website:
+            return str(tables[number_table_on_website - 1])
         else:
-            print(f"Table index {table_index} out of range for website {website}")
-
-        time.sleep(random.uniform(2, 5))
-
+            print(f"No table found at index {number_table_on_website} for {url}")
+            return None
     except Exception as e:
-        print(f"Error fetching table data from {website}: {e}")
+        print(f"Error scraping table from {url}: {e}")
+        return None
 
-    return website_data
+
+def update_sample_table_data(data_object):
+    for key, value in data_object.items():
+        if isinstance(value, dict) and 'website' in value:
+            url = value.get("website")
+            number_table_on_website = value.get("numberTableOnWebsite", 1)
+            scraped_table = scrape_table_from_website(url, number_table_on_website)
+            if scraped_table:
+                value["SampleTableData"] = scraped_table
+            else:
+                print(f"Failed to scrape table for key {key}")
+
+    return data_object
+
+
+def html_table_to_csv(html_table):
+    soup = BeautifulSoup(html_table, 'html.parser')
+    table = soup.find('table')
+
+    if not table:
+        return "No table found"
+
+    rows = table.find_all('tr')
+    csv_data = []
+
+    for row in rows:
+        cols = row.find_all(['th', 'td'])
+        cols = [col.text.strip() for col in cols]
+        csv_data.append(",".join(cols))
+
+    return "\n".join(csv_data)
+
+
+def convert_sample_table_data_to_csv(data_dict):
+    for key, value in data_dict.items():
+        if isinstance(value, dict) and 'SampleTableData' in value:
+            html_table = value['SampleTableData']
+            csv_output = html_table_to_csv(html_table)
+            value['SampleTableData'] = csv_output
+
+    return data_dict
 
 
 def filterTables(dict, prompt):
-    client = openai.OpenAI(api_key="")
+    client = openai.OpenAI(api_key="insert key here")
     try:
         chat_completion = client.chat.completions.create(
             model="gpt-4-turbo",
