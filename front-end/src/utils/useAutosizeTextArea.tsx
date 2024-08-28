@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from "react";
 interface AutosizeTextAreaProps {
   value: string;
   onChange: (value: string) => void;
+  onKeyDown: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   maxHeight: number;
   placeholder?: string;
 }
@@ -10,6 +11,7 @@ interface AutosizeTextAreaProps {
 const AutosizeTextArea: React.FC<AutosizeTextAreaProps> = ({
   value,
   onChange,
+  onKeyDown,
   maxHeight,
   placeholder,
 }) => {
@@ -17,10 +19,9 @@ const AutosizeTextArea: React.FC<AutosizeTextAreaProps> = ({
 
   useEffect(() => {
     if (textAreaRef.current) {
-      // Reset height to calculate the scroll height correctly
+
       textAreaRef.current.style.height = "auto";
 
-      // Set the height to the scroll height or maxHeight, whichever is smaller
       const newHeight = Math.min(textAreaRef.current.scrollHeight, maxHeight);
       textAreaRef.current.style.height = `${newHeight}px`;
     }
@@ -35,9 +36,10 @@ const AutosizeTextArea: React.FC<AutosizeTextAreaProps> = ({
       ref={textAreaRef}
       value={value}
       onChange={handleChange}
+      onKeyDown={onKeyDown}
       placeholder={placeholder}
-      rows={1} // Ensures initial height isn't too large
-      style={{ overflow: "hidden", resize: "none" }} // Prevent manual resizing
+      rows={1}
+      style={{ overflow: "hidden", resize: "none" }}
     />
   );
 };

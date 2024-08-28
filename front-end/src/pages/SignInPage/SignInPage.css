@@ -37,13 +37,19 @@
 
 .email-input, .password-input {
     width: 100% !important;
-    padding: 1rem 0.5rem !important;
+    padding: 14px 20px !important;
     border: 1px solid #ccc !important; 
     border-radius: 10px !important;
     font-size: 1rem !important;
     background: transparent !important;
     color: #333 !important;
     outline: none !important;
+}
+
+.email-input:focus, .password-input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: #ccc !important;
 }
 
 .label {
@@ -69,7 +75,7 @@ input:not(:placeholder-shown) + .label {
 }
 
 form button {
-    padding: 16px;
+    padding: 14px 20px;
     border: none;
     border-radius: 10px;
     color: #ffff;
@@ -120,7 +126,7 @@ form button:hover {
 }
 
 .google-button {
-    padding: 16px;
+    padding: 14px 20px;
     border: 1.5px solid #ccc;
     border-radius: 10px;
     color: black;

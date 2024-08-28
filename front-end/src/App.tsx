@@ -5,6 +5,7 @@ import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 import SignInPage from './pages/SignInPage/SignInPage';
 import RegistrationPage from './pages/RegistrationPage/RegistrationPage';
 import { Routes, Route } from 'react-router-dom'
+import FeedbackPage from './pages/FeedbackPage/FeedbackPage';
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
       <Route path='/signin' element={<SignInPage />}/>
       <Route path='register' element={<RegistrationPage />}/>
       <Route path='/savvycsv' element={<SavvyService />}/>
+      <Route path='/feedback' element={<FeedbackPage />}/>
       <Route path='*' element={<NotFoundPage />}/>
     </Routes>
   );
