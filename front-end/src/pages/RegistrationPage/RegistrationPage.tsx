@@ -1,49 +1,45 @@
 import React, { useState } from 'react';
+
 import { Container, Row, Col, Form } from 'react-bootstrap';
-import './SignInPage.css'; // Import the CSS file for styling
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import './RegistrationPage.css'
 import googleLogo from '../../assets/Google_G_logo.svg.png'
 import UserServiceAPI from '../../services/userServiceAPI';
 
-const SignInPage: React.FC = () => {
+const RegistrationPage: React.FC = () => {
     const [formData, setFormData] = useState({
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
     })
 
     const [error, setError] = useState('')
-    const navigate = useNavigate();
+    const [accountCreated, setAccountCreated] = useState('')
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
+        const { name, value } = e.target;
 
-        setFormData(prevState => ({ ...prevState, [name]: value }))
-    }
+        setFormData(prevState => ({ ...prevState, [name]: value }));
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+        console.log(formData)
+        e.preventDefault();
 
-        try {
-            await UserServiceAPI.getInstance().signInUser(formData);
-            navigate('/savvycsv');
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError('Incorrect email address or password.');
-            } else {
-                console.log('An error has occured.')
-            }
+        if (formData.password != formData.confirmPassword) {
+            setError('Passwords do not match.');
+            return;
         }
-    }
 
-    const signInWithGoogle = async () => {
         try {
-            await UserServiceAPI.getInstance().signInWithGoogle();
-            navigate('/savvycsv');
+            await UserServiceAPI.getInstance().registerUser(formData);
+            setError('')
+            setAccountCreated('Account successfully created.')
         } catch (err: unknown) {
             if (err instanceof Error) {
-                setError('Trouble signing in with Google. Please try again later.')
+                setError(err.message);
             } else {
-                console.log('An error has occured.')
+                setError('An error has occured!')
             }
         }
     }
@@ -54,10 +50,10 @@ const SignInPage: React.FC = () => {
                 <Col md={7} className='form-column'>
                     <div className='form-container'>
                         <div className='title'>
-                            Welcome to SavvyCSV
+                            Create an account
                         </div>
                         <Form className='sign-in-form' onSubmit={handleSubmit}>
-                            <Form.Group className='form-group'>
+                            <Form.Group className='form-group' controlId='email'>
                                 <Form.Control
                                     className='email-input'
                                     type='text'
@@ -67,7 +63,7 @@ const SignInPage: React.FC = () => {
                                 />
                                 <div className='label'>Email address</div>
                             </Form.Group>
-                            <Form.Group className='form-group'>
+                            <Form.Group className='form-group' controlId='password'>
                                 <Form.Control
                                     className='password-input'
                                     type='password'
@@ -77,6 +73,20 @@ const SignInPage: React.FC = () => {
                                 />
                                 <div className='label'>Password</div>
                             </Form.Group>
+                            <Form.Group className='form-group' controlId='confirmPassword'>
+                                <Form.Control
+                                    className='password-input'
+                                    type='password'
+                                    name='confirmPassword'
+                                    onChange={handleChange}
+                                    required
+                                />
+                                <div className='label'>Confirm password</div>
+                            </Form.Group>
+                            {
+                                accountCreated &&
+                                <p className='success-message'>{accountCreated}</p>
+                            }
                             {
                                 error &&
                                 <p className="error-message">{error}</p>
@@ -85,12 +95,12 @@ const SignInPage: React.FC = () => {
                         </Form>
                         <div className='sign-up-link-container'>
                             <div className='sign-up-link'>
-                                Don't have an account? <Link style={{ textDecoration: 'none' }} to='/register'>Sign up</Link>
+                                Already have an account? <Link style={{ textDecoration: 'none' }} to='/signin'>Sign in</Link>
                             </div>
                         </div>
                         <hr className='divider' />
 
-                        <button className='google-button' onClick={signInWithGoogle}>
+                        <button className='google-button'>
                             <img src={googleLogo} alt="Google logo" className='google-logo' />
                             Continue with Google
                         </button>
@@ -102,6 +112,6 @@ const SignInPage: React.FC = () => {
             </Row>
         </Container>
     );
-};
+}
 
-export default SignInPage;
+export default RegistrationPage
