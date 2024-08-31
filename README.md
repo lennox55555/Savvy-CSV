@@ -59,7 +59,7 @@ By the end of this process you should be on a development server running locally
 <br>
 <br>
 
-### Back-End
+### BACK-END
 **Step 1: Clone the repository (if not already done)**
 ```bash
 git clone https://github.com/YourUsername/Savvy-CSV.git
@@ -89,7 +89,7 @@ python lambda_function.py
 <br>
 <br>
 
-### Testing
+### TESTING
 
 **Step 1: Clone the repository (if not already done)**
 ```bash

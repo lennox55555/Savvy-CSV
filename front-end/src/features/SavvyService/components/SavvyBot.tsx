@@ -56,11 +56,28 @@ const SavvyBot: React.FC = () => {
             handleSubmit();
         }
     }
+// Build table
+    function displayCSVAsTable(csv: string): void {
+        const rows = csv.split('\n');
 
-    //const buildTable = (jsonTableObject: any) => {
-        //add build table code here
-        // Thanks Jonah for the detailed commit
-    //}
+        const table = rows.map(row => row.split(','));
+
+        const columnWidths = table[0].map((_, i) => Math.max(...table.map(row => row[i].length)));
+
+        table.forEach(row => {
+            const formattedRow = row.map((value, i) => value.padEnd(columnWidths[i]));
+            console.log(formattedRow.join(' | '));
+        });
+    }
+
+
+    const csvData = `Name, Age, Occupation
+    John Doe, 30, Software Engineer
+    Jane Smith, 25, Data Analyst
+    Sam Johnson, 40, Project Manager`;
+
+    displayCSVAsTable(csvData);
+
 
     useEffect(() => {
         fetchMessages();
