@@ -56,6 +56,8 @@ const SavvyBot: React.FC = () => {
             handleSubmit();
         }
     }
+    //Web socket code
+
 // Build table
     function displayCSVAsTable(csv: string): void {
         const rows = csv.split('\n');
