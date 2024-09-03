@@ -115,12 +115,42 @@
     margin-bottom: 10px;
 }
 
+/* Updated table styles */
+.csvTable {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid #1D6F42; /* Green border for the entire table */
+}
+
+.csvTable th {
+    background-color: #1D6F42; /* Green background for headers */
+    color: white;
+    padding: 8px;
+    text-align: left;
+    border: 2px solid #1D6F42; /* Green border for header cells */
+}
+
+.csvTable td {
+    padding: 8px;
+    text-align: left;
+    border: 2px solid #1D6F42; /* Green border for table cells */
+    color: #333; /* Darker text color */
+    white-space: nowrap;
+}
+
+.customTableCell {
+    padding: 8px;
+    text-align: left;
+    border: 2px solid #1D6F42; /* Green border for custom cells */
+    color: #333; /* Darker text color */
+    white-space: nowrap;
+}
+
 @media (max-width: 1400px) {
     .messageBarWrapper {
         width: 600px;
     }
 }
-
 
 @media (max-width: 1200px) {
     .messageBarWrapper {

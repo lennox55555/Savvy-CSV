@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 const SavvyBot: React.FC = () => {
     const [textAreaValue, setTextAreaValue] = useState('');
     const [messages, setMessages] = useState<{ id: string; text: string; user: boolean }[]>([]);
-    const [isUser, setIsUser] = useState(true);
     const [tableData, setTableData] = useState<NestedObject | null>(null);
 
     const fetchMessages = async () => {
@@ -34,14 +33,14 @@ const SavvyBot: React.FC = () => {
 
             if (currentUser) {
                 try {
-                    await SavvyServiceAPI.getInstance().saveMessage(currentUser.uid, textAreaValue, isUser);
+                    // User message
+                    await SavvyServiceAPI.getInstance().saveMessage(currentUser.uid, textAreaValue, true);
 
-                    setMessages([...messages, { id: '', text: textAreaValue, user: isUser }]);
+                    // Add user message to the message list
+                    setMessages([...messages, { id: '', text: textAreaValue, user: true }]);
                     setTextAreaValue('');
-                    setIsUser(prevState => !prevState);
-                    fetchMessages();
 
-                    // Initialize WebSocket and listen for data
+                    // Initialize WebSocket and listen for bot response
                     SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage);
 
                 } catch (error) {
@@ -53,6 +52,13 @@ const SavvyBot: React.FC = () => {
 
     const handleWebSocketMessage = (data: any) => {
         setTableData(data);
+
+        // Add bot response (text and table) to the message list
+        setMessages(prevMessages => [
+            ...prevMessages,
+            { id: '', text: 'SavvyCSV generated a table:', user: false },
+            { id: '', text: displayTableForRank1(data), user: false }, // Adding the table as a new message
+        ]);
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -96,15 +102,11 @@ const SavvyBot: React.FC = () => {
                 <div className={styles.messageBox}>
                     {messages.map((msg, index) => (
                         <div key={index} className={msg.user ? styles.userMessage : styles.savvyResponse}>
-                            <div className={styles.messageBubble}>{msg.text}</div>
+                            <div className={styles.messageBubble}>
+                                {typeof msg.text === 'string' ? msg.text : msg.text}
+                            </div>
                         </div>
                     ))}
-
-                    {tableData && (
-                        <div className={styles.savvyResponse}>
-                            {displayTableForRank1(tableData)}
-                        </div>
-                    )}
                 </div>
                 <div className={styles.messageBar}>
                     <div className={styles.messageBarWrapper}>
