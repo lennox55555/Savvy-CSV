@@ -52,9 +52,9 @@ class SavvyServiceAPI {
         }
     }
 
-    public initializeWebSocket(onMessageReceived: (data: any) => void): void {
+    public initializeWebSocket(onMessageReceived: (data: any) => void, userQuery: string): void {
         const wsUrl = 'wss://9f2wyu1469.execute-api.us-east-1.amazonaws.com/production/';
-        const queries = ["Top selling video games in 2020"]; // The specific query to send
+        const queries = [userQuery]; // The specific query to send
         this.webSocket = new WebSocket(wsUrl);
 
         this.webSocket.onopen = () => {
