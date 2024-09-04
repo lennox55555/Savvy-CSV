@@ -4,10 +4,12 @@ import AutosizeTextArea from '../../../utils/useAutosizeTextArea';
 import { getAuth } from 'firebase/auth';
 import SavvyServiceAPI from '../../../services/savvyServiceAPI';
 import { Link } from 'react-router-dom';
+import { UserMessage } from '../../../utils/types';
+
 
 const SavvyBot: React.FC = () => {
     const [textAreaValue, setTextAreaValue] = useState('');
-    const [messages, setMessages] = useState<{ id: string; text: string; user: boolean }[]>([]);
+    const [messages, setMessages] = useState<UserMessage[]>([]);
     const [tableData, setTableData] = useState<NestedObject | null>(null);
 
     const fetchMessages = async () => {
@@ -38,10 +40,11 @@ const SavvyBot: React.FC = () => {
 
                     // Add user message to the message list
                     setMessages([...messages, { id: '', text: textAreaValue, user: true }]);
-                    setTextAreaValue('');
 
                     // Initialize WebSocket and listen for bot response
-                    SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage);
+                    SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue);
+
+                    setTextAreaValue('');
 
                 } catch (error) {
                     console.error("Failed to save message:", error);
@@ -74,15 +77,15 @@ const SavvyBot: React.FC = () => {
                 return (
                     <div>
                         <h3>Website: <a href={data[key].website} target="_blank" rel="noopener noreferrer">{data[key].website}</a></h3>
-                        <table className={styles.csvTable}>
-                            <tbody>
-                            {data[key].SampleTableData.split('\n').map((row, index) => (
-                                <tr key={index}>
-                                    {row.split(',').map((cell, cellIndex) => (
-                                        <td key={cellIndex} className={styles.customTableCell}>{cell.trim()}</td>
-                                    ))}
-                                </tr>
-                            ))}
+                        <table className={styles.tableContainer}>
+                            <tbody className={styles.tableBody}>
+                                {data[key].SampleTableData.split('\n').map((row: string, index: React.Key | null | undefined) => (
+                                    <tr key={index} className={index === 0 ? styles.tableHeader : ''}>
+                                        {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
+                                            <td key={cellIndex} className={index === 0 ? styles.tableHeaderData : styles.tableBodyData}>{cell.trim()}</td>
+                                        ))}
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
@@ -102,7 +105,7 @@ const SavvyBot: React.FC = () => {
                 <div className={styles.messageBox}>
                     {messages.map((msg, index) => (
                         <div key={index} className={msg.user ? styles.userMessage : styles.savvyResponse}>
-                            <div className={styles.messageBubble}>
+                            <div className={msg.user ? styles.messageBubble : ''}>
                                 {typeof msg.text === 'string' ? msg.text : msg.text}
                             </div>
                         </div>

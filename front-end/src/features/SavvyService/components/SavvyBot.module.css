@@ -116,34 +116,32 @@
 }
 
 /* Updated table styles */
-.csvTable {
+.tableContainer {
     width: 100%;
     border-collapse: collapse;
-    border: 2px solid #1D6F42; /* Green border for the entire table */
 }
 
-.csvTable th {
-    background-color: #1D6F42; /* Green background for headers */
-    color: white;
+.tableHeader {
+    text-align: center; 
+    vertical-align: middle; 
     padding: 8px;
-    text-align: left;
-    border: 2px solid #1D6F42; /* Green border for header cells */
+    background: linear-gradient(to top, #46D085, #1D6F42);
+    width: 100%;
 }
 
-.csvTable td {
+.tableHeaderData {
+    color: #ffff;
+    font-size: 14px;
+    font-weight: bold;
     padding: 8px;
-    text-align: left;
-    border: 2px solid #1D6F42; /* Green border for table cells */
-    color: #333; /* Darker text color */
-    white-space: nowrap;
 }
 
-.customTableCell {
-    padding: 8px;
-    text-align: left;
-    border: 2px solid #1D6F42; /* Green border for custom cells */
-    color: #333; /* Darker text color */
-    white-space: nowrap;
+.tableBodyData {
+    color: black;
+    border-bottom: 1px solid #ddd;
+    text-align: left; 
+    vertical-align: middle; 
+    padding: 8px; 
 }
 
 @media (max-width: 1400px) {
