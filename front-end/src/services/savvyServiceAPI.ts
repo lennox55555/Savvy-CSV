@@ -52,7 +52,7 @@ class SavvyServiceAPI {
         }
     }
 
-    public initializeWebSocket(onMessageReceived: (data: any) => void, userQuery: string): void {
+    public initializeWebSocket(onMessageReceived: (data: any) => void, userQuery: string, userId: string): void {
         const wsUrl = 'wss://9f2wyu1469.execute-api.us-east-1.amazonaws.com/production/';
         const queries = [userQuery]; // The specific query to send
         this.webSocket = new WebSocket(wsUrl);
@@ -64,7 +64,7 @@ class SavvyServiceAPI {
 
         this.webSocket.onmessage = (event: MessageEvent) => {
             console.log(event.data);
-            this.handleMessage(event.data, onMessageReceived);
+            this.handleMessage(event.data, onMessageReceived, userId);
         };
 
         this.webSocket.onerror = (event: Event) => {
@@ -86,7 +86,7 @@ class SavvyServiceAPI {
         }
     }
 
-    private handleMessage(data: string, onMessageReceived: (data: any) => void): void {
+    private handleMessage(data: string, onMessageReceived: (data: any) => void, userId: string): void {
         this.objec += data;
 
         let openBrackets = 0;
@@ -101,6 +101,7 @@ class SavvyServiceAPI {
             try {
                 const fullObject = JSON.parse(this.objec);
                 onMessageReceived(fullObject); // Pass the full object to the callback
+                this.saveMessage(userId, fullObject, false)
                 this.objec = ""; // Reset the accumulated string
             } catch (error) {
                 console.error('Error processing the complete message:', error);

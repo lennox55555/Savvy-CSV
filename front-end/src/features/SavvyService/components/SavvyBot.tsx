@@ -10,7 +10,6 @@ import { UserMessage } from '../../../utils/types';
 const SavvyBot: React.FC = () => {
     const [textAreaValue, setTextAreaValue] = useState('');
     const [messages, setMessages] = useState<UserMessage[]>([]);
-    const [tableData, setTableData] = useState<NestedObject | null>(null);
 
     const fetchMessages = async () => {
         const currentUser = getAuth().currentUser;
@@ -18,6 +17,10 @@ const SavvyBot: React.FC = () => {
         if (currentUser) {
             try {
                 const fetchedMessages = await SavvyServiceAPI.getInstance().getMessages(currentUser.uid);
+
+                if (fetchedMessages) {
+
+                }
                 setMessages(fetchedMessages);
             } catch (err: unknown) {
                 if (err instanceof Error) {
@@ -42,7 +45,7 @@ const SavvyBot: React.FC = () => {
                     setMessages([...messages, { id: '', text: textAreaValue, user: true }]);
 
                     // Initialize WebSocket and listen for bot response
-                    SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue);
+                    SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue, currentUser.uid);
 
                     setTextAreaValue('');
 
@@ -54,8 +57,6 @@ const SavvyBot: React.FC = () => {
     };
 
     const handleWebSocketMessage = (data: any) => {
-        setTableData(data);
-
         // Add bot response (text and table) to the message list
         setMessages(prevMessages => [
             ...prevMessages,
@@ -71,7 +72,7 @@ const SavvyBot: React.FC = () => {
         }
     };
 
-    const displayTableForRank1 = (data: NestedObject): JSX.Element | null => {
+    const displayTableForRank1 = (data: any): JSX.Element | null => {
         for (const key in data) {
             if (data[key].rankOfTable === 1) {
                 return (
