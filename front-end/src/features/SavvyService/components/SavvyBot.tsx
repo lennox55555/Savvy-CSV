@@ -125,9 +125,11 @@ const SavvyBot: React.FC = () => {
                             <i className="bi bi-arrow-return-left" style={{ color: '#1D6F42', textShadow: '0 0 1px #1D6F42' }}></i>
                         </button>
                     </div>
-                    <div className={styles.userFeedback}>
-                        Feedback? Contact us<Link to='/feedback' style={{ textDecorationLine: 'blink' }}> here.</Link>
-                    </div>
+                    {/*
+                        <div className={styles.userFeedback}>
+                            Feedback? Contact us<Link to='/feedback' style={{ textDecorationLine: 'blink' }}> here.</Link>
+                        </div>
+                    */}
                 </div>
             </div>
         </>

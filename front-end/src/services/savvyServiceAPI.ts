@@ -101,7 +101,7 @@ class SavvyServiceAPI {
             try {
                 const fullObject = JSON.parse(this.objec);
                 onMessageReceived(fullObject); // Pass the full object to the callback
-                this.saveMessage(userId, fullObject, false)
+                this.saveMessage(userId, fullObject.data, false) 
                 this.objec = ""; // Reset the accumulated string
             } catch (error) {
                 console.error('Error processing the complete message:', error);

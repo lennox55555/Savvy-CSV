@@ -18,6 +18,7 @@
     max-height: calc(100vh - 12rem);
     width: 900px;
     justify-content: flex-end;
+    height: 100%;
 }
 
 .savvyResponse, .userMessage {
