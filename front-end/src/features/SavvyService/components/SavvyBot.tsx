@@ -83,21 +83,19 @@ const SavvyBot: React.FC = () => {
         for (const key in data) {
             if (data[key].rankOfTable === 1) {
                 return (
-                    <div className={styles.tableWrapper}>
+                    <div>
                         <h3>Website: <a href={data[key].website} target="_blank" rel="noopener noreferrer">{data[key].website}</a></h3>
-                        <div className={styles.scrollableTableContainer}>
-                            <table className={styles.tableContainer}>
-                                <tbody className={styles.tableBody}>
-                                    {data[key].SampleTableData.split('\n').map((row: string, index: React.Key | null | undefined) => (
-                                        <tr key={index} className={index === 0 ? styles.tableHeader : ''}>
-                                            {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                                <td key={cellIndex} className={index === 0 ? styles.tableHeaderData : styles.tableBodyData}>{cell.trim()}</td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        <table className={styles.tableContainer}>
+                            <tbody className={styles.tableBody}>
+                                {data[key].SampleTableData.split('\n').map((row: string, index: React.Key | null | undefined) => (
+                                    <tr key={index} className={index === 0 ? styles.tableHeader : ''}>
+                                        {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
+                                            <td key={cellIndex} className={index === 0 ? styles.tableHeaderData : styles.tableBodyData}>{cell.trim()}</td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 );
             }
@@ -113,14 +111,22 @@ const SavvyBot: React.FC = () => {
         <>
             <div className={styles.savvybotContainer}>
                 <div className={styles.messageBox}>
-                    {messages.map((messsage, index) => (
-                        <div className={styles.messageItemContainer}>
-                        <div key={index} className={messsage.user ? styles.userMessage : styles.savvyResponse}>
-                            <div className={messsage.user ? styles.messageBubble : ''}>
-                                {messsage.text}
+                    {messages.map((message, index) => (
+                        message.user ? (
+                            <div className={styles.tableObjectContainer}>
+                                <div key={index} className={styles.userMessage}>
+                                    <div className={styles.messageBubble}>
+                                        {message.text}
+                                    </div>
+                                </div>
+                                </div>
+                        ) : (
+                            <div className={styles.tableObjectContainer}>
+                                <div key={index} className={styles.savvyResponse}>
+                                    {message.text}
+                                </div>
                             </div>
-                        </div>
-                        </div>
+                        )
                     ))}
                 </div>
                 <div className={styles.messageBar}>
