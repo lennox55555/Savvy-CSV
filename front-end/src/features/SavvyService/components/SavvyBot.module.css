@@ -43,8 +43,11 @@
 }
 
 .savvyResponse {
-    justify-content: flex-start;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+    max-height: 100%; /* Ensure it does not exceed the container's height */
+    width: 100%;
 }
 
 .messageBubble {
@@ -116,14 +119,9 @@
     margin-bottom: 10px;
 }
 
-/* Updated table styles */
-.tableContainer {
-    width: 100%;
-    border-collapse: collapse;
-}
 
 .tableHeader {
-    text-align: center; 
+    text-align: left; 
     vertical-align: middle; 
     padding: 8px;
     background: linear-gradient(to top, #46D085, #1D6F42);
@@ -143,6 +141,7 @@
     text-align: left; 
     vertical-align: middle; 
     padding: 8px; 
+    width: 100%;
 }
 
 @media (max-width: 1400px) {

@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, getFirestore, orderBy, query } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase/firebase-init";
 
 class SavvyServiceAPI {
@@ -33,7 +33,7 @@ class SavvyServiceAPI {
     public async getMessages(userId: string) {
         try {
             const userMessagesRef = collection(doc(db, "users", userId), "messages");
-            const q = query(userMessagesRef, orderBy("timestamp"));
+            const q = query(userMessagesRef, orderBy("timestamp", "desc"), limit(5));
             const querySnapshot = await getDocs(q);
 
             const messages = querySnapshot.docs.map(doc => {
@@ -45,6 +45,7 @@ class SavvyServiceAPI {
                 };
             });
 
+            messages.reverse();
             return messages;
         } catch (error) {
             console.error("Error getting messages:", error);
@@ -54,7 +55,7 @@ class SavvyServiceAPI {
 
     public initializeWebSocket(onMessageReceived: (data: any) => void, userQuery: string, userId: string): void {
         const wsUrl = 'wss://9f2wyu1469.execute-api.us-east-1.amazonaws.com/production/';
-        const queries = [userQuery]; // The specific query to send
+        const queries = [userQuery]; // Query being sent to API
         this.webSocket = new WebSocket(wsUrl);
 
         this.webSocket.onopen = () => {
@@ -88,6 +89,8 @@ class SavvyServiceAPI {
 
     private handleMessage(data: string, onMessageReceived: (data: any) => void, userId: string): void {
         this.objec += data;
+        this.saveMessage(userId, this.objec, false)
+        console.log(this.objec)
 
         let openBrackets = 0;
         let closeBrackets = 0;
@@ -100,8 +103,7 @@ class SavvyServiceAPI {
         if (openBrackets > 0 && openBrackets === closeBrackets) {
             try {
                 const fullObject = JSON.parse(this.objec);
-                onMessageReceived(fullObject); // Pass the full object to the callback
-                this.saveMessage(userId, fullObject.data, false) 
+                onMessageReceived(fullObject); 
                 this.objec = ""; // Reset the accumulated string
             } catch (error) {
                 console.error('Error processing the complete message:', error);
