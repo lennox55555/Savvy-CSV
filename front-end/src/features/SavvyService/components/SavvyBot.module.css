@@ -45,11 +45,13 @@
 }
 
 .savvyResponse {
-    justify-content: flex-start;
-    position: relative;
     overflow-x: auto;
-    max-height: 100%; /* Ensure it does not exceed the container's height */
-    width: 100%;
+    max-height: 100%;
+    position: relative;
+}
+
+.messageItemContainer {
+    max-height: 75%;
 }
 
 .messageBubble {
@@ -121,27 +123,43 @@
     margin-bottom: 10px;
 }
 
+.tableContainer {
+    width: 100%;
+    border-collapse: collapse;
+}
 
 .tableHeader {
-    text-align: left; 
-    vertical-align: middle; 
+    display: block;
+    position: sticky;
+    top: 0;
     padding: 8px;
     background: linear-gradient(to top, #46D085, #1D6F42);
+    border-radius: 10px;
+    overflow-x: auto;
     width: 100%;
 }
 
 .tableHeaderData {
-    color: #ffff;
+    color: #fff;
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 500;
     padding: 8px;
+}
+
+.tableBodyWrapper {
+    margin-top: 50px;
+}
+
+.tableBody {
+    display: block; 
+    overflow-y: auto; 
+    width: 100%;
 }
 
 .tableBodyData {
     color: black;
     border-bottom: 1px solid #ddd;
     text-align: left; 
-    vertical-align: middle; 
     padding: 8px; 
     width: 100%;
 }

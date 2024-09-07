@@ -746,7 +746,7 @@ def fetch_google_results(query, api_key, search_engine_id, found_urls, blacklist
 
 def get_top_cdc_search_results(query):
     api_key = ''
-    search_engine_id = '
+    search_engine_id = ''
     top_results = []
     found_urls = set()
 
