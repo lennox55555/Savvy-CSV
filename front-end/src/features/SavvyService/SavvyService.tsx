@@ -65,9 +65,9 @@ const SavvyService: React.FC = () => {
                     {userIconUrl ? (
                         <div className="profile-content">
                             <img className="profile-image"
-                                src={userIconUrl}
-                                alt='User Icon'
-                                onClick={toggleDropdown} />
+                                 src={userIconUrl}
+                                 alt='User Icon'
+                                 onClick={toggleDropdown} />
                             {dropdownOpen && (
                                 <div className="dropdown-wrapper">
                                     <div className="sub-dropdown">
