@@ -55,8 +55,7 @@ class SavvyServiceAPI {
             throw error;
         }
 
-<<<<<<< Updated upstream
-=======
+
     public initializeWebSocket(onMessageReceived: (data: any) => void, userQuery: string): void {
         const wsUrl = 'wss://9f2wyu1469.execute-api.us-east-1.amazonaws.com/production/';
         const queries = [userQuery]; // The specific query to send
@@ -115,7 +114,7 @@ class SavvyServiceAPI {
                 this.objec = "";
             }
         }
->>>>>>> Stashed changes
+
     }
 }
 
