@@ -220,7 +220,7 @@ const SavvyBot: React.FC = () => {
                         </div>
                     ))}
                     <div>
-                        {tableData && displayTableByRank(currentTableRank, tableData)}
+                        {messages && displayTableByRank(currentTableRank, tableData)}
                     </div>
                 </div>
                 <div className={styles.messageBar}>
