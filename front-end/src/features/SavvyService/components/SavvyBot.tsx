@@ -77,11 +77,6 @@ const SavvyBot: React.FC = () => {
     const handleWebSocketMessage = (data: NestedObject) => {
         setTableData(data);
 
-        setMessages(prevMessages => [
-            ...prevMessages,
-            { id: '', text: 'SavvyCSV generated a table:', user: false },
-            { id: '', text: displayTableForRank1(data), user: false },
-        ]);
     };
 
     const displayTableByRank = (rank: number, data: any): JSX.Element | null => {
@@ -119,19 +114,17 @@ const SavvyBot: React.FC = () => {
                                     ))}
                                 </tr>
                             </thead>
-                            <table className={styles.tableBodyWrapper}>
-                                <tbody className={styles.tableBody}>
-                                    {data[key].SampleTableData.split('\n').slice(1).map((row: string, index: React.Key | null | undefined) => (
-                                        <tr key={index}>
-                                            {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                                <td key={cellIndex} className={styles.tableBodyData}>
-                                                    {cell.trim()}
-                                                </td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <tbody className={styles.tableBody}>
+                                {data[key].SampleTableData.split('\n').slice(1).map((row: string, index: React.Key | null | undefined) => (
+                                    <tr key={index}>
+                                        {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
+                                            <td key={cellIndex} className={styles.tableBodyData}>
+                                                {cell.trim()}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
                         </table>
                     </div>
                 );
@@ -263,13 +256,14 @@ const SavvyBot: React.FC = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <div className={styles.messageItemContainer}>
-                                    <div key={index} className={styles.savvyResponse}>
-                                        {message.text}
+                                    <div className={styles.messageItemContainer}>
+                                        <div key={index} className={styles.savvyResponse}>
+                                            {message.text}
+                                        </div>
                                     </div>
-                                </div>
                             )
                         ))}
+                        {messages && displayTableByRank(currentTableRank, tableData)}
                         {tableData && (
                             <>
                                 <button className={styles.refreshButton} onClick={handleRefresh}>
