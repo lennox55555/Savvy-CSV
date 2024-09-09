@@ -1190,6 +1190,113 @@ def convert_sample_table_data_to_csv(data_dict):
     return data_dict
 
 
+
+def convert_sample_table_data_to_csv(data_dict):
+    for key, value in data_dict.items():
+        if isinstance(value, dict) and 'SampleTableData' in value:
+            html_table = value['SampleTableData']
+            csv_output = html_table_to_csv(html_table)
+            value['SampleTableData'] = csv_output
+
+    return data_dict
+
+
+def add_ranks_and_filter_unranked(data, ranks):
+    # Initialize a new dictionary to store the filtered and ranked results
+    filtered_data = {
+        "QueryStartDate": data.get("QueryStartDate"),
+        "QueryEndDate": data.get("QueryEndDate"),
+        "NumberOfLinks": len(ranks)
+    }
+
+    # Loop through the rank dictionary and add rank to corresponding data
+    for key, rank in ranks.items():
+        if key in data:
+            filtered_data[key] = data[key]
+            filtered_data[key]['rankOfTable'] = rank
+
+    return filtered_data
+
+
+def fetch_json_data(data_object):
+    for key, value in data_object.items():
+        # Skip the metadata fields
+        if key in ['QueryStartDate', 'QueryEndDate', 'NumberOfLinks']:
+            continue
+
+        # Get the landing URL
+        url = value.get('LandingURL')
+        if not url:
+            print(f"URL missing for key: {key}")
+            continue
+
+        try:
+            # Make the request to the URL
+            response = requests.get(url)
+            response.raise_for_status()  # Raise an error for bad status codes
+
+            # Parse the JSON data from the response
+            json_data = response.json()
+
+            # Replace SampleTableData with the downloaded JSON data
+            data_object[key]['SampleTableData'] = json_data
+
+            print(f"Successfully downloaded data for key: {key}")
+
+        except requests.exceptions.RequestException as e:
+            print(f"Failed to fetch data from {url}: {e}")
+
+    return data_object
+
+
+def convert_sample_data_to_csv(data):
+    for key, value in data.items():
+        if isinstance(value, dict) and 'SampleTableData' in value:
+            sample_data = value.get('SampleTableData', [])
+            if sample_data:
+                # Create a CSV string
+                output = io.StringIO()
+                # Collect all unique fieldnames across all records
+                fieldnames = set()
+                for record in sample_data:
+                    fieldnames.update(record.keys())
+                fieldnames = sorted(fieldnames)  # Sort fieldnames for consistent output
+
+                writer = csv.DictWriter(output, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(sample_data)
+                value['SampleTableData'] = output.getvalue()  # Replace SampleTableData with CSV string
+    return data
+
+
+def filterTables(dict, prompt):
+    client = openai.OpenAI(api_key="")
+    try:
+        chat_completion = client.chat.completions.create(
+            model="gpt-4-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                            "You are a function designed to process a dictionary of tables and determine the top 3 most relevant tables to the given query. "
+                            "Your task is to return only the keys of the top 3 most relevant tables, ranked from most relevant to least relevant. "
+                            "Return the result in the exact format: {table_key_1: rank_1, table_key_2: rank_2, table_key_3: rank_3}. "
+                            "Here is the query: '" + prompt + "' and the dictionary of tables: " + dict + "BE SURE TO ONLY RETURNED THE RANKED DICTIONARY AND NOTHING ELSE."
+                    )
+                }
+            ]
+        )
+        if chat_completion.choices:
+            generated_text = chat_completion.choices[0].message.content
+            return generated_text.strip()
+        else:
+            return "No response from the model."
+    except Exception as e:
+        return f"An error occurred in pre-prompt engineering: {str(e)}"
+
+
+        
+
 def filterTables(dict, prompt):
     client = openai.OpenAI(api_key="insert key here")
     try:
