@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 1200px;
     height: 100%;
     overflow: hidden;
     justify-content: center;
@@ -10,20 +9,24 @@
     align-items: center;
 }
 
-.messageBox {
+.messageBoxContainer {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     overflow-y: auto;
     max-height: calc(100vh - 12rem);
-    width: 900px;
+    width: 100%;
     justify-content: flex-end;
+    align-items: center;
+}
+
+.messageBoxWrapper {
+    width: 70%;
 }
 
 .savvyResponse, .userMessage {
     display: flex;
     gap: 20px;
-    padding: 25px;
     color: white;
     font-size: 14px;
     font-weight: 400;
@@ -39,11 +42,21 @@
 .userMessage {
     justify-content: flex-end;
     position: relative;
+    max-height: 100%;
+    overflow-x: auto;
+    margin-top: 75px;
+    margin-bottom: 75px;
 }
 
 .savvyResponse {
-    justify-content: flex-start;
+    max-height: 100%;
     position: relative;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+.messageItemContainer {
+    max-height: 75%;
 }
 
 .messageBubble {
@@ -68,7 +81,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 700px;
+    width: 400px;
     margin-bottom: 8px;
     margin: 0 auto;
 }
@@ -100,7 +113,7 @@
 
 .messageBar .messageBarWrapper {
     position: relative;
-    width: 80%;
+    width: 72%;
     padding: 10px;
     display: flex;
     align-items: center;
@@ -115,33 +128,45 @@
     margin-bottom: 10px;
 }
 
-/* Updated table styles */
 .tableContainer {
     width: 100%;
-    border-collapse: collapse;
+    table-layout: auto;
 }
 
 .tableHeader {
-    text-align: center; 
-    vertical-align: middle; 
-    padding: 8px;
+    position: sticky;
+    top: 0;
     background: linear-gradient(to top, #46D085, #1D6F42);
+    border-radius: 10px;
+    overflow-x: auto;
     width: 100%;
 }
 
 .tableHeaderData {
-    color: #ffff;
+    color: #fff;
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 500;
     padding: 8px;
+}
+
+table th:first-child {
+    border-radius:10px 0 0 10px;
+  }
+  
+  table th:last-child {
+    border-radius:0 10px 10px 0;
+  }
+
+.tableBody {
+    width: 100%;
 }
 
 .tableBodyData {
     color: black;
     border-bottom: 1px solid #ddd;
     text-align: left; 
-    vertical-align: middle; 
     padding: 8px; 
+    width: 100%;
 }
 
 @media (max-width: 1400px) {

@@ -50,7 +50,7 @@ const RegistrationPage: React.FC = () => {
                 <Col md={7} className='form-column'>
                     <div className='form-container'>
                         <div className='title'>
-                            Create an account
+                            Create an Account
                         </div>
                         <Form className='sign-in-form' onSubmit={handleSubmit}>
                             <Form.Group className='form-group' controlId='email'>
