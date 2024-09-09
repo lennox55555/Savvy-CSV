@@ -30,14 +30,15 @@ const SavvyBot: React.FC = () => {
 
                 const processedMessages = fetchedMessages.map(message => {
                     if (!message.user) {
+                        console.log(message)
                         return {
                             ...message,
-                            text: displayTableForRank1(JSON.parse(message.text)) // Assuming message.text contains JSON data for the table
+                            text: displayTableForRank(JSON.parse(message.text), 1) // Assuming message.text contains JSON data for the table
                         };
                     }
                     return message;
                 });
-
+                console.log(processedMessages)
                 setMessages(processedMessages);
             } catch (err: unknown) {
                 if (err instanceof Error) {
@@ -76,20 +77,6 @@ const SavvyBot: React.FC = () => {
 
     const handleWebSocketMessage = (data: NestedObject) => {
         setTableData(data);
-
-    };
-
-    const displayTableByRank = (rank: number, data: any): JSX.Element | null => {
-        switch (rank) {
-            case 1:
-                return displayTableForRank1(data);
-            case 2:
-                return displayTableForRank2(data);
-            case 3:
-                return displayTableForRank3(data);
-            default:
-                return displayTableForRank1(data);
-        }
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -99,9 +86,9 @@ const SavvyBot: React.FC = () => {
         }
     };
 
-    const displayTableForRank1 = (data: NestedObject): JSX.Element | null => {
+    const displayTableForRank = (data: NestedObject | null, rank: number): JSX.Element | null => {
         for (const key in data) {
-            if (data[key].rankOfTable === 1) {
+            if (data[key].rankOfTable == rank) {
                 return (
                     <div>
                         <table className={styles.tableContainer}>
@@ -130,75 +117,7 @@ const SavvyBot: React.FC = () => {
                 );
             }
         }
-        return null;
-    };
-
-    const displayTableForRank2 = (data: NestedObject): JSX.Element | null => {
-        for (const key in data) {
-            if (data[key].rankOfTable === 2) {
-                return (
-                    <div>
-                        <table className={styles.tableContainer}>
-                            <thead className={styles.tableHeader}>
-                                <tr>
-                                    {data[key].SampleTableData.split('\n')[0].split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                        <th key={cellIndex} className={styles.tableHeaderData}>
-                                            {cell.trim()}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className={styles.tableBody}>
-                                {data[key].SampleTableData.split('\n').slice(1).map((row: string, index: React.Key | null | undefined) => (
-                                    <tr key={index} className={styles.tableRow}>
-                                        {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                            <td key={cellIndex} className={styles.tableBodyData}>
-                                                {cell.trim()}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                );
-            }
-        }
-        return null;
-    };
-
-    const displayTableForRank3 = (data: NestedObject): JSX.Element | null => {
-        for (const key in data) {
-            if (data[key].rankOfTable === 3) {
-                return (
-                    <div>
-                        <table className={styles.tableContainer}>
-                            <thead className={styles.tableHeader}>
-                                <tr>
-                                    {data[key].SampleTableData.split('\n')[0].split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                        <th key={cellIndex} className={styles.tableHeaderData}>
-                                            {cell.trim()}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className={styles.tableBody}>
-                                {data[key].SampleTableData.split('\n').slice(1).map((row: string, index: React.Key | null | undefined) => (
-                                    <tr key={index} className={styles.tableRow}>
-                                        {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                            <td key={cellIndex} className={styles.tableBodyData}>
-                                                {cell.trim()}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                );
-            }
-        }
-        return null;
+        return null
     };
 
     const handleRefresh = () => {
@@ -206,7 +125,7 @@ const SavvyBot: React.FC = () => {
             // Update table rank in a cycle: 1 -> 2 -> 3 -> 1
             const nextRank = currentTableRank === 3 ? 1 : currentTableRank + 1;
             setCurrentTableRank(nextRank); // Update the current table rank state
-            displayTableByRank(nextRank, tableData); // Display the table for the next rank
+            displayTableForRank(tableData, nextRank); // Display the table for the next rank
         }
     };
 
@@ -237,7 +156,7 @@ const SavvyBot: React.FC = () => {
 
     useEffect(() => {
         if (tableData) {
-            displayTableByRank(currentTableRank, tableData); // Re-render table on rank change
+            displayTableForRank(tableData, currentTableRank); // Re-render table on rank change
         }
     }, [currentTableRank, tableData]);
 
@@ -256,14 +175,14 @@ const SavvyBot: React.FC = () => {
                                     </div>
                                 </div>
                             ) : (
-                                    <div className={styles.messageItemContainer}>
-                                        <div key={index} className={styles.savvyResponse}>
-                                            {message.text}
-                                        </div>
+                                <div className={styles.messageItemContainer}>
+                                    <div key={index} className={styles.savvyResponse}>
+                                        {message.text}
                                     </div>
+                                </div>
                             )
                         ))}
-                        {messages && displayTableByRank(currentTableRank, tableData)}
+                        {messages && displayTableForRank(tableData, currentTableRank)}
                         {tableData && (
                             <>
                                 <button className={styles.refreshButton} onClick={handleRefresh}>
