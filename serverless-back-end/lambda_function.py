@@ -1339,6 +1339,30 @@ def lookup_best_table_cdc_route(best_table_key, urls, processed_dict):
             "data": f"Failed to fetch data: {str(e)}"
         }
 
+def compress_json_data(data):
+    # Stamp the QueryEndDate with the current Unix timestamp
+    data['QueryEndDate'] = int(time.time())
+    
+    # Convert the JSON object to a string and then to bytes
+    json_str = json.dumps(data)
+    json_bytes = json_str.encode('utf-8')
+    
+    # Print the size before compression
+    print(f"Size before compression: {len(json_bytes)} bytes")
+    
+    # Compress the JSON bytes using gzip
+    compressed_buffer = BytesIO()
+    with gzip.GzipFile(fileobj=compressed_buffer, mode='wb') as gzip_file:
+        gzip_file.write(json_bytes)
+    
+    # Get the compressed data
+    compressed_data = compressed_buffer.getvalue()
+    
+    # Print the size after compression
+    print(f"Size after compression: {len(compressed_data)} bytes")
+    
+    return compressed_data
+
 
 def send_chunks(endpoint, connection_id, response_data, chunk_size=120000):
     response_data_str = str(response_data)
