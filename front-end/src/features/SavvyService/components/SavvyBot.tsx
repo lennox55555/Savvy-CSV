@@ -20,6 +20,7 @@ const SavvyBot: React.FC = () => {
     const [messages, setMessages] = useState<UserMessage[]>([]);
     const [tableData, setTableData] = useState<NestedObject | null>(null);
     const [currentTableRank, setCurrentTableRank] = useState<number>(1); // State to track the current table rank
+    const [isLoading, setIsLoading] = useState(false);
 
     const fetchMessages = async () => {
         const currentUser = getAuth().currentUser;
@@ -52,6 +53,8 @@ const SavvyBot: React.FC = () => {
 
 
     const handleSubmit = async () => {
+        setIsLoading(true);
+
         if (textAreaValue.trim() !== '') {
             const currentUser = getAuth().currentUser;
 
@@ -77,6 +80,7 @@ const SavvyBot: React.FC = () => {
 
     const handleWebSocketMessage = (data: NestedObject) => {
         setTableData(data);
+        setIsLoading(false);
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -124,8 +128,19 @@ const SavvyBot: React.FC = () => {
         if (tableData) {
             // Update table rank in a cycle: 1 -> 2 -> 3 -> 1
             const nextRank = currentTableRank === 3 ? 1 : currentTableRank + 1;
-            setCurrentTableRank(nextRank); // Update the current table rank state
-            displayTableForRank(tableData, nextRank); // Display the table for the next rank
+            setCurrentTableRank(nextRank);
+
+            setMessages(prevMessages => {
+                // Remove the most recent message and add the new one
+                const messages = prevMessages.length > 0
+                    ? prevMessages.slice(0, prevMessages.length - 1)
+                    : prevMessages;
+
+                return [
+                    ...messages,
+                    { id: '', text: displayTableForRank(tableData, nextRank), user: false }
+                ];
+            });
         }
     };
 
@@ -152,13 +167,7 @@ const SavvyBot: React.FC = () => {
 
     useEffect(() => {
         fetchMessages();
-    }, []);
-
-    useEffect(() => {
-        if (tableData) {
-            displayTableForRank(tableData, currentTableRank); // Re-render table on rank change
-        }
-    }, [currentTableRank, tableData]);
+    }, [tableData]);
 
     return (
         <>
@@ -182,17 +191,15 @@ const SavvyBot: React.FC = () => {
                                 </div>
                             )
                         ))}
-                        {messages && displayTableForRank(tableData, currentTableRank)}
-                        {tableData && (
-                            <>
-                                <button className={styles.refreshButton} onClick={handleRefresh}>
-                                    Refresh Table
-                                </button>
-                                <button className={styles.downloadButton} onClick={downloadCSV}>
-                                    Download Table
-                                </button>
-                            </>
-                        )}
+                        <div className={styles.tableButtonGroup}>
+                            <span className="material-symbols-outlined">
+                                cached
+                            </span>
+                            <span className="material-symbols-outlined">
+                                download
+                            </span>
+
+                        </div>
                     </div>
                 </div>
                 {/* MOVE CODE SOMEWHERE ELSE */}
