@@ -49,7 +49,6 @@
 }
 
 .savvyResponse {
-    overflow-x: auto;
     max-height: 100%;
     position: relative;
     overflow-y: auto;
@@ -131,14 +130,12 @@
 
 .tableContainer {
     width: 100%;
-    border-collapse: collapse;
+    table-layout: auto;
 }
 
 .tableHeader {
-    display: block;
     position: sticky;
     top: 0;
-    padding: 8px;
     background: linear-gradient(to top, #46D085, #1D6F42);
     border-radius: 10px;
     overflow-x: auto;
@@ -152,12 +149,15 @@
     padding: 8px;
 }
 
-.tableBodyWrapper {
-    
-}
+table th:first-child {
+    border-radius:10px 0 0 10px;
+  }
+  
+  table th:last-child {
+    border-radius:0 10px 10px 0;
+  }
 
 .tableBody {
-    display: block; 
     width: 100%;
 }
 

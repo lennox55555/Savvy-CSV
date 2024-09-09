@@ -116,7 +116,7 @@ const SavvyBot: React.FC = () => {
                             </thead>
                             <tbody className={styles.tableBody}>
                                 {data[key].SampleTableData.split('\n').slice(1).map((row: string, index: React.Key | null | undefined) => (
-                                    <tr key={index}>
+                                    <tr key={index} className={styles.tableRow}>
                                         {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
                                             <td key={cellIndex} className={styles.tableBodyData}>
                                                 {cell.trim()}
@@ -150,7 +150,7 @@ const SavvyBot: React.FC = () => {
                             </thead>
                             <tbody className={styles.tableBody}>
                                 {data[key].SampleTableData.split('\n').slice(1).map((row: string, index: React.Key | null | undefined) => (
-                                    <tr key={index}>
+                                    <tr key={index} className={styles.tableRow}>
                                         {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
                                             <td key={cellIndex} className={styles.tableBodyData}>
                                                 {cell.trim()}
@@ -184,7 +184,7 @@ const SavvyBot: React.FC = () => {
                             </thead>
                             <tbody className={styles.tableBody}>
                                 {data[key].SampleTableData.split('\n').slice(1).map((row: string, index: React.Key | null | undefined) => (
-                                    <tr key={index}>
+                                    <tr key={index} className={styles.tableRow}>
                                         {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
                                             <td key={cellIndex} className={styles.tableBodyData}>
                                                 {cell.trim()}
