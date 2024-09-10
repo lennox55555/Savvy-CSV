@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import './RegistrationPage.css'
 import googleLogo from '../../assets/Google_G_logo.svg.png'
 import UserServiceAPI from '../../services/userServiceAPI';
+import RegistrationLottie from './RegistrationLottie';
 
 const RegistrationPage: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -107,7 +108,9 @@ const RegistrationPage: React.FC = () => {
                     </div>
                 </Col>
                 <Col md={5} className='blank-column'>
-                    {/* Blank canvas */}
+                    <div style={{ marginTop: '100px' }}>
+                        <RegistrationLottie />
+                    </div>
                 </Col>
             </Row>
         </Container>

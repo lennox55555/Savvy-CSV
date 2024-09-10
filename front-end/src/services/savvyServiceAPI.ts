@@ -89,8 +89,6 @@ class SavvyServiceAPI {
 
     private handleMessage(data: string, onMessageReceived: (data: any) => void, userId: string): void {
         this.objec += data;
-        this.saveMessage(userId, this.objec, false)
-        console.log(this.objec)
 
         let openBrackets = 0;
         let closeBrackets = 0;
@@ -103,6 +101,7 @@ class SavvyServiceAPI {
         if (openBrackets > 0 && openBrackets === closeBrackets) {
             try {
                 const fullObject = JSON.parse(this.objec);
+                this.saveMessage(userId, this.objec, false)
                 onMessageReceived(fullObject); 
                 this.objec = ""; // Reset the accumulated string
             } catch (error) {

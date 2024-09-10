@@ -185,4 +185,8 @@
     .content {
         margin-left: 0;
     }
+    
+    .toggle-icon {
+        display: none;
+    }
 }

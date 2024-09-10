@@ -201,6 +201,17 @@ const SavvyBot: React.FC = () => {
                                 </div>
                             )
                         ))}
+                        {isLoading === true && (
+                            <div className={styles.savvtResponse}>
+                            <div className={styles.messageBubbleLoading}>
+                                <div className={styles.typingIndicator}>
+                                    <div className={styles.dot}></div>
+                                    <div className={styles.dot}></div>
+                                    <div className={styles.dot}></div>
+                                </div>
+                            </div>
+                            </div>
+                        )}
                         {tableData && isLoading === false && (
                             <div className={styles.tableButtonGroup}>
                                 <span onClick={handleRefresh} className="material-symbols-outlined" title="New Table">
@@ -210,8 +221,8 @@ const SavvyBot: React.FC = () => {
                                     download
                                 </span>
                                 <span className="material-symbols-outlined" title="Data Source">
-                                <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
-                                    link
+                                    <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
+                                        link
                                     </a>
                                 </span>
                             </div>

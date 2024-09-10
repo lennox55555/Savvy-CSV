@@ -4,6 +4,7 @@ import './SignInPage.css'; // Import the CSS file for styling
 import { Link, useNavigate } from 'react-router-dom';
 import googleLogo from '../../assets/Google_G_logo.svg.png'
 import UserServiceAPI from '../../services/userServiceAPI';
+import SignInLottie from './SignInLottie';
 
 const SignInPage: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -97,7 +98,9 @@ const SignInPage: React.FC = () => {
                     </div>
                 </Col>
                 <Col md={5} className='blank-column'>
-                    {/* Blank canvas */}
+                    <div style={{ marginTop: '100px' }}>
+                        <SignInLottie />
+                    </div>
                 </Col>
             </Row>
         </Container>
