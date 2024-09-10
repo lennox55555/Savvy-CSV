@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './SavvyBot.module.css';
 import AutosizeTextArea from '../../../utils/useAutosizeTextArea';
 import { getAuth } from 'firebase/auth';
 import SavvyServiceAPI from '../../../services/savvyServiceAPI';
 import { Link } from 'react-router-dom';
 import { UserMessage } from '../../../utils/types';
-
 
 type NestedObject = {
     [key: string]: {
@@ -20,6 +19,10 @@ const SavvyBot: React.FC = () => {
     const [messages, setMessages] = useState<UserMessage[]>([]);
     const [tableData, setTableData] = useState<NestedObject | null>(null);
     const [currentTableRank, setCurrentTableRank] = useState<number>(1); // State to track the current table rank
+    const [isLoading, setIsLoading] = useState(false);
+    const [currentTabelSource, setCurrentTableSource] = useState('');
+
+    const messageEndRef = useRef<HTMLDivElement | null>(null);
 
     const fetchMessages = async () => {
         const currentUser = getAuth().currentUser;
@@ -30,14 +33,15 @@ const SavvyBot: React.FC = () => {
 
                 const processedMessages = fetchedMessages.map(message => {
                     if (!message.user) {
+                        console.log(message)
                         return {
                             ...message,
-                            text: displayTableForRank1(JSON.parse(message.text)) // Assuming message.text contains JSON data for the table
+                            text: displayTableForRank(JSON.parse(message.text), 1) // Assuming message.text contains JSON data for the table
                         };
                     }
                     return message;
                 });
-
+                console.log(processedMessages)
                 setMessages(processedMessages);
             } catch (err: unknown) {
                 if (err instanceof Error) {
@@ -51,6 +55,7 @@ const SavvyBot: React.FC = () => {
 
 
     const handleSubmit = async () => {
+
         if (textAreaValue.trim() !== '') {
             const currentUser = getAuth().currentUser;
 
@@ -63,6 +68,7 @@ const SavvyBot: React.FC = () => {
                     setMessages([...messages, { id: '', text: textAreaValue, user: true }]);
 
                     // Initialize WebSocket and listen for bot response
+                    setIsLoading(true);
                     SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue, currentUser.uid);
 
                     setTextAreaValue('');
@@ -76,20 +82,8 @@ const SavvyBot: React.FC = () => {
 
     const handleWebSocketMessage = (data: NestedObject) => {
         setTableData(data);
-
-    };
-
-    const displayTableByRank = (rank: number, data: any): JSX.Element | null => {
-        switch (rank) {
-            case 1:
-                return displayTableForRank1(data);
-            case 2:
-                return displayTableForRank2(data);
-            case 3:
-                return displayTableForRank3(data);
-            default:
-                return displayTableForRank1(data);
-        }
+        setMessages([...messages, { id: '', text: displayTableForRank(data, 1), user: false }])
+        setIsLoading(false);
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -99,9 +93,10 @@ const SavvyBot: React.FC = () => {
         }
     };
 
-    const displayTableForRank1 = (data: NestedObject): JSX.Element | null => {
+    const displayTableForRank = (data: NestedObject | null, rank: number): JSX.Element | null => {
         for (const key in data) {
-            if (data[key].rankOfTable === 1) {
+            if (data[key].rankOfTable == rank) {
+                setCurrentTableSource(data[key].website);
                 return (
                     <div>
                         <table className={styles.tableContainer}>
@@ -130,83 +125,26 @@ const SavvyBot: React.FC = () => {
                 );
             }
         }
-        return null;
-    };
-
-    const displayTableForRank2 = (data: NestedObject): JSX.Element | null => {
-        for (const key in data) {
-            if (data[key].rankOfTable === 2) {
-                return (
-                    <div>
-                        <table className={styles.tableContainer}>
-                            <thead className={styles.tableHeader}>
-                                <tr>
-                                    {data[key].SampleTableData.split('\n')[0].split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                        <th key={cellIndex} className={styles.tableHeaderData}>
-                                            {cell.trim()}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className={styles.tableBody}>
-                                {data[key].SampleTableData.split('\n').slice(1).map((row: string, index: React.Key | null | undefined) => (
-                                    <tr key={index} className={styles.tableRow}>
-                                        {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                            <td key={cellIndex} className={styles.tableBodyData}>
-                                                {cell.trim()}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                );
-            }
-        }
-        return null;
-    };
-
-    const displayTableForRank3 = (data: NestedObject): JSX.Element | null => {
-        for (const key in data) {
-            if (data[key].rankOfTable === 3) {
-                return (
-                    <div>
-                        <table className={styles.tableContainer}>
-                            <thead className={styles.tableHeader}>
-                                <tr>
-                                    {data[key].SampleTableData.split('\n')[0].split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                        <th key={cellIndex} className={styles.tableHeaderData}>
-                                            {cell.trim()}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className={styles.tableBody}>
-                                {data[key].SampleTableData.split('\n').slice(1).map((row: string, index: React.Key | null | undefined) => (
-                                    <tr key={index} className={styles.tableRow}>
-                                        {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                            <td key={cellIndex} className={styles.tableBodyData}>
-                                                {cell.trim()}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                );
-            }
-        }
-        return null;
+        return null
     };
 
     const handleRefresh = () => {
         if (tableData) {
             // Update table rank in a cycle: 1 -> 2 -> 3 -> 1
             const nextRank = currentTableRank === 3 ? 1 : currentTableRank + 1;
-            setCurrentTableRank(nextRank); // Update the current table rank state
-            displayTableByRank(nextRank, tableData); // Display the table for the next rank
+            setCurrentTableRank(nextRank);
+
+            setMessages(prevMessages => {
+                // Remove the most recent message and add the new one
+                const messages = prevMessages.length > 0
+                    ? prevMessages.slice(0, prevMessages.length - 1)
+                    : prevMessages;
+
+                return [
+                    ...messages,
+                    { id: '', text: displayTableForRank(tableData, nextRank), user: false }
+                ];
+            });
         }
     };
 
@@ -233,13 +171,13 @@ const SavvyBot: React.FC = () => {
 
     useEffect(() => {
         fetchMessages();
-    }, []);
+    }, [tableData]);
 
     useEffect(() => {
-        if (tableData) {
-            displayTableByRank(currentTableRank, tableData); // Re-render table on rank change
+        if (messageEndRef.current) {
+            messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
         }
-    }, [currentTableRank, tableData]);
+    }, [messages]);
 
     return (
         <>
@@ -256,24 +194,40 @@ const SavvyBot: React.FC = () => {
                                     </div>
                                 </div>
                             ) : (
-                                    <div className={styles.messageItemContainer}>
-                                        <div key={index} className={styles.savvyResponse}>
-                                            {message.text}
-                                        </div>
+                                <div className={styles.messageItemContainer}>
+                                    <div key={index} className={styles.savvyResponse}>
+                                        {message.text}
                                     </div>
+                                </div>
                             )
                         ))}
-                        {messages && displayTableByRank(currentTableRank, tableData)}
-                        {tableData && (
-                            <>
-                                <button className={styles.refreshButton} onClick={handleRefresh}>
-                                    Refresh Table
-                                </button>
-                                <button className={styles.downloadButton} onClick={downloadCSV}>
-                                    Download Table
-                                </button>
-                            </>
+                        {isLoading === true && (
+                            <div className={styles.savvtResponse}>
+                            <div className={styles.messageBubbleLoading}>
+                                <div className={styles.typingIndicator}>
+                                    <div className={styles.dot}></div>
+                                    <div className={styles.dot}></div>
+                                    <div className={styles.dot}></div>
+                                </div>
+                            </div>
+                            </div>
                         )}
+                        {tableData && isLoading === false && (
+                            <div className={styles.tableButtonGroup}>
+                                <span onClick={handleRefresh} className="material-symbols-outlined" title="New Table">
+                                    cached
+                                </span>
+                                <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
+                                    download
+                                </span>
+                                <span className="material-symbols-outlined" title="Data Source">
+                                    <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
+                                        link
+                                    </a>
+                                </span>
+                            </div>
+                        )}
+                        <div ref={messageEndRef} />
                     </div>
                 </div>
                 {/* MOVE CODE SOMEWHERE ELSE */}
@@ -288,7 +242,7 @@ const SavvyBot: React.FC = () => {
                             placeholder="Message SavvyCSV"
                         />
                         <button className={styles.messageButton} onClick={handleSubmit}>
-                            <i className="bi bi-arrow-return-left" style={{ color: '#1D6F42', textShadow: '0 0 1px #1D6F42' }}></i>
+                            <i className="bi bi-arrow-return-left" style={{ color: 'hsl(14, 91%, 54%)', textShadow: '0 0 1px #1D6F42' }}></i>
                         </button>
                     </div>
                     {/*

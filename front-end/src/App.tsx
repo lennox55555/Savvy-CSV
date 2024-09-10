@@ -40,8 +40,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path='/' element={<LandingPage />} />
-      <Route path='/signin' element={<SignInPage />} />
+      <Route path='/' element={<SignInPage />} />
       <Route path='register' element={<RegistrationPage />} />
       <Route
         path='/savvycsv'

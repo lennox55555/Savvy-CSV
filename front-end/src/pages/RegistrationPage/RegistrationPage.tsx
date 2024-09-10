@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import './RegistrationPage.css'
 import googleLogo from '../../assets/Google_G_logo.svg.png'
 import UserServiceAPI from '../../services/userServiceAPI';
+import RegistrationLottie from './RegistrationLottie';
 
 const RegistrationPage: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -95,7 +96,7 @@ const RegistrationPage: React.FC = () => {
                         </Form>
                         <div className='sign-up-link-container'>
                             <div className='sign-up-link'>
-                                Already have an account? <Link style={{ textDecoration: 'none' }} to='/signin'>Sign in</Link>
+                                Already have an account? <Link style={{ textDecoration: 'none' }} to='/'>Sign in</Link>
                             </div>
                         </div>
                         <hr className='divider' />
@@ -107,7 +108,9 @@ const RegistrationPage: React.FC = () => {
                     </div>
                 </Col>
                 <Col md={5} className='blank-column'>
-                    {/* Blank canvas */}
+                    <div style={{ marginTop: '100px' }}>
+                        <RegistrationLottie />
+                    </div>
                 </Col>
             </Row>
         </Container>

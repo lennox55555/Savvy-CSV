@@ -4,7 +4,7 @@
 }
 
 .title {
-    background-image: linear-gradient(to bottom, #46D085, #1D6F42);
+    background-image: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-family: 'Roboto', sans-serif;
@@ -28,7 +28,6 @@
     margin-bottom: 25%;
     width: 450px;
     margin-top: 100px;
-
 }
 
 .form-group {
@@ -71,7 +70,7 @@ input:not(:placeholder-shown) + .label {
     top: -0.75rem;
     left: 0.75rem;
     font-size: 15px;
-    color: #1D6F42;
+    color:  hsl(14, 91%, 54%);
     transform: translateY(0);
 }
 
@@ -83,13 +82,13 @@ form button {
     cursor: pointer;
     width: 100%;
     transition: background-color 0.3s ease;
-    background-color: #1D6F42;
+    background-color:  hsl(14, 91%, 54%);
     font-family: 'Roboto', sans-serif;
     font-size: 18px;
 }
 
 form button:hover {
-    background-color: #1D6F42;
+    background-color:  hsl(14, 91%, 54%)
 }
 
 .sign-up-link-container {
@@ -150,6 +149,6 @@ form button:hover {
 }
 
 .blank-column {
-    background-color: #edecec;
+    background: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
     height: 100vh;
 }
