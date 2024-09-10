@@ -152,3 +152,9 @@ form button:hover {
     background: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
     height: 100vh;
 }
+
+@media only screen and (max-width: 768px) {
+    .blank-column {
+        display: none;
+    }
+}
