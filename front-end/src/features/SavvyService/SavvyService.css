@@ -105,7 +105,7 @@
 }
 
 .savvy-title {
-    background-image: linear-gradient(to bottom, #46D085, #1D6F42);
+    background-image: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-family: 'Roboto', sans-serif;
@@ -131,7 +131,7 @@
 }
 
 .sidebar {
-    background: linear-gradient(to top, #46D085, #1D6F42);
+    background: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
     padding: 1rem;
     width: 275px;
     transition: transform 0.3s ease;

@@ -60,7 +60,7 @@
 }
 
 .messageBubble {
-    background: linear-gradient(to right, #46D085, #1D6F42);
+    background: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
 }
 
 .messageBubbleLoading {
@@ -68,7 +68,7 @@
     border-radius: 40px;
     max-width: 80px;
     word-wrap: break-word;
-    background: linear-gradient(to right, #46D085, #1D6F42);
+    background: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
 }
 
 .typingIndicator {
@@ -178,7 +178,7 @@
 .tableHeader {
     position: sticky;
     top: 0;
-    background: linear-gradient(to top, #46D085, #1D6F42);
+    background: linear-gradient(180deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
     border-radius: 10px;
     overflow-x: auto;
     width: 100%;
@@ -191,14 +191,15 @@
     padding: 8px;
     white-space: nowrap;
     text-align: center;
+    font-family: 'Roboto', sans-serif;
 }
 
 table th:first-child {
-    border-radius: 10px 0 0 10px;
+    border-radius: 0px 0 0 0px;
 }
 
 table th:last-child {
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 0px 0px 0;
 }
 
 .tableBody {
@@ -207,12 +208,14 @@ table th:last-child {
 
 .tableBodyData {
     color: black;
-    border-bottom: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    border-left: 1px solid #ddd;
+    border-bottom: 1px solid hsl(14, 91%, 54%);
+    border-right: 1px solid hsl(14, 91%, 54%);
+    border-left: 1px solid hsl(14, 91%, 54%);
     text-align: center;
     padding: 8px;
+    font-weight: 400;
     width: 100%;
+    font-family: 'Roboto', sans-serif;
 }
 
 .tableButtonGroup {
@@ -227,7 +230,7 @@ table th:last-child {
     cursor: pointer;
     padding: 6px;
     border-radius: 10px;
-    color: darkgray;
+    color: hsl(14, 91%, 54%);
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;

@@ -55,7 +55,6 @@ const SavvyBot: React.FC = () => {
 
 
     const handleSubmit = async () => {
-        setIsLoading(true);
 
         if (textAreaValue.trim() !== '') {
             const currentUser = getAuth().currentUser;
@@ -69,6 +68,7 @@ const SavvyBot: React.FC = () => {
                     setMessages([...messages, { id: '', text: textAreaValue, user: true }]);
 
                     // Initialize WebSocket and listen for bot response
+                    setIsLoading(true);
                     SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue, currentUser.uid);
 
                     setTextAreaValue('');
@@ -242,7 +242,7 @@ const SavvyBot: React.FC = () => {
                             placeholder="Message SavvyCSV"
                         />
                         <button className={styles.messageButton} onClick={handleSubmit}>
-                            <i className="bi bi-arrow-return-left" style={{ color: '#1D6F42', textShadow: '0 0 1px #1D6F42' }}></i>
+                            <i className="bi bi-arrow-return-left" style={{ color: 'hsl(14, 91%, 54%)', textShadow: '0 0 1px #1D6F42' }}></i>
                         </button>
                     </div>
                     {/*
