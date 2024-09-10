@@ -21,9 +21,11 @@
 
 .messageBoxWrapper {
     width: 70%;
+
 }
 
-.savvyResponse, .userMessage {
+.savvyResponse,
+.userMessage {
     display: flex;
     gap: 20px;
     color: white;
@@ -146,15 +148,17 @@
     font-size: 14px;
     font-weight: 500;
     padding: 8px;
+    white-space: nowrap;
+    text-align: center;
 }
 
 table th:first-child {
-    border-radius:10px 0 0 10px;
-  }
-  
-  table th:last-child {
-    border-radius:0 10px 10px 0;
-  }
+    border-radius: 10px 0 0 10px;
+}
+
+table th:last-child {
+    border-radius: 0 10px 10px 0;
+}
 
 .tableBody {
     width: 100%;
@@ -163,8 +167,10 @@ table th:first-child {
 .tableBodyData {
     color: black;
     border-bottom: 1px solid #ddd;
-    text-align: left; 
-    padding: 8px; 
+    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    text-align: center;
+    padding: 8px;
     width: 100%;
 }
 
@@ -181,6 +187,17 @@ table th:first-child {
     padding: 6px;
     border-radius: 10px;
     color: darkgray;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    text-decoration: none;
+}
+
+span a {
+    text-decoration: none;
+    color: inherit;
+    background: none;
 }
 
 .tableButtonGroup span:hover {
@@ -191,11 +208,17 @@ table th:first-child {
     .messageBarWrapper {
         width: 600px;
     }
+    .savvybotContainer {
+        width: 100%;
+    }
 }
 
 @media (max-width: 1200px) {
     .messageBarWrapper {
         width: 500px;
+    }
+    .savvybotContainer {
+        width: 1100px;
     }
 }
 
@@ -203,11 +226,17 @@ table th:first-child {
     .messageBarWrapper {
         width: 400px;
     }
+    .savvybotContainer {
+        width: 750px;
+    }
 }
 
 @media (max-width: 768px) {
     .messageBarWrapper {
         width: 320px;
+    }
+    .savvybotContainer {
+        width: 600px;
     }
 }
 

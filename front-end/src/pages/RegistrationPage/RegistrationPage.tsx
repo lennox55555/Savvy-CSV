@@ -95,7 +95,7 @@ const RegistrationPage: React.FC = () => {
                         </Form>
                         <div className='sign-up-link-container'>
                             <div className='sign-up-link'>
-                                Already have an account? <Link style={{ textDecoration: 'none' }} to='/signin'>Sign in</Link>
+                                Already have an account? <Link style={{ textDecoration: 'none' }} to='/'>Sign in</Link>
                             </div>
                         </div>
                         <hr className='divider' />

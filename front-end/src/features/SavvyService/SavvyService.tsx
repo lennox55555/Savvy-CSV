@@ -27,7 +27,7 @@ const SavvyService: React.FC = () => {
         try {
             await UserServiceAPI.getInstance().signOutUser();
             setIsLoggedIn(false);
-            navigate('/signin');
+            navigate('/');
         } catch (err: unknown) {
             if (err instanceof Error) {
                 console.log("An error has occurred during logout:", err.message);

@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './SavvyBot.module.css';
 import AutosizeTextArea from '../../../utils/useAutosizeTextArea';
 import { getAuth } from 'firebase/auth';
 import SavvyServiceAPI from '../../../services/savvyServiceAPI';
 import { Link } from 'react-router-dom';
 import { UserMessage } from '../../../utils/types';
-
 
 type NestedObject = {
     [key: string]: {
@@ -21,6 +20,9 @@ const SavvyBot: React.FC = () => {
     const [tableData, setTableData] = useState<NestedObject | null>(null);
     const [currentTableRank, setCurrentTableRank] = useState<number>(1); // State to track the current table rank
     const [isLoading, setIsLoading] = useState(false);
+    const [currentTabelSource, setCurrentTableSource] = useState('');
+
+    const messageEndRef = useRef<HTMLDivElement | null>(null);
 
     const fetchMessages = async () => {
         const currentUser = getAuth().currentUser;
@@ -80,6 +82,7 @@ const SavvyBot: React.FC = () => {
 
     const handleWebSocketMessage = (data: NestedObject) => {
         setTableData(data);
+        setMessages([...messages, { id: '', text: displayTableForRank(data, 1), user: false }])
         setIsLoading(false);
     };
 
@@ -93,6 +96,7 @@ const SavvyBot: React.FC = () => {
     const displayTableForRank = (data: NestedObject | null, rank: number): JSX.Element | null => {
         for (const key in data) {
             if (data[key].rankOfTable == rank) {
+                setCurrentTableSource(data[key].website);
                 return (
                     <div>
                         <table className={styles.tableContainer}>
@@ -169,6 +173,12 @@ const SavvyBot: React.FC = () => {
         fetchMessages();
     }, [tableData]);
 
+    useEffect(() => {
+        if (messageEndRef.current) {
+            messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages]);
+
     return (
         <>
             <div className={styles.savvybotContainer}>
@@ -191,15 +201,22 @@ const SavvyBot: React.FC = () => {
                                 </div>
                             )
                         ))}
-                        <div className={styles.tableButtonGroup}>
-                            <span className="material-symbols-outlined">
-                                cached
-                            </span>
-                            <span className="material-symbols-outlined">
-                                download
-                            </span>
-
-                        </div>
+                        {tableData && isLoading === false && (
+                            <div className={styles.tableButtonGroup}>
+                                <span onClick={handleRefresh} className="material-symbols-outlined" title="New Table">
+                                    cached
+                                </span>
+                                <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
+                                    download
+                                </span>
+                                <span className="material-symbols-outlined" title="Data Source">
+                                <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
+                                    link
+                                    </a>
+                                </span>
+                            </div>
+                        )}
+                        <div ref={messageEndRef} />
                     </div>
                 </div>
                 {/* MOVE CODE SOMEWHERE ELSE */}
