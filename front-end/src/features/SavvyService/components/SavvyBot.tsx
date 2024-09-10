@@ -87,7 +87,7 @@ const SavvyBot: React.FC = () => {
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (event.key === 'Enter' && !event.shiftKey) {
+        if (event.key === 'Enter' && !event.shiftKey && !isLoading) {
             event.preventDefault();
             handleSubmit();
         }
@@ -203,13 +203,13 @@ const SavvyBot: React.FC = () => {
                         ))}
                         {isLoading === true && (
                             <div className={styles.savvtResponse}>
-                            <div className={styles.messageBubbleLoading}>
-                                <div className={styles.typingIndicator}>
-                                    <div className={styles.dot}></div>
-                                    <div className={styles.dot}></div>
-                                    <div className={styles.dot}></div>
+                                <div className={styles.messageBubbleLoading}>
+                                    <div className={styles.typingIndicator}>
+                                        <div className={styles.dot}></div>
+                                        <div className={styles.dot}></div>
+                                        <div className={styles.dot}></div>
+                                    </div>
                                 </div>
-                            </div>
                             </div>
                         )}
                         {tableData && isLoading === false && (
@@ -241,9 +241,20 @@ const SavvyBot: React.FC = () => {
                             maxHeight={150}
                             placeholder="Message SavvyCSV"
                         />
-                        <button className={styles.messageButton} onClick={handleSubmit}>
-                            <i className="bi bi-arrow-return-left" style={{ color: 'hsl(14, 91%, 54%)', textShadow: '0 0 1px #1D6F42' }}></i>
-                        </button>
+                        {textAreaValue === '' && !isLoading ? (
+                            <button className={styles.messageButton}>
+                                <i className="fa-solid fa-circle-up" style={{ fontSize: '38px', color: '#e0dfdf' }}></i>
+                            </button>
+                        ) : (
+                            <button className={styles.messageButton} onClick={handleSubmit}>
+                                <i className="fa-solid fa-circle-up" style={{ fontSize: '38px', color: 'hsl(14, 91%, 54%)' }}></i>
+                            </button>
+                        )}
+                        {isLoading && (
+                            <button className={styles.messageButton}>
+                                <i className="fa-solid fa-circle-stop" style={{ fontSize: '38px', color: 'hsl(14, 91%, 54%)' }}></i>
+                            </button>
+                        )}
                     </div>
                     {/*
                         <div className={styles.userFeedback}>

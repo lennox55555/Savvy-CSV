@@ -85,7 +85,7 @@
     height: 8px;
     background-color: white;
     border-radius: 50%;
-    animation: bounce 1.5s infinite ease-in-out;
+    animation: growShrink 1.5s infinite ease-in-out;
 }
 
 .dot:nth-child(2) {
@@ -96,12 +96,12 @@
     animation-delay: 0.4s;
 }
 
-@keyframes bounce {
+@keyframes growShrink {
     0%, 100% {
-        transform: translateY(1px);
+        transform: scale(1);
     }
     50% {
-        transform: translateY(-4px);
+        transform: scale(1.2);
     }
 }
 
@@ -146,9 +146,8 @@
 
 .messageBarWrapper button {
     position: absolute;
-    right: 12px;
-    padding: 10px 20px;
-    border-radius: 50px;
+    right: 16px;
+    border-radius: 80px;
     border: none;
     background-color: white;
 }
