@@ -243,11 +243,11 @@ const SavvyBot: React.FC = () => {
                         />
                         {textAreaValue === '' && !isLoading ? (
                             <button className={styles.messageButton}>
-                                <i className="fa-solid fa-circle-up" style={{ fontSize: '38px', color: '#e0dfdf' }}></i>
+                                <i className="fa-solid fa-circle-up" style={{ fontSize: '38px', color: '#e0dfdf', cursor: 'default' }}></i>
                             </button>
                         ) : (
                             <button className={styles.messageButton} onClick={handleSubmit}>
-                                <i className="fa-solid fa-circle-up" style={{ fontSize: '38px', color: 'hsl(14, 91%, 54%)' }}></i>
+                                <i className="fa-solid fa-circle-up" style={{ fontSize: '38px', color: 'hsl(14, 91%, 54%)', cursor: 'pointer' }}></i>
                             </button>
                         )}
                         {isLoading && (
