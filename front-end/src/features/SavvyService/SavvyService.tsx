@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
-import { Row, Col, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import './SavvyService.css'
 import SavvyBot from "./components/SavvyBot";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { getAuth } from "firebase/auth";
 import { auth } from "../../firebase/firebase-init";
 import UserServiceAPI from "../../services/userServiceAPI";
 
 const SavvyService: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
 
     const navigate = useNavigate();
 
@@ -26,7 +23,6 @@ const SavvyService: React.FC = () => {
     const handleLogOut = async () => {
         try {
             await UserServiceAPI.getInstance().signOutUser();
-            setIsLoggedIn(false);
             navigate('/');
         } catch (err: unknown) {
             if (err instanceof Error) {

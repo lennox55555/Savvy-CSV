@@ -3,7 +3,6 @@ import styles from './SavvyBot.module.css';
 import AutosizeTextArea from '../../../utils/useAutosizeTextArea';
 import { getAuth } from 'firebase/auth';
 import SavvyServiceAPI from '../../../services/savvyServiceAPI';
-import { Link } from 'react-router-dom';
 import { UserMessage } from '../../../utils/types';
 
 type NestedObject = {

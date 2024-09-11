@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, getFirestore, limit, orderBy, query } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase/firebase-init";
 
 class SavvyServiceAPI {
