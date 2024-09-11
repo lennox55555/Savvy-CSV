@@ -1,5 +1,4 @@
 import './App.css'
-import LandingPage from './pages/LandingPage/LandingPage'
 import SavvyService from './features/SavvyService/SavvyService';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 import SignInPage from './pages/SignInPage/SignInPage';

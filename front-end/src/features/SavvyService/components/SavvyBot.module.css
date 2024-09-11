@@ -85,7 +85,7 @@
     height: 8px;
     background-color: white;
     border-radius: 50%;
-    animation: bounce 1.5s infinite ease-in-out;
+    animation: growShrink 1.5s infinite ease-in-out;
 }
 
 .dot:nth-child(2) {
@@ -96,12 +96,12 @@
     animation-delay: 0.4s;
 }
 
-@keyframes bounce {
+@keyframes growShrink {
     0%, 100% {
-        transform: translateY(1px);
+        transform: scale(1);
     }
     50% {
-        transform: translateY(-4px);
+        transform: scale(1.2);
     }
 }
 
@@ -146,9 +146,8 @@
 
 .messageBarWrapper button {
     position: absolute;
-    right: 12px;
-    padding: 10px 20px;
-    border-radius: 50px;
+    right: 16px;
+    border-radius: 80px;
     border: none;
     background-color: white;
 }
@@ -207,7 +206,7 @@ table th:last-child {
 }
 
 .tableBodyData {
-    color: black;
+    color: rgb(32, 33, 36);
     border-bottom: 1px solid hsl(14, 91%, 54%);
     border-right: 1px solid hsl(14, 91%, 54%);
     border-left: 1px solid hsl(14, 91%, 54%);
@@ -215,7 +214,8 @@ table th:last-child {
     padding: 8px;
     font-weight: 400;
     width: 100%;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto Mono", monospace;
+    font-size: 14px;
 }
 
 .tableButtonGroup {
@@ -275,12 +275,20 @@ span a {
     }
 }
 
-@media (max-width: 768px) {
+@media only screen and (max-width: 768px) {
     .messageBarWrapper {
         width: 320px;
     }
     .savvybotContainer {
-        width: 600px;
+        width: 514px;
+        height: 80vh;;
+    }
+    .messageBoxContainer {
+        height: 100vh;
+    }
+    .messageBar {
+        position: absolute;
+        bottom: 0;
     }
 }
 

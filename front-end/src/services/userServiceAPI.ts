@@ -1,4 +1,4 @@
-import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { RegistrationFormData, SignInFormData } from "../utils/types";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
         signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
