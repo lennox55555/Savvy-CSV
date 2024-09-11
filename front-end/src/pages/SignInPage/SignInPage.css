@@ -158,3 +158,56 @@ form button:hover {
         display: none;
     }
 }
+
+@media only screen and (max-width: 430px) {
+    .container-fluid {
+        padding: 0 10px;
+    }
+
+    .title {
+        font-size: 32px; /* Slightly smaller for mobile */
+        margin-bottom: 20px;
+    }
+
+    .form-container {
+        width: 100%; /* Make the form container responsive */
+        margin-top: 50px; /* Reduce top margin */
+        margin-bottom: 15%;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem; /* Reduce margin between inputs */
+    }
+
+    .email-input, .password-input {
+        padding: 12px 16px; /* Smaller padding for inputs */
+        font-size: 0.9rem; /* Smaller font size for mobile */
+    }
+
+    form button {
+        padding: 12px 16px; /* Adjust button padding */
+        font-size: 16px;
+    }
+
+    .sign-up-link {
+        font-size: 14px;
+    }
+
+    .google-button {
+        padding: 12px 16px;
+        font-size: 16px;
+        gap: 15px;
+    }
+
+    .google-logo {
+        width: 20px; /* Adjust Google logo size */
+    }
+
+    .divider {
+        max-width: 100%; /* Make the divider responsive */
+    }
+
+    .success-message, .error-message {
+        font-size: 14px;
+    }
+}
