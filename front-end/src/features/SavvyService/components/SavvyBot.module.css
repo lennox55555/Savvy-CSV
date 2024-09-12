@@ -7,6 +7,7 @@
     justify-content: center;
     margin: 0 auto;
     align-items: center;
+    background-color: var(--bs-msg-bg);
 }
 
 .messageBoxContainer {
@@ -61,7 +62,7 @@
 }
 
 .messageBubble {
-    background: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
+    background: var(--bs-msg-bubble-bg);
 }
 
 .messageBubbleLoading {
@@ -69,7 +70,7 @@
     border-radius: 40px;
     max-width: 80px;
     word-wrap: break-word;
-    background: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
+    background: var(--bs-msg-bubble-loading-bg);
 }
 
 .typingIndicator {
@@ -139,6 +140,8 @@
     box-sizing: border-box;
     bottom: 0;
     padding-left: 40px;
+    color: var(--bs-textarea-color);
+    background-color: var(--bs-msg-bar-bg);
 }
 
 .messageBarWrapper textarea:focus {
@@ -150,7 +153,7 @@
     right: 16px;
     border-radius: 80px;
     border: none;
-    background-color: white;
+    background-color: var(--bs-msg-bar-bg);
 }
 
 .messageBar .messageBarWrapper {
@@ -178,14 +181,20 @@
 .tableHeader {
     position: sticky;
     top: 0;
-    background: linear-gradient(180deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
+    background: var(--bs-table-header-color);
+    border-bottom: 1px solid var(--bs-table-border-color);
+    border-right: 1px solid var(--bs-table-border-color);
+    border-left: 1px solid var(--bs-table-border-color);
     border-radius: 10px;
     overflow-x: auto;
     width: 100%;
 }
 
 .tableHeaderData {
-    color: #fff;
+    color: var(--bs-table-header-data-color);
+    border-bottom: 1px solid var(--bs-table-border-color);
+    border-right: 1px solid var(--bs-table-border-color);
+    border-left: 1px solid var(--bs-table-border-color);
     font-size: 14px;
     font-weight: 500;
     padding: 8px;
@@ -207,10 +216,10 @@ table th:last-child {
 }
 
 .tableBodyData {
-    color: rgb(32, 33, 36);
-    border-bottom: 1px solid hsl(14, 91%, 54%);
-    border-right: 1px solid hsl(14, 91%, 54%);
-    border-left: 1px solid hsl(14, 91%, 54%);
+    color: var(--bs-table-data-color);
+    border-bottom: 1px solid var(--bs-table-border-color);
+    border-right: 1px solid var(--bs-table-border-color);
+    border-left: 1px solid var(--bs-table-border-color);
     text-align: center;
     padding: 8px;
     font-weight: 400;
@@ -231,7 +240,7 @@ table th:last-child {
     cursor: pointer;
     padding: 6px;
     border-radius: 10px;
-    color: hsl(14, 91%, 54%);
+    color: var(--bs-table-button-color);
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;

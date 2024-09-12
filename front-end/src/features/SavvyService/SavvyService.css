@@ -5,8 +5,8 @@
 }
 
 .header {
-    color: white;
-    background-color: #f8f7f7;
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
     padding: 1rem;
     display: flex;
     justify-content: center;
@@ -81,7 +81,7 @@
 }
 
 .dropdown-row:hover {
-    background-color: #f2f2f2;
+    background-color: var(--bs-dropdown-row-hover-bg);
 }
 
 .logout-icon {
@@ -91,7 +91,8 @@
 }
 
 .sub-dropdown {
-    background: white;
+    background-color: var(--bs-profile-dropdown-bg);
+    border: 1px solid var(--bs-profile-dropdown-border-bg);
     padding: 20px;
     border-radius: 10px;
 }
@@ -115,9 +116,16 @@
     transition: margin-left 0.3s ease;
 }
 
-.toggle-icon {
+.toggle-icon-open {
     position: absolute;
     left: 1rem;
+    color: var(--bs-toggle-sidebar-open-bg);
+}
+
+.toggle-icon-close {
+    position: absolute;
+    left: 1rem;
+    color: var(--bs-toggle-sidebar-close-bg);
 }
 
 .spacer {
@@ -131,7 +139,7 @@
 }
 
 .sidebar {
-    background: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
+    background: var(--sidebar-bg);
     padding: 1rem;
     width: 275px;
     transition: transform 0.3s ease;
@@ -151,7 +159,7 @@
 }
 
 .content {
-    background-color: #f8f7f7;
+    background-color: var(--bs-body-bg);
     flex-grow: 1;
     margin-left: 200px;
     transition: margin-left 0.3s ease;

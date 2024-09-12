@@ -1,6 +1,7 @@
 .container-fluid {
     height: 100vh;
     padding: 0;
+    background-color: white;
 }
 
 .title {
@@ -102,6 +103,7 @@ form button:hover {
     font-family: 'Roboto', sans-serif;
     font-weight: 300;
     font-size: 15px;
+    color: black;
 }
 
 .success-message {

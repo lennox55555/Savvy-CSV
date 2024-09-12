@@ -8,6 +8,7 @@ import FeedbackPage from './pages/FeedbackPage/FeedbackPage';
 import { useEffect, useState } from 'react';
 import UserServiceAPI from './services/userServiceAPI';
 import ProtectedRouteProps from './interfaces/ProtectedRouteProps';
+import { ThemeProvider } from './themes/ThemeContext';
 
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
@@ -31,7 +32,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return <div>Loading...</div>; // Placeholder for loading state
   }
 
-  return isAuthenticated ? <>{children}</>: <Navigate to="/signin" />;
+  return isAuthenticated ? <>{children}</> : <Navigate to="/signin" />;
 };
 
 
@@ -45,7 +46,9 @@ function App() {
         path='/savvycsv'
         element={
           <ProtectedRoute>
-            <SavvyService />
+            <ThemeProvider>
+              <SavvyService />
+            </ThemeProvider>
           </ProtectedRoute>
         }
       />
