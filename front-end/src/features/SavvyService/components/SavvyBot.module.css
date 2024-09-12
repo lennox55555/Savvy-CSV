@@ -255,7 +255,7 @@ span a {
 }
 
 .tableButtonGroup span:hover {
-    background-color: #f2f2f2;
+    background-color: var(--bs-table-btn-hover-bg);
 }
 
 @media (max-width: 1400px) {

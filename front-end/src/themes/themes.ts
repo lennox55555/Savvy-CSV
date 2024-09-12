@@ -22,6 +22,7 @@ export const themes: { [key: string]: ThemeType } = {
     'bs-table-border-color': 'hsl(14, 91%, 54%)',
     'bs-table-button-color': 'hsl(14, 91%, 54%)',
     'bs-table-data-color': '#202124',
+    'bs-table-btn-hover-bg': '#f2f2f2',
     'sidebar-text-color': '#ffffff',
     'sidebar-text-color-active': '#3A4D39',
     // Typography
@@ -51,6 +52,7 @@ export const themes: { [key: string]: ThemeType } = {
     'bs-table-border-color': '#4a4a4a',
     'bs-table-button-color': '#ffffff',
     'bs-table-data-color': '#ffffff',
+    'bs-table-btn-hover-bg': '#4a4a4a',
     'sidebar-text-color': '#ffffff',
     'sidebar-text-color-active': 'grey',
     // Typography
