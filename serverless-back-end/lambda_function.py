@@ -15,156 +15,219 @@ import csv
 import io
 from sec_api import FloatApi
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import yfinance as yf
 from sec_api import MappingApi
+import logging
+import gzip
+from io import BytesIO
+import base64
 
 
 def lambda_handler(event, context):
+    logging.info(f"Received event: {json.dumps(event)}")
+
+    cors_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+    }
+
     try:
-        print("--------------------------------- PROMPT CLASSIFICATION RESULT: ---------------------------------------")
-        initPrompt = input("Enter a prompt that you would hope returns a csv file: ")
-        prompt_type = prompt_classification(initPrompt)
-        print(prompt_type)
+        body = json.loads(event.get('body', '{}'))
+        action = body.get('action', '')
+        logging.info(f"Action: {action}")
 
-        if prompt_type[0] == 1:
-            print("--------------------------------------PRE-PROMPT RESULT: ----------------------------------------------")
-            response = prepromptengineer_google(prompt_type[1])
-            print(response)
-            print("--------------------------------------TOP SEARCH RESULT:-----------------------------------------------")
-            top_search_results = get_top_google_search_results(response)
-            print(top_search_results)
-            print("--------------------------------------JSON STRUCTURE RESULT:-------------------------------------------")
-            json_structure = create_query_json_structure(top_search_results)
-            print(json_structure)
-            print("-------------------------------------UPDATED JSON STRUCTURE RESULT:------------------------------------")
-            json_structure_dict = json.loads(json_structure)
-            updated_json_structure = update_json_structure_with_csv_tables_images(json_structure_dict)
-            print(json.dumps(updated_json_structure, indent=4))
-            print("-------------------------------------ADDED METRICS TO JSON RESULT:-------------------------------------")
-            added_metrics_to_json = calculate_data_percentages(updated_json_structure)
-            print(added_metrics_to_json)
-            print("-------------------------------------PROCESSED JSON TO DICTIONARY RESULT:------------------------------")
-            processed_dict = process_json_data(added_metrics_to_json)
-            print(json.dumps(processed_dict, indent=4))
-            print("-------------------------------------RANKED DICTIONARY RESULT:----------------------------------------")
-            rankedList = rank_tables(processed_dict, prompt_type[1])
-            rankedList_dict = json.loads(rankedList.replace("'", '"'))
-            print(rankedList_dict)
-            print("-------------------------------------UPDATED JSON STRUCTURE WITH RANKS:----------------------------------")
+        if action == 'sendQueries':
+            column_names = body.get('columnNames', [])
+            if not column_names:
+                return {
+                    'statusCode': 400,
+                    'headers': cors_headers,
+                    'body': json.dumps({'message': 'No column names provided'})
+                }
 
-            completeJSON = add_ranks_to_data(processed_dict, rankedList_dict)
-            print(json.dumps(completeJSON, indent=4))
-            print("-------------------------------------SIMPLIFIED JSON STRUCTURE RESULT:------------------------------------")
-            jsonTopThree = filter_top_3_lowest_ranks(completeJSON)
-            print(json.dumps(jsonTopThree, indent=4))
+            print(
+                "--------------------------------- PROMPT CLASSIFICATION RESULT: ---------------------------------------")
+            initPrompt = column_names[0]
+            prompt_type = prompt_classification(initPrompt)
+            print(prompt_type)
 
-            print("-------------------------------------FULL FINAL JSON STRUCTURE RESULT:------------------------------------")
-            updated_object = update_sample_table_data(jsonTopThree)
-            print(json.dumps(updated_object, indent=4))
+            if prompt_type[0] == 1:
+                # Process Google search related flow
+                response = prepromptengineer_google(prompt_type[1])
+                print(response)
+                top_search_results = get_top_google_search_results(response)
+                json_structure = create_query_json_structure(top_search_results)
+                json_structure_dict = json.loads(json_structure)
+                updated_json_structure = update_json_structure_with_csv_tables_images(json_structure_dict)
+                added_metrics_to_json = calculate_data_percentages(updated_json_structure)
+                processed_dict = process_json_data(added_metrics_to_json)
+                print(processed_dict)
+                rankedList = rank_tables(processed_dict, prompt_type[1])
+                print(rankedList)
+                rankedList_dict = json.loads(json.dumps(rankedList))
+                print(rankedList_dict)
+                print("completed JSON Structure")
+                print(f"Type of rankedList_dict: {type(rankedList_dict)}")
+                print(f"Type of processed_dict: {type(processed_dict)}")
+                if isinstance(rankedList, str):
+                    try:
+                        rankedList_dict = eval(rankedList)  # Convert to a Python dict
+                    except (SyntaxError, NameError) as e:
+                        print(f"Error evaluating rankedList: {e}")
+                        rankedList_dict = {}  # Default to an empty dict in case of failure
+                else:
+                    rankedList_dict = rankedList  # If it's already a dict, keep it as is
 
-            print("-------------------------------------FINAL JSON STRUCTURE CSV RESULT:------------------------------------")
+                print(f"rankedList_dict after eval: {rankedList_dict}")
 
-            converted_dict = convert_sample_table_data_to_csv(updated_object)
-            print(json.dumps(converted_dict, indent=4))
+                completeJSON = add_ranks_to_data(processed_dict, rankedList_dict)
+                print(completeJSON)
+                jsonTopThree = filter_top_3_lowest_ranks(completeJSON)
+                updated_object = update_sample_table_data(jsonTopThree)
+                converted_dict = convert_sample_table_data_to_csv(updated_object)
+                print(json.dumps(converted_dict, indent=4))
+                compressedJSON = compress_json_data(converted_dict)
+                print(compressedJSON)
+                compressedJSON_base64 = base64.b64encode(compressedJSON).decode('utf-8')
 
+                return {
+                    'statusCode': 200,
+                    'headers': cors_headers,
+                    'body': json.dumps({'compressed_data': compressedJSON_base64})
+                }
 
-        elif prompt_type[0] == 2:
-            ticker = get_ticker(initPrompt)
-            typeOfFinance = classify_prompt(initPrompt)
-            print(ticker)
-            print(typeOfFinance)
-            if typeOfFinance == 1:
-                get_and_print_executive_compensation(ticker)
-            elif typeOfFinance == 2:
-                get_and_print_directors_csv(ticker)
-            elif typeOfFinance == 3:
-                get_and_print_subsidiaries(ticker)
-            elif typeOfFinance == 4:
-                get_and_print_sro_filings(ticker)
-            elif typeOfFinance == 5:
-                print(get_float_data(ticker))
-            elif typeOfFinance == 6:
-                prompt_type = 1
-            elif typeOfFinance == 7:
-                print(get_insider_trading_data(ticker))
-            elif typeOfFinance == 8:
-                print(get_stock_prices(ticker))
-            elif typeOfFinance == 9:
-                print(get_nasdaq_companies_csv())
-            elif typeOfFinance == 10:
-                print(get_nyse_companies_csv())
-            elif typeOfFinance == 11:
-                print(get_nysearca_companies_csv())
-            elif typeOfFinance == 12:
-                print(get_nysemkt_companies_csv())
-            elif typeOfFinance == 13:
-                print(get_bats_companies_csv())
+            elif prompt_type[0] == 2:
+                ticker = get_ticker(initPrompt)
+                typeOfFinance = classify_prompt(initPrompt)
+                print(ticker)
+                print(typeOfFinance)
+                finance_result = {}
 
+                if typeOfFinance == 1:
+                    finance_result = get_and_print_executive_compensation(ticker)
+                elif typeOfFinance == 2:
+                    finance_result = get_and_print_directors_csv(ticker)
+                elif typeOfFinance == 3:
+                    finance_result = get_and_print_subsidiaries(ticker)
+                elif typeOfFinance == 4:
+                    finance_result = get_and_print_sro_filings(ticker)
+                elif typeOfFinance == 5:
+                    finance_result = get_float_data(ticker)
+                elif typeOfFinance == 6:
+                    finance_result = {"message": "Type 6 not implemented"}
+                elif typeOfFinance == 7:
+                    finance_result = get_insider_trading_data(ticker)
+                elif typeOfFinance == 8:
+                    finance_result = get_stock_prices(ticker)
+                elif typeOfFinance == 9:
+                    finance_result = get_nasdaq_companies_csv()
+                elif typeOfFinance == 10:
+                    finance_result = get_nyse_companies_csv()
+                elif typeOfFinance == 11:
+                    finance_result = get_nysearca_companies_csv()
+                elif typeOfFinance == 12:
+                    finance_result = get_nysemkt_companies_csv()
+                elif typeOfFinance == 13:
+                    finance_result = get_bats_companies_csv()
 
+                return {
+                    'statusCode': 200,
+                    'headers': cors_headers,
+                    'body': json.dumps(finance_result)
+                }
 
-        elif prompt_type[0] == 3:
-            response = prepromptengineer_health(prompt_type[1])
-            print(response)
-            top_cdc_results = get_top_cdc_search_results(response)
-            print(top_cdc_results)
-            constructed_apiendpoints = construct_api_endpoint(top_cdc_results)
-            print(constructed_apiendpoints)
-            processed_dict = get_first_5_rows_from_urls(constructed_apiendpoints)
-            print(json.dumps(processed_dict, indent=4))
-            bestTable = filterTables(json.dumps(processed_dict), response[1])
-            print(bestTable)
-            print("Final Result Here:")
-            best_table_data = lookup_best_table_cdc_route(bestTable, constructed_apiendpoints, processed_dict)
-            print(best_table_data)
+            elif prompt_type[0] == 3:
+                response = prepromptengineer_health(prompt_type[1])
+                top_cdc_results = get_top_cdc_search_results(response)
+                constructed_apiendpoints = construct_api_endpoint(top_cdc_results)
+                constructed_health_json = create_query_json(constructed_apiendpoints)
+                processed_dict = get_first_5_rows_from_urls(constructed_health_json)
+                bestTable = filterTables(json.dumps(processed_dict), response[1])
+                bestTable_dict = json.loads(bestTable)
+                ranked_health_dic = add_ranks_and_filter_unranked(processed_dict, bestTable_dict)
+                full_health_dic = fetch_json_data(ranked_health_dic)
+                complete_health_dic = convert_sample_data_to_csv(full_health_dic)
+                print(complete_health_dic)
 
-        return {'statusCode': 200}
+                return {
+                    'statusCode': 200,
+                    'headers': cors_headers,
+                    'body': json.dumps(complete_health_dic)
+                }
+
+        else:
+            return {
+                'statusCode': 400,
+                'headers': cors_headers,
+                'body': json.dumps({'message': 'Invalid action'})
+            }
+
     except Exception as e:
-        return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
+        logging.error(f"Error: {str(e)}")
+        return {
+            'statusCode': 500,
+            'headers': cors_headers,
+            'body': json.dumps({'message': str(e)})
+        }
 
 
 def prompt_classification(prompt):
-    client = openai.OpenAI(api_key="insert key here")
+    client = openai.OpenAI(
+        api_key="")
     try:
         chat_completion = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",
                     "content": (
-                        "You are an AI trained to only act as a function for a bigger application. "
-                        "Your job is to classify whether user generated prompt can be better answered using Google Search, The Finance and SEC,"
-                        "or The CDC. If the prompt can be better answered through the use of The use of Google Search, return the number 1."
-                        "If the prompt can relates to a finance question or SEC, return the number 2. And if the prompt can be"
-                        " better answered on through information on the or related to health, return the number 3. Be sure to only return a number and nothing else."
-                        "Prompt: " + prompt
+                            "You are an AI trained to only act as a function for a bigger application. "
+                            "Your job is to classify whether a user-generated prompt can be better answered using Google Search, "
+                            "Finance and SEC, or CDC. If the prompt can be better answered through the use of Google Search, return 'Google'. "
+                            "If the prompt relates to a finance question or SEC, return 'Finance'. "
+                            "If the prompt can be better answered with information related to health, return 'CDC'. "
+                            "Only return the category name and nothing else."
+                            "Prompt: " + prompt
                     )
                 }
             ]
         )
+        print(f"OpenAI response: {chat_completion}")  # Log the response
+
         if chat_completion.choices:
-            generated_text = chat_completion.choices[0].message.content
-            return (int(generated_text), prompt)
+            generated_text = chat_completion.choices[0].message.content.strip()  # This should be the string category
+            if generated_text == "Google":
+                return 1, prompt
+            elif generated_text == "Finance":
+                return 2, prompt
+            elif generated_text == "CDC":
+                return 3, prompt
+            else:
+                raise ValueError(f"Unexpected response from OpenAI: {generated_text}")
         else:
-            return "No response from the model."
+            raise ValueError("No response from OpenAI.")
+
     except Exception as e:
-        return f"An error occurred in pre-prompt engineering: {str(e)}"
+        logging.error(f"Error in prompt classification: {str(e)}")
+        return 0, f"Error: {str(e)}"
 
 
 def prepromptengineer_google(prompt):
-    client = openai.OpenAI(api_key="insert key here")
+    client = openai.OpenAI(
+        api_key="")
     try:
         chat_completion = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",
                     "content": (
-                        "You are an AI trained to only act as a function for a bigger application. "
-                        "Your job is to take a query that a user creates and format it so the Google search engine "
-                        "has a better chance of retrieving that information. Generate three different variations of the query "
-                        "on the same topic. Ensure that one of the returned queries has CSV at the end of the query. Be sure to only return the new queries as a Python list and nothing else. "
-                        "Format your response strictly as: ['query1', 'query2', 'query3']. "
-                        "Original Prompt: " + prompt
+                            "You are an AI trained to only act as a function for a bigger application. "
+                            "Your job is to take a query that a user creates and format it so the Google search engine "
+                            "has a better chance of retrieving that information. Generate three different variations of the query "
+                            "on the same topic. Ensure that one of the returned queries has CSV at the end of the query. Be sure to only return the new queries as a Python list and nothing else. "
+                            "Format your response strictly as: ['query1', 'query2', 'query3']. "
+                            "Original Prompt: " + prompt
                     )
                 }
             ]
@@ -179,19 +242,20 @@ def prepromptengineer_google(prompt):
 
 
 def prepromptengineer_health(prompt):
-    client = openai.OpenAI(api_key="insert key here")
+    client = openai.OpenAI(
+        api_key="")
     try:
         chat_completion = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",
                     "content": (
-                        "You are an AI trained to only act as a function for a bigger application. "
-                        "Your job is to take in a prompt and simplify the prompt so its better used on the cdc website search."
-                        "As an example, Before Prompt: What are the diabetes cases per state? After Prompt: diabetes"
-                        "Be sure to only return the After Prompt after given the before prompt."
-                        "Prompt: " + prompt
+                            "You are an AI trained to only act as a function for a bigger application. "
+                            "Your job is to take in a prompt and simplify the prompt so its better used on the cdc website search."
+                            "As an example, Before Prompt: What are the diabetes cases per state? After Prompt: diabetes"
+                            "Be sure to only return the After Prompt after given the before prompt."
+                            "Prompt: " + prompt
                     )
                 }
             ]
@@ -206,16 +270,16 @@ def prepromptengineer_health(prompt):
 
 
 def get_ticker(initPrompt):
-    client = openai.OpenAI(api_key="insert key here")
-
+    client = openai.OpenAI(
+        api_key="")
 
     prompt = f"Given the sentence below, What is the stock ticker symbol for the company listed? BE SURE TO ONLY RETURN THE TICKER AND NOTHING ELSE! Sentence: {initPrompt}"
 
-
     chat_completion = client.chat.completions.create(
-        model="gpt-4-turbo",
+        model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are a function. I will give you input of a prompt and you will give me a single output of a ticker"},
+            {"role": "system",
+             "content": "You are a function. I will give you input of a prompt and you will give me a single output of a ticker"},
             {"role": "user", "content": prompt}
         ]
     )
@@ -226,7 +290,8 @@ def get_ticker(initPrompt):
 
 
 def classify_prompt(prompt):
-    client = openai.OpenAI(api_key="insert key here")
+    client = openai.OpenAI(
+        api_key="")
 
     supportedFinanceQs = {
         1: 'executive compensation',
@@ -238,10 +303,10 @@ def classify_prompt(prompt):
         7: "Insider Trading",
         8: "Stock Prices",
         9: "NASDAQ",
-        10:"NYSE",
-        11:"NYSEARCA",
-        12:"NYSEMKT",
-        13:"BATS"
+        10: "NYSE",
+        11: "NYSEARCA",
+        12: "NYSEMKT",
+        13: "BATS"
     }
 
     classification_request = f"""
@@ -264,7 +329,7 @@ def classify_prompt(prompt):
     """
 
     chat_completion = client.chat.completions.create(
-        model="gpt-4-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are an expert in finance classification."},
             {"role": "user", "content": classification_request}
@@ -282,8 +347,8 @@ def classify_prompt(prompt):
 
 
 def get_and_print_executive_compensation(ticker):
-    API_KEY = "insert key here"
-    BASE_URL = "https://api.sec-api.io/compensation"
+    API_KEY = ""
+    BASE_URL = ""
 
     url = f"{BASE_URL}/{ticker}?token={API_KEY}"
     response = requests.get(url)
@@ -304,11 +369,9 @@ def get_and_print_executive_compensation(ticker):
         print(f"Error: {response.status_code}")
 
 
-
-
 def get_and_print_directors_csv(company_ticker):
-    API_KEY = "insert key here"
-    BASE_URL = "https://api.sec-api.io/directors-and-board-members"
+    API_KEY = ""
+    BASE_URL = ""
 
     headers = {
         "Authorization": API_KEY
@@ -356,8 +419,8 @@ def get_and_print_directors_csv(company_ticker):
 
 
 def get_and_print_subsidiaries(ticker):
-    API_KEY = "insert key here"
-    BASE_URL = "https://api.sec-api.io/subsidiaries"
+    API_KEY = ""
+    BASE_URL = ""
 
     url = f"{BASE_URL}?token={API_KEY}"
     query = {
@@ -394,7 +457,7 @@ def get_and_print_subsidiaries(ticker):
 
 
 def get_and_print_sro_filings(ticker):
-    API_KEY = "insert key here"
+    API_KEY = ""
     BASE_URL = "https://api.sec-api.io/sro"
 
     headers = {
@@ -436,7 +499,7 @@ def get_and_print_sro_filings(ticker):
 
 
 def get_float_data(ticker):
-    api_key = 'insert key here'
+    api_key = ''
     floatApi = FloatApi(api_key)
 
     response = floatApi.get_float(ticker=ticker)
@@ -457,7 +520,7 @@ def get_float_data(ticker):
 
 
 def get_insider_trading_data(ticker):
-    api_key = "insert key here"
+    api_key = "9a658e0f3e03d9f882ff1529631d3f2120986bafaa496b0c3a66856ccbbb19be"
     url = "https://api.sec-api.io/insider-trading"
     headers = {
         "Authorization": api_key
@@ -527,8 +590,8 @@ def get_insider_trading_data(ticker):
         return f"Error: {response.status_code}"
 
 
-
 def get_stock_prices(ticker):
+    import yfinance as yf
     # Fetch the historical stock price data
     stock = yf.Ticker(ticker)
     hist = stock.history(period="max")
@@ -557,7 +620,7 @@ def get_stock_prices(ticker):
 
 
 def get_nasdaq_companies_csv():
-    api_key = 'insert key here'
+    api_key = ''
     mappingApi = MappingApi(api_key=api_key)
 
     all_nasdaq_listings_json = mappingApi.resolve('exchange', 'NASDAQ')
@@ -583,7 +646,7 @@ def get_nasdaq_companies_csv():
 
 
 def get_nysearca_companies_csv():
-    api_key = 'insert key here'
+    api_key = ''
     mappingApi = MappingApi(api_key=api_key)
 
     all_nysearca_listings_json = mappingApi.resolve('exchange', 'NYSEARCA')
@@ -611,7 +674,7 @@ def get_nysearca_companies_csv():
 
 
 def get_nyse_companies_csv():
-    api_key = 'insert key here'
+    api_key = ''
     mappingApi = MappingApi(api_key=api_key)
 
     all_nyse_listings_json = mappingApi.resolve('exchange', 'NYSE')
@@ -619,13 +682,11 @@ def get_nyse_companies_csv():
     if not all_nyse_listings_json:
         return "No data available for NYSE companies."
 
-
     headers = [
         "name", "ticker", "cik", "cusip", "exchange", "isDelisted",
         "category", "sector", "industry", "sic", "sicSector", "sicIndustry",
         "famaSector", "famaIndustry", "currency", "location", "id"
     ]
-
 
     csv_data = ",".join(headers) + "\n"
 
@@ -639,7 +700,7 @@ def get_nyse_companies_csv():
 
 
 def get_nysemkt_companies_csv():
-    api_key = 'insert key here'
+    api_key = ''
     mappingApi = MappingApi(api_key=api_key)
 
     all_nysemkt_listings_json = mappingApi.resolve('exchange', 'NYSEMKT')
@@ -653,7 +714,6 @@ def get_nysemkt_companies_csv():
         "famaSector", "famaIndustry", "currency", "location", "id"
     ]
 
-
     csv_data = ",".join(headers) + "\n"
 
     for company in all_nysemkt_listings_json:
@@ -666,7 +726,7 @@ def get_nysemkt_companies_csv():
 
 
 def get_bats_companies_csv():
-    api_key = 'insert key here'
+    api_key = ''
     mappingApi = MappingApi(api_key=api_key)
 
     all_bats_listings_json = mappingApi.resolve('exchange', 'BATS')
@@ -693,15 +753,6 @@ def get_bats_companies_csv():
     return csv_data
 
 
-# create get 10k fillings
-
-# creatae get 10q fillings
-
-# Another Backup health care route
-
-# Finish Building Enviromental Route
-
-
 def get_top_google_search_results(queries):
     api_key = ''
     search_engine_id = ''
@@ -723,12 +774,19 @@ def get_top_google_search_results(queries):
 
 
 def fetch_google_results(query, api_key, search_engine_id, found_urls, blacklist):
-    url = "https://www.googleapis.com/customsearch/v1"
+    url = ""
     params = {'q': query, 'key': api_key, 'cx': search_engine_id, 'num': 8}
 
     response = requests.get(url, params=params)
+    print(f"Response from Google API: {response.text}")  # Add this to check the response
+
     if response.status_code == 200:
-        search_results = response.json()
+        try:
+            search_results = response.json()
+        except ValueError:
+            print(f"Invalid JSON response: {response.text}")
+            return []  # Return empty results if the JSON is invalid
+
         top_results = []
         for item in search_results.get('items', []):
             link = item['link']
@@ -741,6 +799,7 @@ def fetch_google_results(query, api_key, search_engine_id, found_urls, blacklist
                 break
         return top_results
     else:
+        print(f"Google API returned error: {response.status_code}")
         return []
 
 
@@ -808,22 +867,29 @@ def construct_api_endpoint(identifiers):
     return endpoints
 
 
-def get_first_5_rows_from_urls(urls):
-    result_dict = {}
+def get_first_5_rows_from_urls(json_data):
+    # Iterate through the dictionary and extract URLs
     with ThreadPoolExecutor(max_workers=5) as executor:
-        futures = {executor.submit(fetch_first_5_rows, url): index for index, url in enumerate(urls, start=1)}
+        futures = {
+            executor.submit(fetch_first_5_rows, json_data[str(index)]["LandingURL"]): index
+            for index in range(1, json_data["NumberOfLinks"] + 1)
+        }
+
+        # Process each future as it completes and append the data to SampleTableData
         for future in as_completed(futures):
             index = futures[future]
-            result_dict[index] = future.result()
-    return result_dict
+            first_5_rows = future.result()
+            json_data[str(index)]["SampleTableData"] = first_5_rows
+
+    return json_data
 
 
 def fetch_first_5_rows(url):
     try:
         response = requests.get(url)
-        response.raise_for_status()
+        response.raise_for_status()  # Ensure the request is successful
         data = response.json()
-        first_5_rows = data[:5] if len(data) >= 5 else data
+        first_5_rows = data[:3] if len(data) >= 3 else data  # Get first 5 rows of data
         return first_5_rows
     except Exception as e:
         print(f"Failed to fetch data from {url}: {e}")
@@ -891,10 +957,10 @@ def update_json_structure_with_csv_tables_images(json_data):
 
     return json_data
 
+
 def fetch_website_data(website_key, website_data, blacklist):
     landing_url = website_data.get("LandingURL", "")
     if any(bl_site in landing_url for bl_site in blacklist):
-
         return {
             "HasCSVFile": False,
             "FileHref": "",
@@ -941,7 +1007,6 @@ def fetch_website_data(website_key, website_data, blacklist):
             "HasUsefulImage": False,
             "ImageHref": ""
         }
-
 
 
 def calculate_data_percentages(json_data):
@@ -1035,7 +1100,8 @@ def process_json_data(json_data):
     result_count = 1
 
     for query, websites in json_data.items():
-        if query in ["QueryStartDate", "QueryEndDate", "CSVDataPercentage", "ImageDataPercentage", "TableDataPercentage"]:
+        if query in ["QueryStartDate", "QueryEndDate", "CSVDataPercentage", "ImageDataPercentage",
+                     "TableDataPercentage"]:
             continue
 
         for website_key, website_data in websites.items():
@@ -1076,13 +1142,14 @@ def rank_tables(data, prompt):
     table_data = {k: v["SampleTableData"] for k, v in data.items() if k.isdigit()}
     table_strings = "\n\n".join([f"Table {k}: {v}" for k, v in table_data.items()])
 
-    client = openai.OpenAI(api_key="insert key here")
+    client = openai.OpenAI(
+        api_key="")
 
     full_prompt = f"Rank the following tables based on their relevance to the prompt. NO 2 keys should have the same rank. BE SURE TO ONLY RETURN THE DICTIONARY. EXAMPLE OUTPUT {{1:2,2:1,3:3}}: '{prompt}'.\n\n{table_strings}\n\nProvide the ranks in the format: {{'(table_number)': rank}}"
 
     try:
         chat_completion = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system",
                  "content": "You are an assistant that ranks tables based on relevance to a given prompt."},
@@ -1100,10 +1167,11 @@ def rank_tables(data, prompt):
         return f"An error occurred: {str(e)}"
 
 
-def add_ranks_to_data(processed_data, rank_data):
-    for index, rank in rank_data.items():
-        if index in processed_data:
-            processed_data[index]["rankOfTable"] = rank
+def add_ranks_to_data(processed_data, rankedList):
+    for table_id, rank in rankedList.items():
+        table_id_str = str(table_id)  # Ensure table ID is a string to match keys in processed_data
+        if table_id_str in processed_data:
+            processed_data[table_id_str]["rankOfTable"] = rank
     return processed_data
 
 
@@ -1180,25 +1248,45 @@ def html_table_to_csv(html_table):
     return "\n".join(csv_data)
 
 
-def convert_sample_table_data_to_csv(data_dict):
-    for key, value in data_dict.items():
-        if isinstance(value, dict) and 'SampleTableData' in value:
-            html_table = value['SampleTableData']
-            csv_output = html_table_to_csv(html_table)
-            value['SampleTableData'] = csv_output
-
-    return data_dict
-
+import re
 
 
 def convert_sample_table_data_to_csv(data_dict):
     for key, value in data_dict.items():
         if isinstance(value, dict) and 'SampleTableData' in value:
             html_table = value['SampleTableData']
-            csv_output = html_table_to_csv(html_table)
+
+            # Remove commas from the HTML table data (treating it as a string if applicable)
+            cleaned_html_table = re.sub(r',', '', str(html_table))  # Remove commas globally
+
+            # Now convert the cleaned HTML table to CSV
+            csv_output = html_table_to_csv(cleaned_html_table)
             value['SampleTableData'] = csv_output
 
     return data_dict
+
+
+def create_query_json(urls):
+    # Get the current timestamp for QueryStartDate
+    query_start_time = int(time.time())
+
+    # Initialize the JSON object
+    query_json = {
+        "QueryStartDate": query_start_time,
+        "QueryEndDate": 0,  # Placeholder for the end date
+        "NumberOfLinks": len(urls)  # Count the number of URLs
+    }
+
+    # Loop through the URLs and populate the JSON structure
+    for idx, url in enumerate(urls, start=1):
+        query_json[str(idx)] = {
+            "LandingURL": url,
+            "rankOfTable": None,  # Placeholder for rankOfTable
+            "SampleTableData": None  # Placeholder for SampleTableData
+        }
+
+    # Return the JSON object
+    return query_json
 
 
 def add_ranks_and_filter_unranked(data, ranks):
@@ -1250,6 +1338,10 @@ def fetch_json_data(data_object):
 
 
 def convert_sample_data_to_csv(data):
+    # Stamp QueryEndDate with the current Unix time
+    data['QueryEndDate'] = int(time.time())
+
+    # Convert the SampleTableData to CSV format
     for key, value in data.items():
         if isinstance(value, dict) and 'SampleTableData' in value:
             sample_data = value.get('SampleTableData', [])
@@ -1265,51 +1357,27 @@ def convert_sample_data_to_csv(data):
                 writer = csv.DictWriter(output, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(sample_data)
-                value['SampleTableData'] = output.getvalue()  # Replace SampleTableData with CSV string
+
+                # Replace SampleTableData with CSV string
+                value['SampleTableData'] = output.getvalue()
+
     return data
 
 
 def filterTables(dict, prompt):
-    client = openai.OpenAI(api_key="")
+    client = openai.OpenAI(
+        api_key="")
     try:
         chat_completion = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",
                     "content": (
                             "You are a function designed to process a dictionary of tables and determine the top 3 most relevant tables to the given query. "
                             "Your task is to return only the keys of the top 3 most relevant tables, ranked from most relevant to least relevant. "
-                            "Return the result in the exact format: {table_key_1: rank_1, table_key_2: rank_2, table_key_3: rank_3}. "
+                            "Return the result in the exact format: {table_key_1: rank_1, table_key_2: rank_2, table_key_3: rank_3}."
                             "Here is the query: '" + prompt + "' and the dictionary of tables: " + dict + "BE SURE TO ONLY RETURNED THE RANKED DICTIONARY AND NOTHING ELSE."
-                    )
-                }
-            ]
-        )
-        if chat_completion.choices:
-            generated_text = chat_completion.choices[0].message.content
-            return generated_text.strip()
-        else:
-            return "No response from the model."
-    except Exception as e:
-        return f"An error occurred in pre-prompt engineering: {str(e)}"
-
-
-        
-
-def filterTables(dict, prompt):
-    client = openai.OpenAI(api_key="insert key here")
-    try:
-        chat_completion = client.chat.completions.create(
-            model="gpt-4-turbo",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "Given the python dictionary containing series of key and values. Keys being the index of how "
-                        "many tables, and values being objects that contain information about the tables. Return the key and only the key, "
-                        "that has the most relevance to the query. BE SURE TO ONLY RETURN THE KEY, not the key in quotation marks but just the single interger. The prompt"
-                        "is:" + prompt + ". The dictionary: " + dict
                     )
                 }
             ]
@@ -1340,40 +1408,24 @@ def lookup_best_table_cdc_route(best_table_key, urls, processed_dict):
         }
 
 def compress_json_data(data):
-    # Stamp the QueryEndDate with the current Unix timestamp
-    data['QueryEndDate'] = int(time.time())
-    
-    # Convert the JSON object to a string and then to bytes
     json_str = json.dumps(data)
     json_bytes = json_str.encode('utf-8')
-    
-    # Print the size before compression
-    print(f"Size before compression: {len(json_bytes)} bytes")
-    
-    # Compress the JSON bytes using gzip
+
     compressed_buffer = BytesIO()
     with gzip.GzipFile(fileobj=compressed_buffer, mode='wb') as gzip_file:
         gzip_file.write(json_bytes)
-    
-    # Get the compressed data
-    compressed_data = compressed_buffer.getvalue()
-    
-    # Print the size after compression
-    print(f"Size after compression: {len(compressed_data)} bytes")
-    
-    return compressed_data
 
+    compressed_data = compressed_buffer.getvalue()
+
+    return compressed_data
 
 def send_chunks(endpoint, connection_id, response_data, chunk_size=120000):
     response_data_str = str(response_data)
 
     client = boto3.client('apigatewaymanagementapi',
-                          endpoint_url="https://9f2wyu1469.execute-api.us-east-1.amazonaws.com/production")
+                          endpoint_url="")
 
     chunks = [response_data_str[i:i + chunk_size] for i in range(0, len(response_data_str), chunk_size)]
 
     for chunk in chunks:
         client.post_to_connection(ConnectionId=connection_id, Data=chunk.encode('utf-8'))
-
-
-lambda_handler('test', 'test')
