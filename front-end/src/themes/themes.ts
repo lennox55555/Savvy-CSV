@@ -19,7 +19,7 @@ export const themes: { [key: string]: ThemeType } = {
     'bs-active-btn-bg': 'hsl(14, 91%, 54%)',
     'bs-msg-bubble-bg': 'linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%)',
     'bs-msg-bubble-loading-bg': 'linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%)',
-    'bs-table-header-color': 'linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%)',
+    'bs-table-header-color': 'linear-gradient(180deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%)',
     'bs-table-border-color': 'hsl(14, 91%, 54%)',
     'bs-table-button-color': 'hsl(14, 91%, 54%)',
     'bs-table-data-color': '#202124',
