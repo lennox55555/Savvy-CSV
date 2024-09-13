@@ -52,7 +52,6 @@ const SavvyBot: React.FC = () => {
         }
     };
 
-
     const handleSubmit = async () => {
 
         if (textAreaValue.trim() !== '') {

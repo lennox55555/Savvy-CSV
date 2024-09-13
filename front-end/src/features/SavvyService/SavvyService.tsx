@@ -45,7 +45,7 @@ const SavvyService: React.FC = () => {
                 requestCount++;
                 console.log(requestCount);
                 setUserIconUrl(currentUser.photoURL);
-                setUsername(currentUser.displayName?.replace(/\s+/g, '').toLowerCase() || '');
+                setUsername(currentUser.displayName?.replace(/\s+/g, '').toLowerCase() || currentUser.email?.replace(/\s+/g, '').toLowerCase().replace(/@|\.com/g, '') || '')
                 setTimeout(() => {
                     requestCount = 0;
                 }, requestInterval);
@@ -121,7 +121,46 @@ const SavvyService: React.FC = () => {
                             )}
                         </div>
                     ) : (
-                        <p></p>
+                        <div className="profile-content">
+                            <div className="profile-image">
+                                <i className="fa-regular fa-user" onClick={toggleDropdown} style={{ color: 'var(--bs-usr-icon-color)', fontSize: '20px' }}></i>
+                                </div>
+                            {dropdownOpen && (
+                                <div className="dropdown-wrapper">
+                                    <div className="sub-dropdown">
+                                        <div className="user-info">
+                                        <i className="fa-regular fa-user" style={{ color: 'var(--bs-usr-icon-color)', fontSize: '20px', paddingLeft: '12px' }}></i>
+                                            <div style={{ color: 'darkgray', fontSize: '14px', paddingLeft: '12px'}}>{username}</div>
+                                        </div>
+                                        <hr></hr>
+                                        <div className='dropdown-item-wrapper'>
+                                        {themeName === 'dark' ? ( 
+                                            <div className='dropdown-row' onClick={toggleTheme}>
+                                                <div className='icon-wrapper'>
+                                                    <i className="bi bi-sun" style={{ fontSize: '18px', marginBottom: '-5px'}}></i>
+                                                </div>
+                                                <div className="dropdown-action">Light Theme</div>
+                                            </div>
+                                        ) : (
+                                            <div className='dropdown-row' onClick={toggleTheme}>
+                                                <div className='icon-wrapper'>
+                                                    <i className="fa-regular fa-moon" style={{ fontSize: '20px' }}></i>
+                                                </div>
+                                                <div className="dropdown-action">Dark Theme</div>
+                                            </div>
+                                        )} 
+                                            <div className='dropdown-row' onClick={handleLogOut}>
+                                                <div className='icon-wrapper'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="logout-icon"><path d="M6 4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4a1 1 0 1 1 0 2H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3h4a1 1 0 1 1 0 2zm9.293 3.293a1 1 0 0 1 1.414 0l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414-1.414L17.586 13H11a1 1 0 1 1 0-2h6.586l-2.293-2.293a1 1 0 0 1 0-1.414"></path>
+                                                    </svg>
+                                                </div>
+                                                <div className="dropdown-action">Log out</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     )}
                 </div>
             </header>
