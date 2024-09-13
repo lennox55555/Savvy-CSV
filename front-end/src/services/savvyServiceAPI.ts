@@ -1,5 +1,6 @@
 import { addDoc, collection, doc, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase/firebase-init";
+import pako from 'pako'
 
 class SavvyServiceAPI {
     private static instance: SavvyServiceAPI;
@@ -88,26 +89,49 @@ class SavvyServiceAPI {
     }
 
     private handleMessage(data: string, onMessageReceived: (data: any) => void, userId: string): void {
-        this.objec += data;
+        try {
+            // Step 1: Parse the incoming message to extract the 'compressed_data' field
+            const parsedMessage = JSON.parse(data);
+            const base64Data = parsedMessage.compressed_data;
 
-        let openBrackets = 0;
-        let closeBrackets = 0;
+            // Step 2: Decode the base64-encoded string
+            const decodedData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
 
-        for (const char of this.objec) {
-            if (char === '{') openBrackets++;
-            if (char === '}') closeBrackets++;
-        }
+            // Step 3: Decompress the decoded data using pako
+            const decompressedData = pako.ungzip(decodedData, { to: 'string' });
 
-        if (openBrackets > 0 && openBrackets === closeBrackets) {
-            try {
-                const fullObject = JSON.parse(this.objec);
-                this.saveMessage(userId, this.objec, false)
-                onMessageReceived(fullObject); 
-                this.objec = ""; // Reset the accumulated string
-            } catch (error) {
-                console.error('Error processing the complete message:', error);
-                this.objec = "";
+            // Step 4: Accumulate the decompressed data
+            this.objec += decompressedData;
+
+            let openBrackets = 0;
+            let closeBrackets = 0;
+
+            // Step 5: Check if the message is complete (i.e., number of open and close braces match)
+            for (const char of this.objec) {
+                if (char === '{') openBrackets++;
+                if (char === '}') closeBrackets++;
             }
+
+            // Step 6: Process the message if it is complete
+            if (openBrackets > 0 && openBrackets === closeBrackets) {
+                try {
+                    // Parse the complete JSON message
+                    const fullObject = JSON.parse(this.objec);
+
+                    // Save the message and invoke the callback with the parsed data
+                    this.saveMessage(userId, this.objec, false);
+                    onMessageReceived(fullObject);
+
+                    // Reset the accumulated string after processing
+                    this.objec = "";
+                } catch (error) {
+                    console.error('Error processing the complete message:', error);
+                    this.objec = ""; // Reset on error
+                }
+            }
+        } catch (error) {
+            console.error('Error decoding or decompressing the message:', error);
+            this.objec = ""; // Reset on error
         }
     }
 }
