@@ -13,7 +13,7 @@ const AutosizeTextArea: React.FC<AutosizeTextAreaProps> = ({
   onChange,
   onKeyDown,
   maxHeight,
-  placeholder,
+  placeholder
 }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -39,6 +39,7 @@ const AutosizeTextArea: React.FC<AutosizeTextAreaProps> = ({
       onKeyDown={onKeyDown}
       placeholder={placeholder}
       rows={1}
+      autoFocus={false}
       style={{ overflow: "hidden", resize: "none" }}
     />
   );

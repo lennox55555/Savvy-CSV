@@ -13,6 +13,7 @@
     width: 100%;
     align-items: center;
     justify-content: center;
+    position: fixed;
 }
 
 .messageBoxAligner {
@@ -20,7 +21,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
 }
 
 .messageBoxWrapper {
@@ -114,24 +114,17 @@
 }
 
 .messageBar {
-    position: relative;
-    height: 7rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    position: fixed; /* Or absolute */
+    bottom: 0;
     width: 100%;
-    margin-top: auto;
+    height: 6rem;
     z-index: 2;
-    flex-grow: 1;
-    outline: none;
 }
 
 .messageBarWrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 70vw;
     margin-bottom: 8px;
     margin: 0 auto;
 }
@@ -164,7 +157,7 @@
 
 .messageBar .messageBarWrapper {
     position: relative;
-    width: 70vw;
+    max-width: 920px;
     padding: 10px;
     display: flex;
     align-items: center;
@@ -380,12 +373,6 @@ span a {
     }
     .messageBoxWrapper {
         width: 550px; /* 40px reduction */
-    }
-}
-
-@media (max-width: 576px) {
-    .messageBarWrapper {
-        width: 240px;
     }
 }
 
