@@ -237,28 +237,38 @@ const SavvyBot: React.FC = () => {
                         <div ref={messageEndRef} />
                         {isLoading === true && (
                             <div>
-                                <div className={styles.messageBubbleLoading}>
-                                    <div className={styles.typingIndicator}>
-                                        <div className={styles.dot}></div>
-                                        <div className={styles.dot}></div>
-                                        <div className={styles.dot}></div>
+                                <div className={styles.messageItemContainer}>
+                                    <div className={styles.savvyResponse}>
+                                        <div className={styles.messageBubbleLoading}>
+                                            <div className={styles.typingIndicator}>
+                                                <div className={styles.dot}></div>
+                                                <div className={styles.dot}></div>
+                                                <div className={styles.dot}></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         )}
                         {tableData && isLoading === false && (
-                            <div className={styles.tableButtonGroup}>
-                                <span onClick={handleRefresh} className="material-symbols-outlined" title="New Table">
-                                    cached
-                                </span>
-                                <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
-                                    download
-                                </span>
-                                <span className="material-symbols-outlined" title="Data Source">
-                                    <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
-                                        link
-                                    </a>
-                                </span>
+                            <div>
+                                <div className={styles.messageItemContainer}>
+                                    <div className={styles.savvyResponse}>
+                                        <div className={styles.tableButtonGroup}>
+                                            <span onClick={handleRefresh} className="material-symbols-outlined" title="New Table">
+                                                cached
+                                            </span>
+                                            <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
+                                                download
+                                            </span>
+                                            <span className="material-symbols-outlined" title="Data Source">
+                                                <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
+                                                    link
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>
