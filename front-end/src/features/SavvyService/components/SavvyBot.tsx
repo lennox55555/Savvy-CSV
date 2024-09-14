@@ -4,20 +4,13 @@ import AutosizeTextArea from '../../../utils/useAutosizeTextArea';
 import { getAuth } from 'firebase/auth';
 import SavvyServiceAPI from '../../../services/savvyServiceAPI';
 import { UserMessage } from '../../../utils/types';
-
-type NestedObject = {
-    [key: string]: {
-        rankOfTable: number;
-        SampleTableData: string;
-        website: string;
-    };
-};
+import { TableObject } from '../../../utils/types';
 
 const SavvyBot: React.FC = () => {
     const [textAreaValue, setTextAreaValue] = useState('');
     const [messages, setMessages] = useState<UserMessage[]>([]);
-    const [tableData, setTableData] = useState<NestedObject | null>(null);
-    const [currentTableRank, setCurrentTableRank] = useState<number>(1); // State to track the current table rank
+    const [tableData, setTableData] = useState<TableObject | null>(null);
+    const [currentTableRank, setCurrentTableRank] = useState<number>(1);
     const [isLoading, setIsLoading] = useState(false);
     const [currentTabelSource, setCurrentTableSource] = useState('');
 
@@ -32,15 +25,13 @@ const SavvyBot: React.FC = () => {
 
                 const processedMessages = fetchedMessages.map(message => {
                     if (!message.user) {
-                        console.log(message)
                         return {
                             ...message,
-                            text: displayTableForRank(JSON.parse(message.text), 1) // Assuming message.text contains JSON data for the table
+                            text: displayTableForRank(JSON.parse(message.text), message.rank || 1),
                         };
                     }
                     return message;
                 });
-                console.log(processedMessages)
                 setMessages(processedMessages);
             } catch (err: unknown) {
                 if (err instanceof Error) {
@@ -52,24 +43,51 @@ const SavvyBot: React.FC = () => {
         }
     };
 
-
     const handleSubmit = async () => {
 
         if (textAreaValue.trim() !== '') {
             const currentUser = getAuth().currentUser;
 
             if (currentUser) {
+
+                if (currentTabelSource != '') {
+                    try {
+                        await SavvyServiceAPI.getInstance().updateLastMessage(currentUser.uid, currentTabelSource, currentTableRank)
+
+                        //  Updating the previous table with it's last currentRank & sourceURL
+                        setMessages(prevMessages => {
+                            if (prevMessages.length > 0) {
+                                const lastIndex = prevMessages.length - 1;
+
+                                // Check if the last message is a non-user message (table data)
+                                if (!prevMessages[lastIndex].user) {
+                                    // Directly modify the last message object
+                                    prevMessages[lastIndex].rank = currentTableRank;
+                                    prevMessages[lastIndex].source = currentTabelSource;
+                                }
+                            }
+
+                            // Return the same array since we're modifying in place
+                            return [...prevMessages];  // Spread to trigger re-render
+                        });
+
+
+                    } catch (error) {
+                        console.error("Failed to update previous table object:", error);
+                    }
+                }
+
                 try {
-                    // User message
                     await SavvyServiceAPI.getInstance().saveMessage(currentUser.uid, textAreaValue, true);
 
                     // Add user message to the message list
-                    setMessages([...messages, { id: '', text: textAreaValue, user: true }]);
+                    setMessages(prevMessages =>
+                        [...prevMessages, { id: '', text: textAreaValue, user: true, source: '', rank: null }]);
 
                     // Initialize WebSocket and listen for bot response
-                    setIsLoading(true);
                     SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue, currentUser.uid);
 
+                    setIsLoading(true);
                     setTextAreaValue('');
 
                 } catch (error) {
@@ -79,9 +97,9 @@ const SavvyBot: React.FC = () => {
         }
     };
 
-    const handleWebSocketMessage = (data: NestedObject) => {
+    const handleWebSocketMessage = (data: TableObject) => {
         setTableData(data);
-        setMessages([...messages, { id: '', text: displayTableForRank(data, 1), user: false }])
+        setMessages(prevMessages => [...prevMessages, { id: '', text: displayTableForRank(data, 1), user: false, source: '', rank: null }])
         setIsLoading(false);
     };
 
@@ -92,12 +110,12 @@ const SavvyBot: React.FC = () => {
         }
     };
 
-    const displayTableForRank = (data: NestedObject | null, rank: number): JSX.Element | null => {
+    const displayTableForRank = (data: TableObject | null, rank: number): JSX.Element | null => {
         for (const key in data) {
             if (data[key].rankOfTable == rank) {
                 setCurrentTableSource(data[key].website);
                 return (
-                    <div>
+                    <div className={styles.tableWrapper}>
                         <table className={styles.tableContainer}>
                             <thead className={styles.tableHeader}>
                                 <tr>
@@ -141,7 +159,7 @@ const SavvyBot: React.FC = () => {
 
                 return [
                     ...messages,
-                    { id: '', text: displayTableForRank(tableData, nextRank), user: false }
+                    { id: '', text: displayTableForRank(tableData, nextRank), user: false, source: currentTabelSource, rank: null }
                 ];
             });
         }
@@ -170,7 +188,7 @@ const SavvyBot: React.FC = () => {
 
     useEffect(() => {
         fetchMessages();
-    }, [tableData]);
+    }, []);
 
     useEffect(() => {
         if (messageEndRef.current) {
@@ -185,82 +203,108 @@ const SavvyBot: React.FC = () => {
                     <div className={styles.messageBoxWrapper}>
                         {messages.map((message, index) => (
                             message.user ? (
-                                <div className={styles.messageItemContainer}>
-                                    <div key={index} className={styles.userMessage}>
-                                        <div className={styles.messageBubble}>
-                                            {message.text}
+                                <div>
+                                    <div className={styles.messageItemContainer}>
+                                        <div key={index} className={styles.userMessage}>
+                                            <div className={styles.messageBubble}>
+                                                {message.text}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             ) : (
-                                <div className={styles.messageItemContainer}>
-                                    <div key={index} className={styles.savvyResponse}>
-                                        {message.text}
+                                <div>
+                                    <div className={styles.messageItemContainer}>
+                                        <div key={index} className={styles.savvyResponse} tabIndex={0}>
+                                            {message.text}
+                                        </div>
+                                        {message.rank != null && (
+                                            <div className={styles.tableButtonGroup}>
+                                                <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
+                                                    download
+                                                </span>
+                                                <span className="material-symbols-outlined" title="Data Source">
+                                                    <a href={message.source} target="_blank" rel="noopener noreferrer">
+                                                        link
+                                                    </a>
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )
                         ))}
+                        <div ref={messageEndRef} />
                         {isLoading === true && (
-                            <div className={styles.savvtResponse}>
-                                <div className={styles.messageBubbleLoading}>
-                                    <div className={styles.typingIndicator}>
-                                        <div className={styles.dot}></div>
-                                        <div className={styles.dot}></div>
-                                        <div className={styles.dot}></div>
+                            <div>
+                                <div className={styles.messageItemContainer}>
+                                    <div className={styles.savvyResponse}>
+                                        <div className={styles.messageBubbleLoading}>
+                                            <div className={styles.typingIndicator}>
+                                                <div className={styles.dot}></div>
+                                                <div className={styles.dot}></div>
+                                                <div className={styles.dot}></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         )}
                         {tableData && isLoading === false && (
-                            <div className={styles.tableButtonGroup}>
-                                <span onClick={handleRefresh} className="material-symbols-outlined" title="New Table">
-                                    cached
-                                </span>
-                                <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
-                                    download
-                                </span>
-                                <span className="material-symbols-outlined" title="Data Source">
-                                    <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
-                                        link
-                                    </a>
-                                </span>
+                            <div>
+                                <div className={styles.messageItemContainer}>
+                                    <div className={styles.savvyResponse}>
+                                        <div className={styles.tableButtonGroup}>
+                                            <span onClick={handleRefresh} className="material-symbols-outlined" title="New Table">
+                                                cached
+                                            </span>
+                                            <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
+                                                download
+                                            </span>
+                                            <span className="material-symbols-outlined" title="Data Source">
+                                                <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
+                                                    link
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         )}
-                        <div ref={messageEndRef} />
                     </div>
                 </div>
-                {/* MOVE CODE SOMEWHERE ELSE */}
+            </div>
+            {/* Message Bar  */}
 
-                <div className={styles.messageBar}>
-                    <div className={styles.messageBarWrapper}>
-                        <AutosizeTextArea
-                            value={textAreaValue}
-                            onChange={setTextAreaValue}
-                            onKeyDown={handleKeyDown}
-                            maxHeight={150}
-                            placeholder="Message SavvyCSV"
-                        />
-                        {textAreaValue === '' && !isLoading ? (
-                            <button className={styles.messageButton}>
-                                <i className="fa-solid fa-circle-up" style={{ fontSize: '36px', color: 'darkgray', cursor: 'default' }}></i>
-                            </button>
-                        ) : (
-                            <button className={styles.messageButton} onClick={handleSubmit}>
-                                <i className="fa-solid fa-circle-up" style={{ fontSize: '36px', color: 'var(--bs-active-btn-bg)', cursor: 'pointer' }}></i>
-                            </button>
-                        )}
-                        {isLoading && (
-                            <button className={styles.messageButton}>
-                                <i className="fa-solid fa-circle-stop" style={{ fontSize: '38px', color: 'var(--bs-active-btn-bg)' }}></i>
-                            </button>
-                        )}
-                    </div>
-                    {/*
+            <div className={styles.messageBar}>
+                <div className={styles.messageBarWrapper}>
+                    <AutosizeTextArea
+                        value={textAreaValue}
+                        onChange={setTextAreaValue}
+                        onKeyDown={handleKeyDown}
+                        maxHeight={150}
+                        placeholder="Message SavvyCSV"
+                    />
+                    {textAreaValue === '' && !isLoading ? (
+                        <button className={styles.messageButton}>
+                            <i className="fa-solid fa-circle-up" style={{ fontSize: '36px', color: 'darkgray', cursor: 'default' }}></i>
+                        </button>
+                    ) : (
+                        <button className={styles.messageButton} onClick={handleSubmit}>
+                            <i className="fa-solid fa-circle-up" style={{ fontSize: '36px', color: 'var(--bs-active-btn-bg)', cursor: 'pointer' }}></i>
+                        </button>
+                    )}
+                    {isLoading && (
+                        <button className={styles.messageButton}>
+                            <i className="fa-solid fa-circle-stop" style={{ fontSize: '38px', color: 'var(--bs-active-btn-bg)' }}></i>
+                        </button>
+                    )}
+                </div>
+                {/*
                         <div className={styles.userFeedback}>
                             Feedback? Contact us<Link to='/feedback' style={{ textDecorationLine: 'blink' }}> here.</Link>
                         </div>
                     */}
-                </div>
             </div>
         </>
     );

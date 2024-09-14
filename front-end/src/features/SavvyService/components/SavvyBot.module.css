@@ -2,26 +2,28 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
-    overflow: hidden;
-    justify-content: center;
-    margin: 0 auto;
-    align-items: center;
     background-color: var(--bs-msg-bg);
 }
 
 .messageBoxContainer {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
     overflow-y: auto;
     max-height: calc(100vh - 12rem);
     width: 100%;
     align-items: center;
+    justify-content: center;
+    position: fixed;
+    
 }
 
 .messageBoxWrapper {
-    width: 70%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: auto; 
+    overflow: auto;
+    margin: 0 auto;
 }
 
 .savvyResponse,
@@ -45,20 +47,62 @@
     position: relative;
     max-height: 100%;
     overflow-x: auto;
-    margin-top: 75px;
-    margin-bottom: 75px;
+    margin: 55px 0 55px 0; /* Space between messages */
 }
 
 .savvyResponse {
     max-height: 100%;
+    justify-content: flex-start;
     position: relative;
-    overflow-y: auto;
     max-height: 500px;
+    overflow-y: hidden;
+    outline: none;
+}
+
+.savvyResponse:focus {
+    overflow-y: auto;
 }
 
 .messageItemContainer {
+    max-width: 800px;
     max-height: 75%;
-    max-width: 1050px /* Prevents table width from breaking SavvyContainer */
+    margin: 0 auto;
+     /* Prevents table width from breaking SavvyContainer */
+}
+
+.messageItemContainer:focus {
+    overflow-y: auto;
+}
+
+.messageItemContainer:focus-within .tableHeaderData {
+    color: #ffff;
+    animation: fadeInLeftToRight 0.3s ease-in-out forwards;
+    border: none;
+}
+
+@keyframes fadeInLeftToRight {
+    0% {
+        opacity: 0; /* Fully transparent */
+    }
+    100% {
+        opacity: 1; /* Fully visible */
+    }
+}
+
+.messageItemContainer:focus-within .tableHeader { 
+    border: none;
+    opacity: 0; 
+    animation: fadeInBackground 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeInBackground {
+    0% {
+        background: #2F2F2F;
+    }
+    100% {
+        background: linear-gradient(180deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%); /* Full gradient */
+        opacity: 1;
+    }
 }
 
 .messageBubble {
@@ -108,24 +152,17 @@
 }
 
 .messageBar {
-    position: relative;
-    height: 7rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    position: absolute; /* Or absolute */
+    bottom: 0;
     width: 100%;
-    margin-top: auto;
+    height: 6rem;
     z-index: 2;
-    flex-grow: 1;
-    outline: none;
 }
 
 .messageBarWrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 400px;
     margin-bottom: 8px;
     margin: 0 auto;
 }
@@ -158,7 +195,7 @@
 
 .messageBar .messageBarWrapper {
     position: relative;
-    width: 72%;
+    max-width: 920px;
     padding: 10px;
     display: flex;
     align-items: center;
@@ -259,59 +296,128 @@ span a {
 }
 
 @media (max-width: 1400px) {
-    .messageBarWrapper {
-        width: 600px;
-    }
+
     .savvybotContainer {
         width: 100%;
     }
 }
 
 @media (max-width: 1200px) {
-    .messageBarWrapper {
-        width: 500px;
-    }
+
     .savvybotContainer {
-        width: 1100px;
+        width: 100%;
     }
 }
 
-@media (max-width: 992px) {
-    .messageBarWrapper {
-        width: 400px;
+@media (max-width: 940px) {
+    .messageBarWrapper .messageBar {
+        width: 860px; /* 40px reduction */
     }
     .savvybotContainer {
-        width: 750px;
+        width: 100%;
+    }
+    .messageItemContainer {
+        width: 100%;
+    }
+    .messageBoxWrapper {
+        width: 750px; /* 40px reduction */
     }
 }
 
-@media only screen and (max-width: 768px) {
-    .messageBarWrapper {
-        width: 320px;
+@media (max-width: 900px) {
+    .messageBarWrapper .messageBar {
+        width: 820px; /* 40px reduction */
     }
     .savvybotContainer {
-        width: 514px;
-        height: 80vh;;
+        width: 100%;
     }
-    .messageBoxContainer {
-        height: 100vh;
+    .messageItemContainer {
+        width: 100%;
     }
-    .messageBar {
-        position: absolute;
-        bottom: 0;
+    .messageBoxWrapper {
+        width: 710px; /* 40px reduction */
     }
 }
 
-@media (max-width: 576px) {
-    .messageBarWrapper {
-        width: 240px;
+@media (max-width: 860px) {
+    .messageBarWrapper .messageBar {
+        width: 780px; /* 40px reduction */
+    }
+    .savvybotContainer {
+        width: 100%;
+    }
+    .messageItemContainer {
+        width: 100%;
+    }
+    .messageBoxWrapper {
+        width: 670px; /* 40px reduction */
+    }
+}
+
+@media (max-width: 820px) {
+    .messageBarWrapper .messageBar {
+        width: 740px; /* 40px reduction */
+    }
+    .savvybotContainer {
+        width: 100%;
+    }
+    .messageItemContainer {
+        width: 100%;
+    }
+    .messageBoxWrapper {
+        width: 630px; /* 40px reduction */
+    }
+}
+
+@media (max-width: 780px) {
+    .messageBarWrapper .messageBar {
+        width: 700px; /* 40px reduction */
+    }
+    .savvybotContainer {
+        width: 100%;
+    }
+    .messageItemContainer {
+        width: 100%;
+    }
+    .messageBoxWrapper {
+        width: 590px; /* 40px reduction */
+    }
+}
+
+@media (max-width: 740px) {
+    .messageBarWrapper .messageBar {
+        width: 660px; /* 40px reduction */
+    }
+    .savvybotContainer {
+        width: 100%;
+    }
+    .messageItemContainer {
+        width: 100%;
+    }
+    .messageBoxWrapper {
+        width: 550px; /* 40px reduction */
+    }
+}
+
+@media (max-width: 680px) {
+    .messageBarWrapper .messageBar {
+        width: 580px; /* 40px reduction */
+    }
+    .savvybotContainer {
+        width: 100%;
+    }
+    .messageItemContainer {
+        width: 100%;
+    }
+    .messageBoxWrapper {
+        width: 550px; /* 40px reduction */
     }
 }
 
 @media only screen and (max-width: 430px) {
     .savvybotContainer {
         width: 100%;
-        height: 90vh; 
+        height: 70vh; 
         padding: 0 10px; 
     }
 
@@ -331,12 +437,12 @@ span a {
 
     .savvyResponse,
     .userMessage {
-        font-size: 12px; 
+        font-size: 15px; 
         gap: 10px; 
     }
 
     .messageBubble {
-        padding: 8px 16px; 
+        padding: 12px 22px; 
         max-width: 80%; 
     }
 
@@ -352,6 +458,7 @@ span a {
     .messageBarWrapper {
         width: 100%; 
         padding: 8px;
+        bottom: 4em;
     }
 
     .messageBarWrapper textarea {
@@ -367,11 +474,11 @@ span a {
     }
 
     .tableHeader {
-        font-size: 12px; 
+        font-size: 15px; 
     }
 
     .tableBodyData {
-        font-size: 12px; 
+        font-size: 15px; 
     }
 
     .messageBar {
