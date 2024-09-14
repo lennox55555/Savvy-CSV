@@ -5,7 +5,6 @@ import { getAuth } from 'firebase/auth';
 import SavvyServiceAPI from '../../../services/savvyServiceAPI';
 import { UserMessage } from '../../../utils/types';
 import { TableObject } from '../../../utils/types';
-import UserServiceAPI from '../../../services/userServiceAPI';
 
 const SavvyBot: React.FC = () => {
     const [textAreaValue, setTextAreaValue] = useState('');
@@ -116,7 +115,7 @@ const SavvyBot: React.FC = () => {
             if (data[key].rankOfTable == rank) {
                 setCurrentTableSource(data[key].website);
                 return (
-                    <div>
+                    <div className={styles.tableWrapper}>
                         <table className={styles.tableContainer}>
                             <thead className={styles.tableHeader}>
                                 <tr>
@@ -201,10 +200,10 @@ const SavvyBot: React.FC = () => {
         <>
             <div className={styles.savvybotContainer}>
                 <div className={styles.messageBoxContainer}>
-                    <div className={styles.messageBoxAligner}>
-                        <div className={styles.messageBoxWrapper}>
-                            {messages.map((message, index) => (
-                                message.user ? (
+                    <div className={styles.messageBoxWrapper}>
+                        {messages.map((message, index) => (
+                            message.user ? (
+                                <div>
                                     <div className={styles.messageItemContainer}>
                                         <div key={index} className={styles.userMessage}>
                                             <div className={styles.messageBubble}>
@@ -212,10 +211,11 @@ const SavvyBot: React.FC = () => {
                                             </div>
                                         </div>
                                     </div>
-
-                                ) : (
+                                </div>
+                            ) : (
+                                <div>
                                     <div className={styles.messageItemContainer}>
-                                        <div key={index} className={styles.savvyResponse}>
+                                        <div key={index} className={styles.savvyResponse} tabIndex={0}>
                                             {message.text}
                                         </div>
                                         {message.rank != null && (
@@ -231,70 +231,70 @@ const SavvyBot: React.FC = () => {
                                             </div>
                                         )}
                                     </div>
-                                )
-                            ))}
-                            <div ref={messageEndRef} />
-                            {isLoading === true && (
-                                <div>
-                                    <div className={styles.messageBubbleLoading}>
-                                        <div className={styles.typingIndicator}>
-                                            <div className={styles.dot}></div>
-                                            <div className={styles.dot}></div>
-                                            <div className={styles.dot}></div>
-                                        </div>
+                                </div>
+                            )
+                        ))}
+                        <div ref={messageEndRef} />
+                        {isLoading === true && (
+                            <div>
+                                <div className={styles.messageBubbleLoading}>
+                                    <div className={styles.typingIndicator}>
+                                        <div className={styles.dot}></div>
+                                        <div className={styles.dot}></div>
+                                        <div className={styles.dot}></div>
                                     </div>
                                 </div>
-                            )}
-                            {tableData && isLoading === false && (
-                                <div className={styles.tableButtonGroup}>
-                                    <span onClick={handleRefresh} className="material-symbols-outlined" title="New Table">
-                                        cached
-                                    </span>
-                                    <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
-                                        download
-                                    </span>
-                                    <span className="material-symbols-outlined" title="Data Source">
-                                        <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
-                                            link
-                                        </a>
-                                    </span>
-                                </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
+                        {tableData && isLoading === false && (
+                            <div className={styles.tableButtonGroup}>
+                                <span onClick={handleRefresh} className="material-symbols-outlined" title="New Table">
+                                    cached
+                                </span>
+                                <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
+                                    download
+                                </span>
+                                <span className="material-symbols-outlined" title="Data Source">
+                                    <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
+                                        link
+                                    </a>
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
-                {/* Message Bar  */}
+            </div>
+            {/* Message Bar  */}
 
-                <div className={styles.messageBar}>
-                    <div className={styles.messageBarWrapper}>
-                        <AutosizeTextArea
-                            value={textAreaValue}
-                            onChange={setTextAreaValue}
-                            onKeyDown={handleKeyDown}
-                            maxHeight={150}
-                            placeholder="Message SavvyCSV"
-                        />
-                        {textAreaValue === '' && !isLoading ? (
-                            <button className={styles.messageButton}>
-                                <i className="fa-solid fa-circle-up" style={{ fontSize: '36px', color: 'darkgray', cursor: 'default' }}></i>
-                            </button>
-                        ) : (
-                            <button className={styles.messageButton} onClick={handleSubmit}>
-                                <i className="fa-solid fa-circle-up" style={{ fontSize: '36px', color: 'var(--bs-active-btn-bg)', cursor: 'pointer' }}></i>
-                            </button>
-                        )}
-                        {isLoading && (
-                            <button className={styles.messageButton}>
-                                <i className="fa-solid fa-circle-stop" style={{ fontSize: '38px', color: 'var(--bs-active-btn-bg)' }}></i>
-                            </button>
-                        )}
-                    </div>
-                    {/*
+            <div className={styles.messageBar}>
+                <div className={styles.messageBarWrapper}>
+                    <AutosizeTextArea
+                        value={textAreaValue}
+                        onChange={setTextAreaValue}
+                        onKeyDown={handleKeyDown}
+                        maxHeight={150}
+                        placeholder="Message SavvyCSV"
+                    />
+                    {textAreaValue === '' && !isLoading ? (
+                        <button className={styles.messageButton}>
+                            <i className="fa-solid fa-circle-up" style={{ fontSize: '36px', color: 'darkgray', cursor: 'default' }}></i>
+                        </button>
+                    ) : (
+                        <button className={styles.messageButton} onClick={handleSubmit}>
+                            <i className="fa-solid fa-circle-up" style={{ fontSize: '36px', color: 'var(--bs-active-btn-bg)', cursor: 'pointer' }}></i>
+                        </button>
+                    )}
+                    {isLoading && (
+                        <button className={styles.messageButton}>
+                            <i className="fa-solid fa-circle-stop" style={{ fontSize: '38px', color: 'var(--bs-active-btn-bg)' }}></i>
+                        </button>
+                    )}
+                </div>
+                {/*
                         <div className={styles.userFeedback}>
                             Feedback? Contact us<Link to='/feedback' style={{ textDecorationLine: 'blink' }}> here.</Link>
                         </div>
                     */}
-                </div>
             </div>
         </>
     );

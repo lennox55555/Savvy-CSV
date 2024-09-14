@@ -39,7 +39,6 @@ const AutosizeTextArea: React.FC<AutosizeTextAreaProps> = ({
       onKeyDown={onKeyDown}
       placeholder={placeholder}
       rows={1}
-      autoFocus={false}
       style={{ overflow: "hidden", resize: "none" }}
     />
   );

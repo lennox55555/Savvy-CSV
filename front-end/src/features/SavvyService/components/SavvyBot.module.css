@@ -14,19 +14,16 @@
     align-items: center;
     justify-content: center;
     position: fixed;
-}
-
-.messageBoxAligner {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    
 }
 
 .messageBoxWrapper {
     display: flex;
     flex-direction: column;
-    width: 800px;
+    width: 100%;
+    margin: auto; 
+    overflow: auto;
+    margin: 0 auto;
 }
 
 .savvyResponse,
@@ -36,6 +33,7 @@
     color: white;
     font-size: 14px;
     font-weight: 400;
+    margin: 10px 0; /* Space between messages */
 }
 
 .messageBubble {
@@ -50,21 +48,62 @@
     position: relative;
     max-height: 100%;
     overflow-x: auto;
-    margin-top: 75px;
-    margin-bottom: 75px;
 }
 
 .savvyResponse {
     max-height: 100%;
+    justify-content: flex-start;
     position: relative;
-    overflow-y: auto;
     max-height: 500px;
+    overflow-y: hidden;
+    outline: none;
+}
+
+.savvyResponse:focus {
+    overflow-y: auto;
 }
 
 .messageItemContainer {
+    max-width: 800px;
     max-height: 75%;
-    max-width: 1200px;
+    margin: 0 auto;
      /* Prevents table width from breaking SavvyContainer */
+}
+
+.messageItemContainer:focus {
+    overflow-y: auto;
+}
+
+.messageItemContainer:focus-within .tableHeaderData {
+    color: #ffff;
+    animation: fadeInLeftToRight 0.3s ease-in-out forwards;
+    border: none;
+}
+
+@keyframes fadeInLeftToRight {
+    0% {
+        opacity: 0; /* Fully transparent */
+    }
+    100% {
+        opacity: 1; /* Fully visible */
+    }
+}
+
+.messageItemContainer:focus-within .tableHeader { 
+    border: none;
+    opacity: 0; 
+    animation: fadeInBackground 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeInBackground {
+    0% {
+        background: linear-gradient(180deg, rgba(338, 75%, 67%, 0) 0%, rgba(251, 44%, 65%, 0) 100%); /* Transparent gradient */
+        opacity: 0; 
+    }
+    100% {
+        background: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%); /* Full gradient */
+        opacity: 1;
+    }
 }
 
 .messageBubble {
@@ -114,7 +153,7 @@
 }
 
 .messageBar {
-    position: fixed; /* Or absolute */
+    position: absolute; /* Or absolute */
     bottom: 0;
     width: 100%;
     height: 6rem;
