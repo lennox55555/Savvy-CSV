@@ -33,7 +33,6 @@
     color: white;
     font-size: 14px;
     font-weight: 400;
-    margin: 10px 0; /* Space between messages */
 }
 
 .messageBubble {
@@ -48,6 +47,7 @@
     position: relative;
     max-height: 100%;
     overflow-x: auto;
+    margin: 55px 0 55px 0; /* Space between messages */
 }
 
 .savvyResponse {
@@ -97,8 +97,7 @@
 
 @keyframes fadeInBackground {
     0% {
-        background: linear-gradient(180deg, rgba(338, 75%, 67%, 0) 0%, rgba(251, 44%, 65%, 0) 100%); /* Transparent gradient */
-        opacity: 0; 
+        background: #2F2F2F;
     }
     100% {
         background: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%); /* Full gradient */
@@ -418,7 +417,7 @@ span a {
 @media only screen and (max-width: 430px) {
     .savvybotContainer {
         width: 100%;
-        height: 90vh; 
+        height: 70vh; 
         padding: 0 10px; 
     }
 
@@ -438,12 +437,12 @@ span a {
 
     .savvyResponse,
     .userMessage {
-        font-size: 12px; 
+        font-size: 15px; 
         gap: 10px; 
     }
 
     .messageBubble {
-        padding: 8px 16px; 
+        padding: 12px 22px; 
         max-width: 80%; 
     }
 
@@ -459,6 +458,7 @@ span a {
     .messageBarWrapper {
         width: 100%; 
         padding: 8px;
+        bottom: 4em;
     }
 
     .messageBarWrapper textarea {
@@ -474,11 +474,11 @@ span a {
     }
 
     .tableHeader {
-        font-size: 12px; 
+        font-size: 15px; 
     }
 
     .tableBodyData {
-        font-size: 12px; 
+        font-size: 15px; 
     }
 
     .messageBar {
