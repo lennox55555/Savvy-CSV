@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, limit, orderBy, query } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, limit, orderBy, query, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase-init";
 import pako from 'pako'
 
@@ -31,6 +31,30 @@ class SavvyServiceAPI {
         }
     }
 
+    public async updateLastMessage(userId: string, source: string, rank: number) {
+        try {
+
+          const userMessageRef = collection(doc(db, 'users', userId), 'messages');
+          const q = query(userMessageRef, orderBy('timestamp', 'desc'), limit(1));
+          const lastMessageSnapshot = await getDocs(q);
+      
+          if (lastMessageSnapshot.empty) {
+            return
+          } else {
+            const lastMessageDoc = lastMessageSnapshot.docs[0];
+            await updateDoc(lastMessageDoc.ref, {
+                source: source,
+                rank: rank
+            });
+            console.log('Message updated:', lastMessageDoc.id);
+          }
+        } catch (error) {
+          console.error("Error updating last message:", error);
+          throw error;
+        }
+      }
+      
+
     public async getMessages(userId: string) {
         try {
             const userMessagesRef = collection(doc(db, "users", userId), "messages");
@@ -43,6 +67,8 @@ class SavvyServiceAPI {
                     id: doc.id,
                     text: data.text || '',
                     user: data.user || false,
+                    source: data.source || '',
+                    rank: data.rank || ''
                 };
             });
 
