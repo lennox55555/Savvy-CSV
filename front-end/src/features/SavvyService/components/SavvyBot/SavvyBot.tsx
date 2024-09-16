@@ -5,6 +5,7 @@ import { getAuth } from 'firebase/auth';
 import SavvyServiceAPI from '../../../../api/savvyServiceAPI';
 import { UserMessage } from '../../../../utils/types';
 import { TableObject } from '../../../../utils/types';
+import Message from '../Message/Message';
 
 const SavvyBot: React.FC = () => {
     const [textAreaValue, setTextAreaValue] = useState('');
@@ -12,7 +13,7 @@ const SavvyBot: React.FC = () => {
     const [tableData, setTableData] = useState<TableObject | null>(null);
     const [currentTableRank, setCurrentTableRank] = useState<number>(1);
     const [isLoading, setIsLoading] = useState(false);
-    const [currentTabelSource, setCurrentTableSource] = useState('');
+    const [currentTableSource, setCurrentTableSource] = useState('');
 
     const messageEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -50,9 +51,9 @@ const SavvyBot: React.FC = () => {
 
             if (currentUser) {
 
-                if (currentTabelSource != '') {
+                if (currentTableSource != '') {
                     try {
-                        await SavvyServiceAPI.getInstance().updateLastMessage(currentUser.uid, currentTabelSource, currentTableRank)
+                        await SavvyServiceAPI.getInstance().updateLastMessage(currentUser.uid, currentTableSource, currentTableRank)
 
                         //  Updating the previous table with it's last currentRank & sourceURL
                         setMessages(prevMessages => {
@@ -63,7 +64,7 @@ const SavvyBot: React.FC = () => {
                                 if (!prevMessages[lastIndex].user) {
                                     // Directly modify the last message object
                                     prevMessages[lastIndex].rank = currentTableRank;
-                                    prevMessages[lastIndex].source = currentTabelSource;
+                                    prevMessages[lastIndex].source = currentTableSource;
                                 }
                             }
 
@@ -159,17 +160,17 @@ const SavvyBot: React.FC = () => {
 
                 return [
                     ...messages,
-                    { id: '', text: displayTableForRank(tableData, nextRank), user: false, source: currentTabelSource, rank: null, table: tableData }
+                    { id: '', text: displayTableForRank(tableData, nextRank), user: false, source: currentTableSource, rank: null, table: tableData }
                 ];
             });
         }
     };
 
     const downloadCSV = (table: TableObject | null | string, rank: number | null) => {
-        if (!table || rank === null) return; 
+        if (!table || rank === null) return;
 
         let parsedTable: TableObject;
-    
+
         if (typeof table === 'string') {
             try {
                 parsedTable = JSON.parse(table);
@@ -180,7 +181,7 @@ const SavvyBot: React.FC = () => {
         } else {
             parsedTable = table;
         }
-    
+
         const currentData = Object.values(parsedTable).find((item: any) => item.rankOfTable === rank);
 
         if (!currentData) return;
@@ -215,39 +216,13 @@ const SavvyBot: React.FC = () => {
                 <div className={styles.messageBoxContainer}>
                     <div className={styles.messageBoxWrapper}>
                         {messages.map((message, index) => (
-                            message.user ? (
-                                <div>
-                                    <div className={styles.messageItemContainer}>
-                                        <div key={index} className={styles.userMessage}>
-                                            <div className={styles.messageBubble}>
-                                                {message.text}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div>
-                                    <div className={styles.messageItemContainer}>
-                                        <div key={index} className={styles.savvyResponse} tabIndex={0}>
-                                            {message.text}
-                                        </div>
-                                        {message.rank != null && (
-                                            <div className={styles.tableButtonGroup}>
-                                                <span
-                                                    onClick={() => downloadCSV(message.table, message.rank)}
-                                                    className="material-symbols-outlined"
-                                                    title="Download CSV">download</span>
-                                                <span className="material-symbols-outlined" title="Data Source">
-                                                    <a href={message.source} target="_blank" rel="noopener noreferrer">
-                                                        link
-                                                    </a>
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )
-                        ))}
+                            <Message
+                                message={message}
+                                index={index}
+                                downloadCSV={downloadCSV}
+                            />
+                        )
+                        )}
                         <div ref={messageEndRef} />
                         {isLoading === true && (
                             <div>
@@ -276,7 +251,7 @@ const SavvyBot: React.FC = () => {
                                                 download
                                             </span>
                                             <span className="material-symbols-outlined" title="Data Source">
-                                                <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
+                                                <a href={currentTableSource} target="_blank" rel="noopener noreferrer">
                                                     link
                                                 </a>
                                             </span>
