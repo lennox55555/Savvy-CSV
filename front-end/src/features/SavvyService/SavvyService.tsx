@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import './SavvyService.css'
-import SavvyBot from "./components/SavvyBot";
+import SavvyBot from "./components/SavvyBot/SavvyBot";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { auth } from "../../firebase/firebase-init";
-import UserServiceAPI from "../../services/userServiceAPI";
+import UserServiceAPI from "../../api/userServiceAPI";
 import { useTheme } from "../../themes/ThemeContext";
+import React from "react";
+import TutorialModal from "./components/TutorialModal/TutorialModal";
 
 const SavvyService: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);

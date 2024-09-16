@@ -14,6 +14,7 @@ export type UserMessage = {
     user: boolean;
     source: string;
     rank: number | null;
+    table: TableObject | null;
 }
 
 export type TableObject = {

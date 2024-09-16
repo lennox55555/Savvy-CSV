@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
-import './SignInPage.css'; // Import the CSS file for styling
+import './SignInPage.css'
 import { Link, useNavigate } from 'react-router-dom';
 import googleLogo from '../../assets/Google_G_logo.svg.png'
-import UserServiceAPI from '../../services/userServiceAPI';
+import UserServiceAPI from '../../api/userServiceAPI';
 import SignInLottie from './SignInLottie';
 
 const SignInPage: React.FC = () => {
@@ -98,7 +98,7 @@ const SignInPage: React.FC = () => {
                     </div>
                 </Col>
                 <Col md={5} className='blank-column'>
-                    <div style={{ marginTop: '100px' }}>
+                    <div style={{ marginTop: '120px' }}>
                         <SignInLottie />
                     </div>
                 </Col>

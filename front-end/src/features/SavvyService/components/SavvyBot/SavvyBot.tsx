@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './SavvyBot.module.css';
-import AutosizeTextArea from '../../../utils/useAutosizeTextArea';
+import AutosizeTextArea from '../../../../utils/useAutosizeTextArea';
 import { getAuth } from 'firebase/auth';
-import SavvyServiceAPI from '../../../services/savvyServiceAPI';
-import { UserMessage } from '../../../utils/types';
-import { TableObject } from '../../../utils/types';
+import SavvyServiceAPI from '../../../../api/savvyServiceAPI';
+import { UserMessage } from '../../../../utils/types';
+import { TableObject } from '../../../../utils/types';
 
 const SavvyBot: React.FC = () => {
     const [textAreaValue, setTextAreaValue] = useState('');
@@ -82,7 +82,7 @@ const SavvyBot: React.FC = () => {
 
                     // Add user message to the message list
                     setMessages(prevMessages =>
-                        [...prevMessages, { id: '', text: textAreaValue, user: true, source: '', rank: null }]);
+                        [...prevMessages, { id: '', text: textAreaValue, user: true, source: '', rank: null, table: null }]);
 
                     // Initialize WebSocket and listen for bot response
                     SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue, currentUser.uid);
@@ -99,7 +99,7 @@ const SavvyBot: React.FC = () => {
 
     const handleWebSocketMessage = (data: TableObject) => {
         setTableData(data);
-        setMessages(prevMessages => [...prevMessages, { id: '', text: displayTableForRank(data, 1), user: false, source: '', rank: null }])
+        setMessages(prevMessages => [...prevMessages, { id: '', text: displayTableForRank(data, 1), user: false, source: '', rank: null, table: data }])
         setIsLoading(false);
     };
 
@@ -159,16 +159,29 @@ const SavvyBot: React.FC = () => {
 
                 return [
                     ...messages,
-                    { id: '', text: displayTableForRank(tableData, nextRank), user: false, source: currentTabelSource, rank: null }
+                    { id: '', text: displayTableForRank(tableData, nextRank), user: false, source: currentTabelSource, rank: null, table: tableData }
                 ];
             });
         }
     };
 
-    const downloadCSV = () => {
-        if (!tableData) return;
+    const downloadCSV = (table: TableObject | null | string, rank: number | null) => {
+        if (!table || rank === null) return; 
 
-        const currentData = Object.values(tableData).find(item => item.rankOfTable === currentTableRank);
+        let parsedTable: TableObject;
+    
+        if (typeof table === 'string') {
+            try {
+                parsedTable = JSON.parse(table);
+            } catch (error) {
+                console.error("Invalid JSON string", error);
+                return;
+            }
+        } else {
+            parsedTable = table;
+        }
+    
+        const currentData = Object.values(parsedTable).find((item: any) => item.rankOfTable === rank);
 
         if (!currentData) return;
 
@@ -220,9 +233,10 @@ const SavvyBot: React.FC = () => {
                                         </div>
                                         {message.rank != null && (
                                             <div className={styles.tableButtonGroup}>
-                                                <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
-                                                    download
-                                                </span>
+                                                <span
+                                                    onClick={() => downloadCSV(message.table, message.rank)}
+                                                    className="material-symbols-outlined"
+                                                    title="Download CSV">download</span>
                                                 <span className="material-symbols-outlined" title="Data Source">
                                                     <a href={message.source} target="_blank" rel="noopener noreferrer">
                                                         link
@@ -258,7 +272,7 @@ const SavvyBot: React.FC = () => {
                                             <span onClick={handleRefresh} className="material-symbols-outlined" title="New Table">
                                                 cached
                                             </span>
-                                            <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
+                                            <span onClick={() => downloadCSV(tableData, currentTableRank)} className="material-symbols-outlined" title="Download CSV">
                                                 download
                                             </span>
                                             <span className="material-symbols-outlined" title="Data Source">

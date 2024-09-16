@@ -58,7 +58,7 @@ class SavvyServiceAPI {
     public async getMessages(userId: string) {
         try {
             const userMessagesRef = collection(doc(db, "users", userId), "messages");
-            const q = query(userMessagesRef, orderBy("timestamp", "desc"), limit(5));
+            const q = query(userMessagesRef, orderBy("timestamp", "desc"), limit(25));
             const querySnapshot = await getDocs(q);
 
             const messages = querySnapshot.docs.map(doc => {
@@ -68,7 +68,8 @@ class SavvyServiceAPI {
                     text: data.text || '',
                     user: data.user || false,
                     source: data.source || '',
-                    rank: data.rank || ''
+                    rank: data.rank || '',
+                    table: data.text
                 };
             });
 
