@@ -52,3 +52,57 @@ table th:last-child {
     font-family: "Roboto Mono", monospace;
     font-size: 14px;
 }
+
+.savvyResponse {
+    max-height: 100%;
+    justify-content: flex-start;
+    position: relative;
+    max-height: 500px;
+    overflow-y: hidden;
+    outline: none;
+}
+
+.savvyResponse:focus {
+    overflow-y: auto;
+}
+
+.messageItemContainer {
+    max-width: 875px;
+    max-height: 75%;
+    margin: 0 auto;
+     /* Prevents table width from breaking SavvyContainer */
+}
+
+.messageItemContainer:focus {
+    overflow-y: auto;
+}
+
+.messageItemContainer:focus-within .tableHeaderData {
+    color: #ffff;
+    animation: fadeInLeftToRight 0.1s ease-in-out forwards;
+}
+
+@keyframes fadeInLeftToRight {
+    0% {
+        opacity: 0; 
+    }
+    100% {
+        opacity: 1; 
+    }
+}
+
+.messageItemContainer:focus-within .tableHeader { 
+    border: none;
+    opacity: 0; 
+    animation: fadeInBackground 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeInBackground {
+    0% {
+        background: #2F2F2F;
+    }
+    100% {
+        background: linear-gradient(180deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
+        opacity: 1;
+    }
+}

@@ -54,7 +54,6 @@ class UserServiceAPI {
 
             }
         } else {
-
             try {
                 const userCredential = await signInWithEmailAndPassword(
                     auth,

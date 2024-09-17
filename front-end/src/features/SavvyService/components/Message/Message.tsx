@@ -25,7 +25,7 @@ const Message: React.FC<MessageProps> = ({ message, index, downloadCSV }) => {
             ) : (
                 <div>
                     <div className={styles.messageItemContainer}>
-                        <div key={index} className={styles.savvyResponse} tabIndex={0}>
+                        <div>
                             {message.text}
                         </div>
                         {message.rank != null && (
