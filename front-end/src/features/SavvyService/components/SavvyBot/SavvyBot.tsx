@@ -6,6 +6,7 @@ import SavvyServiceAPI from '../../../../api/savvyServiceAPI';
 import { UserMessage } from '../../../../utils/types';
 import { TableObject } from '../../../../utils/types';
 import Message from '../Message/Message';
+import SavvyTable from '../SavvyTable/SavvyTable';
 
 const SavvyBot: React.FC = () => {
     const [textAreaValue, setTextAreaValue] = useState('');
@@ -111,35 +112,17 @@ const SavvyBot: React.FC = () => {
         }
     };
 
-    const displayTableForRank = (data: TableObject | null, rank: number): JSX.Element | null => {
+    const displayTableForRank = (data: TableObject | null, rank: number) => {
         for (const key in data) {
             if (data[key].rankOfTable == rank) {
                 setCurrentTableSource(data[key].website);
+                const currentTableKey = key
+
                 return (
-                    <div className={styles.tableWrapper}>
-                        <table className={styles.tableContainer}>
-                            <thead className={styles.tableHeader}>
-                                <tr>
-                                    {data[key].SampleTableData.split('\n')[0].split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                        <th key={cellIndex} className={styles.tableHeaderData}>
-                                            {cell.trim()}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className={styles.tableBody}>
-                                {data[key].SampleTableData.split('\n').slice(1).map((row: string, index: React.Key | null | undefined) => (
-                                    <tr key={index} className={styles.tableRow}>
-                                        {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                            <td key={cellIndex} className={styles.tableBodyData}>
-                                                {cell.trim()}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                    <SavvyTable
+                        data={data}
+                        tableKey={currentTableKey}
+                    />
                 );
             }
         }
@@ -216,6 +199,7 @@ const SavvyBot: React.FC = () => {
                 <div className={styles.messageBoxContainer}>
                     <div className={styles.messageBoxWrapper}>
                         {messages.map((message, index) => (
+
                             <Message
                                 message={message}
                                 index={index}

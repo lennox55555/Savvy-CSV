@@ -57,10 +57,10 @@
 
 @keyframes fadeInLeftToRight {
     0% {
-        opacity: 0; /* Fully transparent */
+        opacity: 0; 
     }
     100% {
-        opacity: 1; /* Fully visible */
+        opacity: 1; 
     }
 }
 

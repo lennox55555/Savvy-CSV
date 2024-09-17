@@ -7,7 +7,6 @@ import { auth } from "../../firebase/firebase-init";
 import UserServiceAPI from "../../api/userServiceAPI";
 import { useTheme } from "../../themes/ThemeContext";
 import React from "react";
-import TutorialModal from "./components/TutorialModal/TutorialModal";
 
 const SavvyService: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -40,17 +39,15 @@ const SavvyService: React.FC = () => {
 
     useEffect(() => {
         let requestCount = 0;
-        const requestInterval = 1000;
 
         const unsubscribe = auth.onAuthStateChanged((currentUser) => {
             if (currentUser && requestCount < 1) {
                 requestCount++;
-                console.log(requestCount);
                 setUserIconUrl(currentUser.photoURL);
                 setUsername(currentUser.displayName?.replace(/\s+/g, '').toLowerCase() || currentUser.email?.replace(/\s+/g, '').toLowerCase().replace(/@|\.com/g, '') || '')
                 setTimeout(() => {
                     requestCount = 0;
-                }, requestInterval);
+                }, 1000);
             } else {
                 setUserIconUrl(null);
                 setUsername('');

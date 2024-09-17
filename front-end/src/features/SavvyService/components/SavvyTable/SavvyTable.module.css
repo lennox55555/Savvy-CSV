@@ -1,0 +1,54 @@
+.tableContainer {
+    width: 100%;
+    table-layout: auto;
+}
+
+.tableHeader {
+    position: sticky;
+    top: 0;
+    background: var(--bs-table-header-color);
+    border-bottom: 1px solid var(--bs-table-border-color);
+    border-right: 1px solid var(--bs-table-border-color);
+    border-left: 1px solid var(--bs-table-border-color);
+    border-radius: 10px;
+    overflow-x: auto;
+    width: 100%;
+}
+
+.tableHeaderData {
+    color: var(--bs-table-header-data-color);
+    border-bottom: 1px solid var(--bs-table-border-color);
+    border-right: 1px solid var(--bs-table-border-color);
+    border-left: 1px solid var(--bs-table-border-color);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+table th:first-child {
+    border-radius: 0px 0 0 0px;
+}
+
+table th:last-child {
+    border-radius: 0 0px 0px 0;
+}
+
+.tableBody {
+    width: 100%;
+}
+
+.tableBodyData {
+    color: var(--bs-table-data-color);
+    border-bottom: 1px solid var(--bs-table-border-color);
+    border-right: 1px solid var(--bs-table-border-color);
+    border-left: 1px solid var(--bs-table-border-color);
+    text-align: center;
+    padding: 8px;
+    font-weight: 400;
+    width: 100%;
+    font-family: "Roboto Mono", monospace;
+    font-size: 14px;
+}
