@@ -4,7 +4,7 @@ import { Container, Row, Col, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './RegistrationPage.css'
 import googleLogo from '../../assets/Google_G_logo.svg.png'
-import UserServiceAPI from '../../services/userServiceAPI';
+import UserServiceAPI from '../../api/userServiceAPI';
 import RegistrationLottie from './RegistrationLottie';
 
 const RegistrationPage: React.FC = () => {

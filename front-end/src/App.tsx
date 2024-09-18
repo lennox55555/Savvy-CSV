@@ -6,9 +6,10 @@ import RegistrationPage from './pages/RegistrationPage/RegistrationPage';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import FeedbackPage from './pages/FeedbackPage/FeedbackPage';
 import { useEffect, useState } from 'react';
-import UserServiceAPI from './services/userServiceAPI';
+import UserServiceAPI from './api/userServiceAPI';
 import ProtectedRouteProps from './interfaces/ProtectedRouteProps';
 import { ThemeProvider } from './themes/ThemeContext';
+import React from 'react';
 
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {

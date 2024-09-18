@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './SavvyBot.module.css';
-import AutosizeTextArea from '../../../utils/useAutosizeTextArea';
+import AutosizeTextArea from '../../../../utils/useAutosizeTextArea';
 import { getAuth } from 'firebase/auth';
-import SavvyServiceAPI from '../../../services/savvyServiceAPI';
-import { UserMessage } from '../../../utils/types';
-import { TableObject } from '../../../utils/types';
+import SavvyServiceAPI from '../../../../api/savvyServiceAPI';
+import { UserMessage } from '../../../../utils/types';
+import { TableObject } from '../../../../utils/types';
+import Message from '../Message/Message';
+import SavvyTable from '../SavvyTable/SavvyTable';
 
 const SavvyBot: React.FC = () => {
     const [textAreaValue, setTextAreaValue] = useState('');
@@ -12,7 +14,7 @@ const SavvyBot: React.FC = () => {
     const [tableData, setTableData] = useState<TableObject | null>(null);
     const [currentTableRank, setCurrentTableRank] = useState<number>(1);
     const [isLoading, setIsLoading] = useState(false);
-    const [currentTabelSource, setCurrentTableSource] = useState('');
+    const [currentTableSource, setCurrentTableSource] = useState('');
 
     const messageEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -50,9 +52,9 @@ const SavvyBot: React.FC = () => {
 
             if (currentUser) {
 
-                if (currentTabelSource != '') {
+                if (currentTableSource != '') {
                     try {
-                        await SavvyServiceAPI.getInstance().updateLastMessage(currentUser.uid, currentTabelSource, currentTableRank)
+                        await SavvyServiceAPI.getInstance().updateLastMessage(currentUser.uid, currentTableSource, currentTableRank)
 
                         //  Updating the previous table with it's last currentRank & sourceURL
                         setMessages(prevMessages => {
@@ -63,7 +65,7 @@ const SavvyBot: React.FC = () => {
                                 if (!prevMessages[lastIndex].user) {
                                     // Directly modify the last message object
                                     prevMessages[lastIndex].rank = currentTableRank;
-                                    prevMessages[lastIndex].source = currentTabelSource;
+                                    prevMessages[lastIndex].source = currentTableSource;
                                 }
                             }
 
@@ -82,7 +84,7 @@ const SavvyBot: React.FC = () => {
 
                     // Add user message to the message list
                     setMessages(prevMessages =>
-                        [...prevMessages, { id: '', text: textAreaValue, user: true, source: '', rank: null }]);
+                        [...prevMessages, { id: '', text: textAreaValue, user: true, source: '', rank: null, table: null }]);
 
                     // Initialize WebSocket and listen for bot response
                     SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue, currentUser.uid);
@@ -99,7 +101,7 @@ const SavvyBot: React.FC = () => {
 
     const handleWebSocketMessage = (data: TableObject) => {
         setTableData(data);
-        setMessages(prevMessages => [...prevMessages, { id: '', text: displayTableForRank(data, 1), user: false, source: '', rank: null }])
+        setMessages(prevMessages => [...prevMessages, { id: '', text: displayTableForRank(data, 1), user: false, source: '', rank: null, table: data }])
         setIsLoading(false);
     };
 
@@ -110,35 +112,17 @@ const SavvyBot: React.FC = () => {
         }
     };
 
-    const displayTableForRank = (data: TableObject | null, rank: number): JSX.Element | null => {
+    const displayTableForRank = (data: TableObject | null, rank: number) => {
         for (const key in data) {
             if (data[key].rankOfTable == rank) {
                 setCurrentTableSource(data[key].website);
+                const currentTableKey = key
+
                 return (
-                    <div className={styles.tableWrapper}>
-                        <table className={styles.tableContainer}>
-                            <thead className={styles.tableHeader}>
-                                <tr>
-                                    {data[key].SampleTableData.split('\n')[0].split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                        <th key={cellIndex} className={styles.tableHeaderData}>
-                                            {cell.trim()}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className={styles.tableBody}>
-                                {data[key].SampleTableData.split('\n').slice(1).map((row: string, index: React.Key | null | undefined) => (
-                                    <tr key={index} className={styles.tableRow}>
-                                        {row.split(',').map((cell: string, cellIndex: React.Key | null | undefined) => (
-                                            <td key={cellIndex} className={styles.tableBodyData}>
-                                                {cell.trim()}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                    <SavvyTable
+                        data={data}
+                        tableKey={currentTableKey}
+                    />
                 );
             }
         }
@@ -159,16 +143,29 @@ const SavvyBot: React.FC = () => {
 
                 return [
                     ...messages,
-                    { id: '', text: displayTableForRank(tableData, nextRank), user: false, source: currentTabelSource, rank: null }
+                    { id: '', text: displayTableForRank(tableData, nextRank), user: false, source: currentTableSource, rank: null, table: tableData }
                 ];
             });
         }
     };
 
-    const downloadCSV = () => {
-        if (!tableData) return;
+    const downloadCSV = (table: TableObject | null | string, rank: number | null) => {
+        if (!table || rank === null) return;
 
-        const currentData = Object.values(tableData).find(item => item.rankOfTable === currentTableRank);
+        let parsedTable: TableObject;
+
+        if (typeof table === 'string') {
+            try {
+                parsedTable = JSON.parse(table);
+            } catch (error) {
+                console.error("Invalid JSON string", error);
+                return;
+            }
+        } else {
+            parsedTable = table;
+        }
+
+        const currentData = Object.values(parsedTable).find((item: any) => item.rankOfTable === rank);
 
         if (!currentData) return;
 
@@ -202,38 +199,14 @@ const SavvyBot: React.FC = () => {
                 <div className={styles.messageBoxContainer}>
                     <div className={styles.messageBoxWrapper}>
                         {messages.map((message, index) => (
-                            message.user ? (
-                                <div>
-                                    <div className={styles.messageItemContainer}>
-                                        <div key={index} className={styles.userMessage}>
-                                            <div className={styles.messageBubble}>
-                                                {message.text}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div>
-                                    <div className={styles.messageItemContainer}>
-                                        <div key={index} className={styles.savvyResponse} tabIndex={0}>
-                                            {message.text}
-                                        </div>
-                                        {message.rank != null && (
-                                            <div className={styles.tableButtonGroup}>
-                                                <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
-                                                    download
-                                                </span>
-                                                <span className="material-symbols-outlined" title="Data Source">
-                                                    <a href={message.source} target="_blank" rel="noopener noreferrer">
-                                                        link
-                                                    </a>
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )
-                        ))}
+
+                            <Message
+                                message={message}
+                                index={index}
+                                downloadCSV={downloadCSV}
+                            />
+                        )
+                        )}
                         <div ref={messageEndRef} />
                         {isLoading === true && (
                             <div>
@@ -258,11 +231,11 @@ const SavvyBot: React.FC = () => {
                                             <span onClick={handleRefresh} className="material-symbols-outlined" title="New Table">
                                                 cached
                                             </span>
-                                            <span onClick={downloadCSV} className="material-symbols-outlined" title="Download CSV">
+                                            <span onClick={() => downloadCSV(tableData, currentTableRank)} className="material-symbols-outlined" title="Download CSV">
                                                 download
                                             </span>
                                             <span className="material-symbols-outlined" title="Data Source">
-                                                <a href={currentTabelSource} target="_blank" rel="noopener noreferrer">
+                                                <a href={currentTableSource} target="_blank" rel="noopener noreferrer">
                                                     link
                                                 </a>
                                             </span>

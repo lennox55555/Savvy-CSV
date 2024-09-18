@@ -50,12 +50,10 @@ class UserServiceAPI {
                     'admin@test.com',
                     'DR.Z!!'
                 );
-                console.log("User signed in:", userCredential.user);
             } catch (error) {
 
             }
         } else {
-
             try {
                 const userCredential = await signInWithEmailAndPassword(
                     auth,
@@ -82,7 +80,6 @@ class UserServiceAPI {
                 createdAt: new Date().toISOString(),
             });
 
-            console.log('User signed in with Google:', userCredential.user)
         } catch (error) {
             console.error("Error signing in with Google:", error);
             throw error;
