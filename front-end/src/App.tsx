@@ -44,7 +44,7 @@ function App() {
       <Route path='/' element={<SignInPage />} />
       <Route path='register' element={<RegistrationPage />} />
       <Route
-        path='/savvycsv'
+        path="/savvycsv/:conversationId"
         element={
           <ProtectedRoute>
             <ThemeProvider>

@@ -1,11 +1,12 @@
-import { addDoc, collection, doc, getDocs, limit, orderBy, query, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, limit, orderBy, query, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase-init";
 import pako from 'pako'
+import { v4 as uuidv4 } from 'uuid';
 
 class SavvyServiceAPI {
     private static instance: SavvyServiceAPI;
     private webSocket: WebSocket | null = null;
-    private objec: string = ""; // To accumulate WebSocket messages
+    private tableObject: string = "";
 
     private constructor() { }
 
@@ -16,14 +17,17 @@ class SavvyServiceAPI {
         return SavvyServiceAPI.instance;
     }
 
-    public async saveMessage(userId: string, message: string, sentByUser: boolean) {
+    public async saveMessage(userId: string, message: string, sentByUser: boolean, conversationId: string | undefined) {
         try {
-            const userMessageRef = collection(doc(db, 'users', userId), 'messages');
-            const messageDoc = await addDoc(userMessageRef, {
+            const conversationRef = doc(collection(doc(db, 'users', userId), 'conversations'), conversationId);
+            const messagesRef = collection(conversationRef, 'messages'); 
+
+            const messageDoc = await addDoc(messagesRef, {
                 text: message,
                 user: sentByUser,
                 timestamp: new Date(),
             });
+
             console.log('Message saved:', messageDoc.id);
         } catch (error) {
             console.error("Error saving message:", error);
@@ -31,57 +35,109 @@ class SavvyServiceAPI {
         }
     }
 
-    public async updateLastMessage(userId: string, source: string, rank: number) {
+    public async updateLastMessage(userId: string, source: string, rank: number, conversationId: string) {
         try {
 
-          const userMessageRef = collection(doc(db, 'users', userId), 'messages');
-          const q = query(userMessageRef, orderBy('timestamp', 'desc'), limit(1));
-          const lastMessageSnapshot = await getDocs(q);
-      
-          if (lastMessageSnapshot.empty) {
-            return
-          } else {
-            const lastMessageDoc = lastMessageSnapshot.docs[0];
-            await updateDoc(lastMessageDoc.ref, {
-                source: source,
-                rank: rank
-            });
-            console.log('Message updated:', lastMessageDoc.id);
-          }
+            const conversationRef = doc(collection(doc(db, 'users', userId), 'conversations'), conversationId);
+            const messagesRef = collection(conversationRef, 'messages'); 
+    
+            const q = query(messagesRef, orderBy('timestamp', 'desc'), limit(1)); 
+            const lastMessageSnapshot = await getDocs(q);
+
+            if (lastMessageSnapshot.empty) {
+                return
+            } else {
+                const lastMessageDoc = lastMessageSnapshot.docs[0];
+                await updateDoc(lastMessageDoc.ref, {
+                    source: source,
+                    rank: rank
+                });
+                console.log('Message updated:', lastMessageDoc.id);
+            }
         } catch (error) {
-          console.error("Error updating last message:", error);
-          throw error;
+            console.error("Error updating last message:", error);
+            throw error;
         }
-      }
-      
+    }
 
-    public async getMessages(userId: string) {
+
+    public async getMessages(userId: string, conversationId: string | undefined) {
         try {
-            const userMessagesRef = collection(doc(db, "users", userId), "messages");
-            const q = query(userMessagesRef, orderBy("timestamp", "desc"), limit(10));
-            const querySnapshot = await getDocs(q);
+            if (conversationId) { // Check if conversationId is defined
+                const conversationRef = doc(collection(doc(db, 'users', userId), 'conversations'), conversationId);
+                const messagesRef = collection(conversationRef, 'messages'); // Get the messages collection within the conversation
+                const q = query(messagesRef, orderBy("timestamp", "desc"), limit(10)); // Order messages by timestamp
+                const querySnapshot = await getDocs(q);
 
-            const messages = querySnapshot.docs.map(doc => {
-                const data = doc.data();
-                return {
-                    id: doc.id,
-                    text: data.text || '',
-                    user: data.user || false,
-                    source: data.source || '',
-                    rank: data.rank || '',
-                    table: data.text
-                };
-            });
+                const messages = querySnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    return {
+                        id: doc.id,
+                        text: data.text || '',
+                        user: data.user || false,
+                        source: data.source || '',
+                        rank: data.rank || '',
+                        table: data.text
+                    };
+                });
 
-            messages.reverse();
-            return messages;
+                messages.reverse();
+                return messages;
+            } else {
+                // Handle the case where conversationId is undefined
+                console.warn("Conversation ID is undefined. Returning an empty array.");
+                return [];
+            }
         } catch (error) {
             console.error("Error getting messages:", error);
             throw error;
         }
     }
 
-    public initializeWebSocket(onMessageReceived: (data: any) => void, userQuery: string, userId: string): void {
+    public async getConversations(userId: string) {
+        try {
+            const conversationsRef = collection(doc(db, 'users', userId), 'conversations');
+            const querySnapshot = await getDocs(conversationsRef);
+
+            const conversations = querySnapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    title: data.title || 'Untitled',
+                    lastMessage: data.lastMessage || '',
+                    lastMessageTimestamp: data.lastMessageTimestamp || new Date(),
+                };
+            });
+
+            return conversations;
+        } catch (error) {
+            console.error("Error getting conversations:", error);
+            throw error;
+        }
+    }
+
+    public async createNewConversation(userId: string) {
+        try {
+            const conversationId = uuidv4(); // Generate a unique ID
+            const conversationRef = doc(doc(db, 'users', userId), 'conversations', conversationId);
+
+            // Add initial data to the conversation document
+            await setDoc(conversationRef, {
+                title: 'Conversation!', // Optional title
+                lastMessage: '', // Optional, can be updated later
+                lastMessageTimestamp: new Date(), // Optional, can be updated later
+            });
+
+            console.log('New conversation created:', conversationId);
+            return conversationId; // Return the conversation ID for routing
+        } catch (error) {
+            console.error("Error creating a new conversation:", error);
+            throw error;
+        }
+    }
+
+
+    public initializeWebSocket(onMessageReceived: (data: any) => void, userQuery: string, userId: string, conversationId: string | undefined) {
         const wsUrl = 'wss://9f2wyu1469.execute-api.us-east-1.amazonaws.com/production/';
         const queries = [userQuery]; // Query being sent to API
         this.webSocket = new WebSocket(wsUrl);
@@ -93,7 +149,9 @@ class SavvyServiceAPI {
 
         this.webSocket.onmessage = (event: MessageEvent) => {
             console.log(event.data);
-            this.handleMessage(event.data, onMessageReceived, userId);
+            if (conversationId) {
+                this.handleMessage(event.data, onMessageReceived, userId, conversationId);
+            }
         };
 
         this.webSocket.onerror = (event: Event) => {
@@ -115,7 +173,7 @@ class SavvyServiceAPI {
         }
     }
 
-    private handleMessage(data: string, onMessageReceived: (data: any) => void, userId: string): void {
+    private handleMessage(data: string, onMessageReceived: (data: any) => void, userId: string, conversationId: string) {
         try {
             // Step 1: Parse the incoming message to extract the 'compressed_data' field
             const parsedMessage = JSON.parse(data);
@@ -128,13 +186,13 @@ class SavvyServiceAPI {
             const decompressedData = pako.ungzip(decodedData, { to: 'string' });
 
             // Step 4: Accumulate the decompressed data
-            this.objec += decompressedData;
+            this.tableObject += decompressedData;
 
             let openBrackets = 0;
             let closeBrackets = 0;
 
             // Step 5: Check if the message is complete (i.e., number of open and close braces match)
-            for (const char of this.objec) {
+            for (const char of this.tableObject) {
                 if (char === '{') openBrackets++;
                 if (char === '}') closeBrackets++;
             }
@@ -143,22 +201,22 @@ class SavvyServiceAPI {
             if (openBrackets > 0 && openBrackets === closeBrackets) {
                 try {
                     // Parse the complete JSON message
-                    const fullObject = JSON.parse(this.objec);
+                    const fullObject = JSON.parse(this.tableObject);
 
                     // Save the message and invoke the callback with the parsed data
-                    this.saveMessage(userId, this.objec, false);
+                    this.saveMessage(userId, this.tableObject, false, conversationId);
                     onMessageReceived(fullObject);
 
                     // Reset the accumulated string after processing
-                    this.objec = "";
+                    this.tableObject = "";
                 } catch (error) {
                     console.error('Error processing the complete message:', error);
-                    this.objec = ""; // Reset on error
+                    this.tableObject = ""; // Reset on error
                 }
             }
         } catch (error) {
             console.error('Error decoding or decompressing the message:', error);
-            this.objec = ""; // Reset on error
+            this.tableObject = ""; // Reset on error
         }
     }
 }

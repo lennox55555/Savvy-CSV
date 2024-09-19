@@ -7,8 +7,11 @@ import { UserMessage } from '../../../../utils/types';
 import { TableObject } from '../../../../utils/types';
 import Message from '../Message/Message';
 import SavvyTable from '../SavvyTable/SavvyTable';
+import { useParams } from 'react-router-dom';
 
 const SavvyBot: React.FC = () => {
+    const { conversationId } = useParams();
+
     const [textAreaValue, setTextAreaValue] = useState('');
     const [messages, setMessages] = useState<UserMessage[]>([]);
     const [tableData, setTableData] = useState<TableObject | null>(null);
@@ -20,10 +23,11 @@ const SavvyBot: React.FC = () => {
 
     const fetchMessages = async () => {
         const currentUser = getAuth().currentUser;
+        console.log(currentTableRank)
 
         if (currentUser) {
             try {
-                const fetchedMessages = await SavvyServiceAPI.getInstance().getMessages(currentUser.uid);
+                const fetchedMessages = await SavvyServiceAPI.getInstance().getMessages(currentUser.uid, conversationId);
 
                 const processedMessages = fetchedMessages.map(message => {
                     if (!message.user) {
@@ -52,16 +56,15 @@ const SavvyBot: React.FC = () => {
 
             if (currentUser) {
 
-                if (currentTableSource != '') {
+                if (currentTableSource != '' && conversationId) {
                     try {
-                        await SavvyServiceAPI.getInstance().updateLastMessage(currentUser.uid, currentTableSource, currentTableRank)
+                        await SavvyServiceAPI.getInstance().updateLastMessage(currentUser.uid, currentTableSource, currentTableRank, conversationId)
 
                         //  Updating the previous table with it's last currentRank & sourceURL
                         setMessages(prevMessages => {
                             if (prevMessages.length > 0) {
                                 const lastIndex = prevMessages.length - 1;
 
-                                // Check if the last message is a non-user message (table data)
                                 if (!prevMessages[lastIndex].user) {
                                     // Directly modify the last message object
                                     prevMessages[lastIndex].rank = currentTableRank;
@@ -69,8 +72,7 @@ const SavvyBot: React.FC = () => {
                                 }
                             }
 
-                            // Return the same array since we're modifying in place
-                            return [...prevMessages];  // Spread to trigger re-render
+                            return [...prevMessages];
                         });
 
 
@@ -80,14 +82,14 @@ const SavvyBot: React.FC = () => {
                 }
 
                 try {
-                    await SavvyServiceAPI.getInstance().saveMessage(currentUser.uid, textAreaValue, true);
+                    await SavvyServiceAPI.getInstance().saveMessage(currentUser.uid, textAreaValue, true, conversationId);
 
                     // Add user message to the message list
                     setMessages(prevMessages =>
                         [...prevMessages, { id: '', text: textAreaValue, user: true, source: '', rank: null, table: null }]);
 
                     // Initialize WebSocket and listen for bot response
-                    SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue, currentUser.uid);
+                    SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue, currentUser.uid, conversationId);
 
                     setIsLoading(true);
                     setTextAreaValue('');
@@ -184,8 +186,15 @@ const SavvyBot: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchMessages();
-    }, []);
+
+        setTableData(null)
+        setCurrentTableRank(1)
+        setCurrentTableSource('')
+
+        if (conversationId) {
+            fetchMessages();
+        }
+    }, [conversationId]);
 
     useEffect(() => {
         if (messageEndRef.current) {

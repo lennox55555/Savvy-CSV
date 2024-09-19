@@ -7,7 +7,8 @@ import { auth } from "../../firebase/firebase-init";
 import UserServiceAPI from "../../api/userServiceAPI";
 import { useTheme } from "../../themes/ThemeContext";
 import React from "react";
-import Sidebar from "./components/Sidebar/Sidebar";
+import Sidebar from "./components/ConversationHistory/ConversationHistory";
+import Conversation from "./components/ConversationHistory/ConversationHistory";
 
 const SavvyService: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -166,7 +167,7 @@ const SavvyService: React.FC = () => {
             </header>
             <div className="main-container">
                 <aside className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
-                    <Sidebar></Sidebar>
+                    <Conversation></Conversation>
                 </aside>
                 <main className="content">
                     <SavvyBot></SavvyBot>
