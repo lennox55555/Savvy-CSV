@@ -26,9 +26,8 @@ export type TableObject = {
 }
 
 export type UserConversation = {
-    id: string
-    title: string;
-    lastMessage: string;
-    lastMessageTimestamp: Date
-               
+    id: string;
+    initialMessage: any;
+    timestamp: any;
+    display: any;
 }
