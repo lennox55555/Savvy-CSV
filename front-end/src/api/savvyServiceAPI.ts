@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, limit, orderBy, query, setDoc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, limit, orderBy, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../firebase/firebase-init";
 import pako from 'pako'
 import { v4 as uuidv4 } from 'uuid';
@@ -28,6 +28,22 @@ class SavvyServiceAPI {
                 timestamp: new Date(),
             });
 
+            const conversationSnapshot = await getDoc(conversationRef);
+
+            // If the conversation doesn't already have a title, set the first message as the title
+            if (conversationSnapshot.exists() && !conversationSnapshot.data().title) {
+                await updateDoc(conversationRef, {
+                    title: message,
+                    display: true 
+                });
+                console.log('Conversation title updated with first message:', message);
+            } else {
+                // If the conversation has a title, just ensure it's displayed in the sidebar
+                await updateDoc(conversationRef, {
+                    display: true 
+                });
+            }
+    
             console.log('Message saved:', messageDoc.id);
         } catch (error) {
             console.error("Error saving message:", error);
@@ -63,10 +79,10 @@ class SavvyServiceAPI {
 
     public async getMessages(userId: string, conversationId: string | undefined) {
         try {
-            if (conversationId) { // Check if conversationId is defined
+            if (conversationId) { 
                 const conversationRef = doc(collection(doc(db, 'users', userId), 'conversations'), conversationId);
-                const messagesRef = collection(conversationRef, 'messages'); // Get the messages collection within the conversation
-                const q = query(messagesRef, orderBy("timestamp", "desc"), limit(10)); // Order messages by timestamp
+                const messagesRef = collection(conversationRef, 'messages');
+                const q = query(messagesRef, orderBy("timestamp", "desc"), limit(10));
                 const querySnapshot = await getDocs(q);
 
                 const messages = querySnapshot.docs.map(doc => {
@@ -96,20 +112,24 @@ class SavvyServiceAPI {
 
     public async getConversations(userId: string) {
         try {
-            const conversationsRef = collection(doc(db, 'users', userId), 'conversations');
-            const querySnapshot = await getDocs(conversationsRef);
+        const conversationsRef = collection(doc(db, 'users', userId), 'conversations');
 
-            const conversations = querySnapshot.docs.map(doc => {
-                const data = doc.data();
-                return {
-                    id: doc.id,
-                    title: data.title || 'Untitled',
-                    lastMessage: data.lastMessage || '',
-                    lastMessageTimestamp: data.lastMessageTimestamp || new Date(),
-                };
-            });
+        // Create a query to fetch only conversations where 'display' is true
+        const conversationsQuery = query(conversationsRef, where('display', '==', true));
 
-            return conversations;
+        const querySnapshot = await getDocs(conversationsQuery);
+
+        const conversations = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                title: data.title,
+                timestamp: data.timestamp || new Date(),
+                display: data.display
+            };
+        });
+
+        return conversations;
         } catch (error) {
             console.error("Error getting conversations:", error);
             throw error;
@@ -118,14 +138,13 @@ class SavvyServiceAPI {
 
     public async createNewConversation(userId: string) {
         try {
-            const conversationId = uuidv4(); // Generate a unique ID
+            const conversationId = uuidv4();
             const conversationRef = doc(doc(db, 'users', userId), 'conversations', conversationId);
 
-            // Add initial data to the conversation document
             await setDoc(conversationRef, {
-                title: 'Conversation!', // Optional title
-                lastMessage: '', // Optional, can be updated later
-                lastMessageTimestamp: new Date(), // Optional, can be updated later
+                title: '',
+                timestamp: new Date(),
+                display: false 
             });
 
             console.log('New conversation created:', conversationId);
