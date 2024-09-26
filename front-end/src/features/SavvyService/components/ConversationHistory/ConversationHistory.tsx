@@ -30,7 +30,7 @@ const ConversationHistory: React.FC = () => {
                 const newConversationId = await SavvyServiceAPI.getInstance().createNewConversation(currentUser.uid);
 
                 setSelectedConversationId(newConversationId);
-                navigate(`/savvycsv/${conversationId}`)
+                navigate(`/savvycsv/${newConversationId}`)
             } catch (err: unknown) {
                 console.log("An error has occured while creating a new conversation", err)
             }
