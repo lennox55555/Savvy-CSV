@@ -7,7 +7,7 @@ import { UserMessage } from '../../../../utils/types';
 import { TableObject } from '../../../../utils/types';
 import Message from '../Message/Message';
 import SavvyTable from '../SavvyTable/SavvyTable';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const SavvyBot: React.FC = () => {
     const { conversationId } = useParams();
@@ -21,9 +21,10 @@ const SavvyBot: React.FC = () => {
 
     const messageEndRef = useRef<HTMLDivElement | null>(null);
 
+    const navigate = useNavigate();
+
     const fetchMessages = async () => {
         const currentUser = getAuth().currentUser;
-        console.log(currentTableRank)
 
         if (currentUser) {
             try {
@@ -53,8 +54,19 @@ const SavvyBot: React.FC = () => {
 
         if (textAreaValue.trim() !== '') {
             const currentUser = getAuth().currentUser;
-
             if (currentUser) {
+                let currentConversationId = conversationId;
+    
+                if (!currentConversationId) {
+                    // Create a new conversation if conversationId doesn't exist
+                    try {
+                        currentConversationId = await SavvyServiceAPI.getInstance().createNewConversation(currentUser.uid);
+                        navigate(`/savvycsv/${currentConversationId}`);
+                    } catch (err) {
+                        console.error("An error occurred while creating a new conversation:", err);
+                        return; 
+                    }
+                }
 
                 if (currentTableSource != '' && conversationId) {
                     try {
@@ -71,16 +83,12 @@ const SavvyBot: React.FC = () => {
                                     prevMessages[lastIndex].source = currentTableSource;
                                 }
                             }
-
                             return [...prevMessages];
                         });
-
-
                     } catch (error) {
                         console.error("Failed to update previous table object:", error);
                     }
                 }
-
                 try {
                     await SavvyServiceAPI.getInstance().saveMessage(currentUser.uid, textAreaValue, true, conversationId);
 
@@ -186,7 +194,6 @@ const SavvyBot: React.FC = () => {
     };
 
     useEffect(() => {
-
         setTableData(null)
         setCurrentTableRank(1)
         setCurrentTableSource('')
@@ -208,7 +215,6 @@ const SavvyBot: React.FC = () => {
                 <div className={styles.messageBoxContainer}>
                     <div className={styles.messageBoxWrapper}>
                         {messages.map((message, index) => (
-
                             <Message
                                 message={message}
                                 index={index}
