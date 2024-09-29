@@ -5,22 +5,14 @@ import SavvyServiceAPI from "../../../../api/savvyServiceAPI";
 import { UserConversation } from "../../../../utils/types";
 import { useNavigate } from "react-router-dom";
 import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
+import { format, isToday, isThisWeek, subDays } from 'date-fns';
 import { db } from "../../../../firebase/firebase-init";
 
 const ConversationHistory: React.FC = () => {
     const [conversations, setConversations] = useState<UserConversation[]>([]);
-    const [conversationId, setSelectedConversationId] = useState<string | null>(null);
+    const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
 
     const navigate = useNavigate();
-
-    const fetchConversations = async () => {
-        const currentUser = getAuth().currentUser;
-
-        if (currentUser) {
-            const fetchedConversations = await SavvyServiceAPI.getInstance().getConversations(currentUser.uid);
-            setConversations(fetchedConversations);
-        }
-    }
 
     const createNewConversation = async () => {
         const currentUser = getAuth().currentUser;
@@ -42,9 +34,31 @@ const ConversationHistory: React.FC = () => {
         navigate(`/savvycsv/${conversationId}`);
     };
 
-    useEffect(() => {
-        fetchConversations();
-    }, []);
+    const groupConversationsByTimestamp = (conversations: UserConversation[]) => {
+        const groups: { [key: string]: UserConversation[] } = {
+            Today: [],
+            'Last 7 Days': [],
+            'Last 30 Days': []
+        };
+
+        const now = new Date();
+        const startOfToday = new Date(now.setHours(0, 0, 0, 0)); // Midnight today
+        const sevenDaysAgo = subDays(startOfToday, 7); // 7 days ago, inclusive
+
+        conversations.forEach((conversation) => {
+            const conversationDate = conversation.timestamp.toDate();
+
+            if (isToday(conversationDate)) {
+                groups['Today'].push(conversation);
+            } else if (conversationDate >= sevenDaysAgo) {
+                groups['Last 7 Days'].push(conversation);
+            } else {
+                groups['Last 30 Days'].push(conversation);
+            }
+        });
+
+        return groups;
+    }
 
     useEffect(() => {
         const currentUser = getAuth().currentUser;
@@ -67,32 +81,38 @@ const ConversationHistory: React.FC = () => {
         }
     }, []);
 
+    const groupedConversations = groupConversationsByTimestamp(conversations);
+
     return (
         <>
             <div className={styles.sidebarContainer} style={{ background: '' }}>
                 <div className={styles.newConversationButton} onClick={createNewConversation}>
                     <div>
-                        New Conversation
+                        Start New Conversation
                     </div>
                     <div>
                         <i className="fa-solid fa-pencil"></i>
                     </div>
                 </div>
                 <div className={styles.conversationListContainer}>
-                    {conversations.map((conversation) => (
-                        <div
-                            key={conversation.id}
-                            className={styles.conversationItemContainer}
-                            onClick={() => handleConversationSelect(conversation.id)}
-                        >
-                            <div className={styles.conversationItem}>
-                                {conversation.title}
+                    {Object.keys(groupedConversations)
+                        .filter(group => groupedConversations[group].length > 0) // Filter groups with length > 0
+                        .map((group) => (
+                            <div key={group}>
+                                <div className={styles.dateRangeTitle}>{group}</div>
+                                {groupedConversations[group].map((conversation) => (
+                                    <div
+                                        key={conversation.id}
+                                        className={styles.conversationItemContainer}
+                                        onClick={() => handleConversationSelect(conversation.id)}
+                                    >
+                                        <div className={styles.conversationItem}>
+                                            {conversation.title}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                            <div>
-                                {/* Display last message or timestamp */}
-                            </div>
-                        </div>
-                    ))}
+                        ))}
                 </div>
             </div>
         </>
