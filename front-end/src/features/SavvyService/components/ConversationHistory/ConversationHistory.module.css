@@ -1,0 +1,60 @@
+.sidebarContainer {
+    margin-top: 55px;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+.newConversationButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 10px 5px;
+    border-radius: 5px;
+    font-weight: bold;
+    overflow-y: auto;
+    border: 1px solid white;
+
+}
+
+.newConversationButton:hover {
+    background-color: var(--bs-conversation-item-hover-bg);
+}
+
+.conversationListContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;
+    max-height: 85vh;
+}
+
+.conversationItemContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dateRangeTitle {
+    font-weight: bold;
+    margin-top: 30px;
+    font-size: 12px;
+    padding: 10px 5px;
+}
+
+.conversationItemContainer:hover {
+    background-color: var(--bs-conversation-item-hover-bg);
+}
+
+.conversationItem {
+    color: var(--sidebar-text-color);
+    font-weight: 300;
+}
+

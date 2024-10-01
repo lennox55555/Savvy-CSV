@@ -24,3 +24,10 @@ export type TableObject = {
         website: string;
     }
 }
+
+export type UserConversation = {
+    id: string;
+    title: any;
+    timestamp: any;
+    display: any;
+}

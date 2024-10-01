@@ -57,6 +57,7 @@ export const themes: { [key: string]: ThemeType } = {
     'bs-table-btn-hover-bg': '#4a4a4a',
     'sidebar-text-color': '#ffffff',
     'sidebar-text-color-active': 'grey',
+    'bs-conversation-item-hover-bg': '#4a4a4a',
     // Typography
     'bs-font-sans-serif': 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
   }

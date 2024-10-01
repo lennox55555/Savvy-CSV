@@ -178,9 +178,6 @@
 }
 
 @media (max-width: 900px) {
-    .sidebar {
-        display: none;
-    }
 
     .savvy-title.savvy-title.with-sidebar-open {
         margin-left: 0;
