@@ -88,15 +88,12 @@ const ConversationHistory: React.FC = () => {
             <div className={styles.sidebarContainer} style={{ background: '' }}>
                 <div className={styles.newConversationButton} onClick={createNewConversation}>
                     <div>
-                        Start New Conversation
-                    </div>
-                    <div>
-                        <i className="fa-solid fa-pencil"></i>
+                       START NEW CONVERSATION
                     </div>
                 </div>
                 <div className={styles.conversationListContainer}>
                     {Object.keys(groupedConversations)
-                        .filter(group => groupedConversations[group].length > 0) // Filter groups with length > 0
+                        .filter(group => groupedConversations[group].length > 0)
                         .map((group) => (
                             <div key={group}>
                                 <div className={styles.dateRangeTitle}>{group}</div>

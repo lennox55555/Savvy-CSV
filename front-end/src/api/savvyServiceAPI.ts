@@ -38,7 +38,6 @@ class SavvyServiceAPI {
                 });
                 console.log('Conversation title updated with first message:', message);
             } else {
-                // If the conversation has a title, just ensure it's displayed in the sidebar
                 await updateDoc(conversationRef, {
                     display: true 
                 });
@@ -110,32 +109,6 @@ class SavvyServiceAPI {
         }
     }
 
-    public async getConversations(userId: string) {
-        try {
-        const conversationsRef = collection(doc(db, 'users', userId), 'conversations');
-
-        // Create a query to fetch only conversations where 'display' is true
-        const conversationsQuery = query(conversationsRef, where('display', '==', true));
-
-        const querySnapshot = await getDocs(conversationsQuery);
-
-        const conversations = querySnapshot.docs.map(doc => {
-            const data = doc.data();
-            return {
-                id: doc.id,
-                title: data.title,
-                timestamp: data.timestamp || new Date(),
-                display: data.display
-            };
-        });
-
-        return conversations;
-        } catch (error) {
-            console.error("Error getting conversations:", error);
-            throw error;
-        }
-    }
-
     public async createNewConversation(userId: string) {
         try {
             const conversationId = uuidv4();
@@ -195,7 +168,9 @@ class SavvyServiceAPI {
     private handleMessage(data: string, onMessageReceived: (data: any) => void, userId: string, conversationId: string) {
         try {
             // Step 1: Parse the incoming message to extract the 'compressed_data' field
+            console.log(data)
             const parsedMessage = JSON.parse(data);
+            console.log(parsedMessage)
             const base64Data = parsedMessage.compressed_data;
 
             // Step 2: Decode the base64-encoded string

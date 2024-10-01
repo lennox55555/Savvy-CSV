@@ -18,6 +18,7 @@ const SavvyBot: React.FC = () => {
     const [currentTableRank, setCurrentTableRank] = useState<number>(1);
     const [isLoading, setIsLoading] = useState(false);
     const [currentTableSource, setCurrentTableSource] = useState('');
+    const [isNavigating, setIsNavigating] = useState(false);
 
     const messageEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -51,34 +52,31 @@ const SavvyBot: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-
         if (textAreaValue.trim() !== '') {
             const currentUser = getAuth().currentUser;
             if (currentUser) {
                 let currentConversationId = conversationId;
-    
-                if (!currentConversationId) {
-                    // Create a new conversation if conversationId doesn't exist
+
+                if (!conversationId) {
                     try {
                         currentConversationId = await SavvyServiceAPI.getInstance().createNewConversation(currentUser.uid);
-                        navigate(`/savvycsv/${currentConversationId}`);
+                        setIsNavigating(true);
+                        navigate(`/savvycsv/${currentConversationId}`, { replace: true });
                     } catch (err) {
                         console.error("An error occurred while creating a new conversation:", err);
-                        return; 
+                        return;
                     }
                 }
 
                 if (currentTableSource != '' && conversationId) {
                     try {
-                        await SavvyServiceAPI.getInstance().updateLastMessage(currentUser.uid, currentTableSource, currentTableRank, conversationId)
+                        await SavvyServiceAPI.getInstance().updateLastMessage(currentUser.uid, currentTableSource, currentTableRank, conversationId);
 
-                        //  Updating the previous table with it's last currentRank & sourceURL
                         setMessages(prevMessages => {
                             if (prevMessages.length > 0) {
                                 const lastIndex = prevMessages.length - 1;
 
                                 if (!prevMessages[lastIndex].user) {
-                                    // Directly modify the last message object
                                     prevMessages[lastIndex].rank = currentTableRank;
                                     prevMessages[lastIndex].source = currentTableSource;
                                 }
@@ -89,19 +87,19 @@ const SavvyBot: React.FC = () => {
                         console.error("Failed to update previous table object:", error);
                     }
                 }
-                try {
-                    await SavvyServiceAPI.getInstance().saveMessage(currentUser.uid, textAreaValue, true, conversationId);
 
-                    // Add user message to the message list
+                try {
+                    await SavvyServiceAPI.getInstance().saveMessage(currentUser.uid, textAreaValue, true, currentConversationId);
+
                     setMessages(prevMessages =>
-                        [...prevMessages, { id: '', text: textAreaValue, user: true, source: '', rank: null, table: null }]);
+                        [...prevMessages, { id: '', text: textAreaValue, user: true, source: '', rank: null, table: null }]
+                    );
 
                     // Initialize WebSocket and listen for bot response
-                    SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue, currentUser.uid, conversationId);
+                    SavvyServiceAPI.getInstance().initializeWebSocket(handleWebSocketMessage, textAreaValue, currentUser.uid, currentConversationId);
 
                     setIsLoading(true);
                     setTextAreaValue('');
-
                 } catch (error) {
                     console.error("Failed to save message:", error);
                 }
@@ -196,11 +194,13 @@ const SavvyBot: React.FC = () => {
     useEffect(() => {
         setTableData(null)
         setCurrentTableRank(1)
+        setMessages([])
         setCurrentTableSource('')
 
-        if (conversationId) {
+        if (!isNavigating && conversationId) {
             fetchMessages();
         }
+        setIsNavigating(false); 
     }, [conversationId]);
 
     useEffect(() => {
