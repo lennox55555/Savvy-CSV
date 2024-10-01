@@ -5,12 +5,11 @@ import SavvyServiceAPI from "../../../../api/savvyServiceAPI";
 import { UserConversation } from "../../../../utils/types";
 import { useNavigate } from "react-router-dom";
 import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
-import { format, isToday, isThisWeek, subDays } from 'date-fns';
+import { isToday, subDays } from 'date-fns';
 import { db } from "../../../../firebase/firebase-init";
 
 const ConversationHistory: React.FC = () => {
     const [conversations, setConversations] = useState<UserConversation[]>([]);
-    const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
 
     const navigate = useNavigate();
 
@@ -20,8 +19,6 @@ const ConversationHistory: React.FC = () => {
         if (currentUser) {
             try {
                 const newConversationId = await SavvyServiceAPI.getInstance().createNewConversation(currentUser.uid);
-
-                setSelectedConversationId(newConversationId);
                 navigate(`/savvycsv/${newConversationId}`)
             } catch (err: unknown) {
                 console.log("An error has occured while creating a new conversation", err)
@@ -30,7 +27,6 @@ const ConversationHistory: React.FC = () => {
     };
 
     const handleConversationSelect = (conversationId: string) => {
-        setSelectedConversationId(conversationId);
         navigate(`/savvycsv/${conversationId}`);
     };
 

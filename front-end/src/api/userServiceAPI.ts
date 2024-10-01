@@ -45,7 +45,7 @@ class UserServiceAPI {
 
         if (userData.email == 'Admin' && userData.password == 'DR.Z!') {
             try {
-                const userCredential = await signInWithEmailAndPassword(
+                await signInWithEmailAndPassword(
                     auth,
                     'admin@test.com',
                     'DR.Z!!'

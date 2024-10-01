@@ -7,7 +7,6 @@ import { auth } from "../../firebase/firebase-init";
 import UserServiceAPI from "../../api/userServiceAPI";
 import { useTheme } from "../../themes/ThemeContext";
 import React from "react";
-import Sidebar from "./components/ConversationHistory/ConversationHistory";
 import Conversation from "./components/ConversationHistory/ConversationHistory";
 
 const SavvyService: React.FC = () => {
