@@ -1,5 +1,5 @@
 .sidebarContainer {
-    margin-top: 55px;
+    margin-top: 60px;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
@@ -11,18 +11,20 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    border-radius: 10px;
     cursor: pointer;
-    padding: 10px 5px;
-    border-radius: 5px;
+    padding: 10px;
+    border-radius: 10px;
     font-weight: bold;
     overflow-y: auto;
-    border: 1px solid white;
-
+    color: var(--bs-new-convo-text-color);
+    border: 2px solid var(--bs-new-convo-border-color);
+    transition: 0.3s;
 }
 
 .newConversationButton:hover {
-    background-color: var(--bs-conversation-item-hover-bg);
+    border: 2px solid var(--bs-new-convo-border-color-hover);
+    color: var(--bs-new-convo-text-color-hover);
+    background-color: var(--bs-new-convo-bg-color-hover);
 }
 
 .conversationListContainer {
@@ -43,10 +45,11 @@
 }
 
 .dateRangeTitle {
-    font-weight: bold;
-    margin-top: 30px;
+    font-weight: 500;
+    margin-top: 20px;
     font-size: 12px;
     padding: 10px 5px;
+    color: var(--sidebar-text-color);
 }
 
 .conversationItemContainer:hover {
