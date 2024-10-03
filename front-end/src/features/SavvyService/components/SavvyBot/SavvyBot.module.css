@@ -82,7 +82,7 @@
 .dot {
     width: 8px;
     height: 8px;
-    background-color: white;
+    background-color: var(--bs-savvy-msg-dot-bg);
     border-radius: 50%;
     animation: growShrink 1.5s infinite ease-in-out;
 }
