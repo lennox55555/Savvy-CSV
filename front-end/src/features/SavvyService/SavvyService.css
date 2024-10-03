@@ -116,16 +116,19 @@
     transition: margin-left 0.3s ease;
 }
 
-.toggle-icon-open {
-    position: absolute;
-    left: 1rem;
-    color: var(--bs-toggle-sidebar-open-bg);
-}
-
-.toggle-icon-close {
+.toggle-icon-wrapper {
     position: absolute;
     left: 1rem;
     color: var(--bs-toggle-sidebar-close-bg);
+    border-radius: 10px;
+    z-index: 1100;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.toggle-icon-wrapper:hover {
+    background-color: var(--bs-toggle-sidebar-btn-hover);
+    cursor: pointer;
 }
 
 .spacer {
