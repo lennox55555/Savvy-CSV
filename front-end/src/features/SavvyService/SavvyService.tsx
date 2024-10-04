@@ -78,7 +78,7 @@ const SavvyService: React.FC = () => {
                         </div>
                     )}
 
-                    <Link to='/' style={{ textDecoration: 'none' }}><h1 className={`savvy-title ${isSidebarOpen ? 'with-sidebar-open' : 'with-sidebar-closed'}`}>SavvyCSV</h1></Link>
+                    <Link to='/' style={{ textDecoration: 'none' }}><h1 className={`savvy-title ${isSidebarOpen ? 'with-sidebar-open' : 'with-sidebar-closed'}`}>SavvyXLSX</h1></Link>
                     <div className="spacer"></div>
                     {userIconUrl ? (
                         <div className="profile-content">
