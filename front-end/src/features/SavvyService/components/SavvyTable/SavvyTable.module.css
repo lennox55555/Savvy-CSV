@@ -1,56 +1,12 @@
-.tableContainer {
-    width: 100%;
-    table-layout: auto;
+.messageItemContainer {
+    max-width: 875px;
+    max-height: 75%;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
-.tableHeader {
-    position: sticky;
-    top: 0;
-    background: var(--bs-table-header-color);
-    border-bottom: 1px solid var(--bs-table-border-color);
-    border-right: 1px solid var(--bs-table-border-color);
-    border-left: 1px solid var(--bs-table-border-color);
-    border-radius: 10px;
-    overflow-x: auto;
-    width: 100%;
-}
-
-.tableHeaderData {
-    color: var(--bs-table-header-data-color);
-    border-bottom: 1px solid var(--bs-table-border-color);
-    border-right: 1px solid var(--bs-table-border-color);
-    border-left: 1px solid var(--bs-table-border-color);
-    font-size: 14px;
-    font-weight: 500;
-    padding: 8px;
-    white-space: nowrap;
-    text-align: center;
-    font-family: 'Roboto', sans-serif;
-}
-
-table th:first-child {
-    border-radius: 0px 0 0 0px;
-}
-
-table th:last-child {
-    border-radius: 0 0px 0px 0;
-}
-
-.tableBody {
-    width: 100%;
-}
-
-.tableBodyData {
-    color: var(--bs-table-data-color);
-    border-bottom: 1px solid var(--bs-table-border-color);
-    border-right: 1px solid var(--bs-table-border-color);
-    border-left: 1px solid var(--bs-table-border-color);
-    text-align: center;
-    padding: 8px;
-    font-weight: 400;
-    width: 100%;
-    font-family: "Roboto Mono", monospace;
-    font-size: 14px;
+.messageItemContainer:focus-within {
+    overflow-y: auto;
 }
 
 .savvyResponse {
@@ -62,19 +18,100 @@ table th:last-child {
     outline: none;
 }
 
-.savvyResponse:focus {
+.savvyResponse:focus-within {
     overflow-y: auto;
 }
 
-.messageItemContainer {
-    max-width: 875px;
-    max-height: 75%;
-    margin: 0 auto;
-     /* Prevents table width from breaking SavvyContainer */
+.tableWrapper {
+    position: relative;
+    width: 100%;
 }
 
-.messageItemContainer:focus {
-    overflow-y: auto;
+.tableContainer {
+    width: 100%;
+    table-layout: auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    position: relative;
+}
+
+.tableContainer::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #8D7ECDFF;
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.3s ease;
+    z-index: 10;
+}
+
+.tableContainer:hover::before {
+    transform: scaleY(1);
+    animation: breathe 2s infinite alternate;
+}
+
+@keyframes breathe {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.tableContainer.clicked::before {
+    background: #EA6C9AFF;
+    transform: scaleY(1);
+    animation: none;
+}
+
+.tableHeader {
+    position: sticky;
+    top: 0;
+    background: var(--bs-table-header-color);
+    border-bottom: 1px solid var(--bs-table-border-color);
+    border-right: 1px solid var(--bs-table-border-color);
+    border-left: 1px solid var(--bs-table-border-color);
+    border-radius: 10px 10px 0 0;
+    overflow-x: auto;
+    width: 100%;
+    z-index: 5;
+}
+
+.tableHeaderData {
+    color: var(--bs-table-header-data-color);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+.tableBody {
+    width: 100%;
+}
+
+.tableBodyData {
+    color: var(--bs-table-data-color);
+    text-align: center;
+    padding: 8px;
+    font-weight: 400;
+    width: 100%;
+    font-family: "Roboto Mono", monospace;
+    font-size: 14px;
+}
+
+.tableRow:nth-child(even) {
+    background-color: var(--bs-table-striped-bg);
+}
+
+table th:first-child {
+    border-radius: 0 0 0 0;
+}
+
+table th:last-child {
+    border-radius: 0 0 0 0;
 }
 
 .messageItemContainer:focus-within .tableHeaderData {
@@ -82,25 +119,19 @@ table th:last-child {
     animation: fadeInLeftToRight 0.1s ease-in-out forwards;
 }
 
-@keyframes fadeInLeftToRight {
-    0% {
-        opacity: 0; 
-    }
-    100% {
-        opacity: 1; 
-    }
-}
-
-.messageItemContainer:focus-within .tableHeader { 
+.messageItemContainer:focus-within .tableHeader {
     border: none;
-    opacity: 0; 
+    opacity: 0;
     animation: fadeInBackground 0.3s ease-in-out forwards;
 }
 
+@keyframes fadeInLeftToRight {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
 @keyframes fadeInBackground {
-    0% {
-        background: #2F2F2F;
-    }
+    0% { background: #2F2F2F; }
     100% {
         background: linear-gradient(180deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
         opacity: 1;
