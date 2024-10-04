@@ -21,7 +21,6 @@ const SavvyBot: React.FC = () => {
     const [isNavigating, setIsNavigating] = useState(false);
 
     const messageEndRef = useRef<HTMLDivElement | null>(null);
-
     const navigate = useNavigate();
 
     const fetchMessages = async () => {
@@ -30,15 +29,15 @@ const SavvyBot: React.FC = () => {
         if (currentUser) {
             try {
                 const fetchedMessages = await SavvyServiceAPI.getInstance().getMessages(currentUser.uid, conversationId);
-
                 const processedMessages = fetchedMessages.map(message => {
-                    if (!message.user) {
+                    if (message.user) {
+                        return message
+                    } else {
                         return {
                             ...message,
                             text: displayTableForRank(JSON.parse(message.text), message.rank || 1),
-                        };
+                        }
                     }
-                    return message;
                 });
                 setMessages(processedMessages);
             } catch (err: unknown) {
@@ -108,9 +107,16 @@ const SavvyBot: React.FC = () => {
     };
 
     const handleWebSocketMessage = (data: TableObject) => {
-        setTableData(data);
-        setMessages(prevMessages => [...prevMessages, { id: '', text: displayTableForRank(data, 1), user: false, source: '', rank: null, table: data }])
-        setIsLoading(false);
+        if (data != null) {
+            setTableData(data);
+            setMessages(prevMessages => [...prevMessages, { id: '', text: displayTableForRank(data, 1), user: false, source: '', rank: null, table: data }])
+            setIsLoading(false);
+
+        // If the WSS doesn't return a table object, add a normal response to prompt the user to try again.
+        } else {
+            setMessages(prevMessages => [...prevMessages, { id: '', text: "Sorry. I was unable to find any data related to your search, please try again!", user: false, source: '', rank: null, table: null }])
+            setIsLoading(false);
+        }
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -200,7 +206,7 @@ const SavvyBot: React.FC = () => {
         if (!isNavigating && conversationId) {
             fetchMessages();
         }
-        setIsNavigating(false); 
+        setIsNavigating(false);
     }, [conversationId]);
 
     useEffect(() => {
