@@ -168,9 +168,7 @@ class SavvyServiceAPI {
     private handleMessage(data: string, onMessageReceived: (data: any) => void, userId: string, conversationId: string) {
         try {
             // Step 1: Parse the incoming message to extract the 'compressed_data' field
-            console.log(data)
             const parsedMessage = JSON.parse(data);
-            console.log(parsedMessage)
             const base64Data = parsedMessage.compressed_data;
 
             // Step 2: Decode the base64-encoded string
@@ -201,7 +199,6 @@ class SavvyServiceAPI {
                     this.saveMessage(userId, this.tableObject, false, conversationId);
                     onMessageReceived(fullObject);
 
-                    // Reset the accumulated string after processing
                     this.tableObject = "";
                 } catch (error) {
                     console.error('Error processing the complete message:', error);
@@ -209,6 +206,8 @@ class SavvyServiceAPI {
                 }
             }
         } catch (error) {
+            // Catch the error and return null inside the call-back function
+            onMessageReceived(null)
             console.error('Error decoding or decompressing the message:', error);
             this.tableObject = ""; // Reset on error
         }
