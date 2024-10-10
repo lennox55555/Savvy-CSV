@@ -1,8 +1,7 @@
 html {
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 body {
     height: 100%;
-    overflow: auto;
 }
