@@ -226,31 +226,3 @@
   .tutorialGif video {
     border-radius: 20px;
   }
-  
-  /* Team Segment */
-  
-  .teamContainer {
-    display: flex;
-    flex-direction: column;
-    height: 915px;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  
-  .teamTitleRow {
-    font-family: 'Roboto', sans-serif;
-    color: #ffff;
-    font-size: 50px;
-    font-weight: 600;
-    text-align: center;
-    margin-top: 175px;
-    margin-bottom: 50px;
-  }
-  
-  .teamMembersWrapper {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    row-gap: 25px;
-    column-gap: 80px;
-  }
-  
