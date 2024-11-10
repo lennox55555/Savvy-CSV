@@ -142,6 +142,12 @@
     font-weight: 600;
     margin-left: 50px;
   }
+
+  @media (max-width: 845px) {
+    .contentTitle {
+      font-size: 35px;
+    }
+  }
   
   .contentBody {
     font-family: 'Roboto', sans-serif;
@@ -180,6 +186,7 @@
     flex-direction: row;
     height: 600px;
     align-items: center;
+    margin-bottom: 150px;
   }
   
   .tutorialContentColumn,
@@ -194,6 +201,7 @@
     align-items: flex-start;
     text-align: left;
     justify-content: center;
+    width: 100%;
   }
   
   .tutorialTitle {
@@ -226,3 +234,47 @@
   .tutorialGif video {
     border-radius: 20px;
   }
+
+  @media (max-width: 1420px) {
+    .tutorialContainer {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+    }
+
+    .tutorialGifColumn {
+      order: 1;
+    }
+  
+    .tutorialContentColumn {
+      order: 0; 
+      text-align: center;
+      align-items: flex-start;
+      margin-left: 50px;
+    }
+
+    .tutorialTitle {
+      text-align: left;
+      margin-right: 0px;
+    }
+
+    .tutorialBody {
+      text-align: left;
+      margin-right: 0px;
+      
+    }
+  }
+
+  @media (max-width: 845px) {
+
+    .tutorialContainer {
+      width: 100%;
+    }
+    
+    .tutorialTitle {
+      font-size: 35px;
+      overflow-wrap: break-word;
+    }
+  }
+
