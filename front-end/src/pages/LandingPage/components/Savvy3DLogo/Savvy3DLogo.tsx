@@ -7,7 +7,7 @@ import {
   OrbitControls,
   MeshTransmissionMaterial
 } from '@react-three/drei'
-import { Suspense, useEffect, useMemo, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { Mesh, Vector3 } from 'three';
 import React from 'react';
 
@@ -98,6 +98,7 @@ const SavvyLogo: React.FC = () => {
         zoomSpeed={0.25}
         minZoom={18}
         maxZoom={18}
+        enableZoom={false}
         enablePan={false}
         dampingFactor={0.01}
         minPolarAngle={Math.PI / 2.6}

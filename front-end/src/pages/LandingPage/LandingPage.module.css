@@ -1,280 +1,316 @@
 .mainContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #0D0D0D;
-  }
-  
-  .mainWrapper {
-    display: flex;
-    max-width: 1500px;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .accentText {
-    background-image: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-family: 'Roboto', sans-serif;
-  }
-  
-  .contentContainer {
-    display: flex;
-    flex-direction: row;
-    height: 750px;
-    width: 100%;
-  }
-  
-  .stickyHeader {
-    position: sticky;
-    display: flex;
-    flex-direction: row;
-    width: 75%;
-    align-items: center;
-    justify-content: space-between;
-    top: 20px;
-    background-color: #18191a;
-    border-radius: 50px;
-    background: #18191a;
-    border: 1px solid #595656;
-    z-index: 1000;
-    padding: 10px;
-    margin: 0 auto;  /* Center the header */
-    box-sizing: border-box;
-  }
-  
-  .leftHeaderGroup {
-    display: flex;
-    flex-direction: row;
-    gap: 45px;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .onyxGroup {
-    color: #ffffff;
-    font-weight: 700;
-    font-style: italic;
-    font-family: 'Roboto', sans-serif;
-    margin-left: 15px;
-    font-size: 18px;
-  }
-  
-  .navButtonGroup {
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-  }
-  
-  .navButtonGroup button {
-    background: #18191a;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
-    font-weight: 300;
-    font-size: 14px;
-    font-family: 'Roboto', sans-serif;
-    cursor: pointer;
-    color: #ffffff;
-    text-decoration: underline;
-    text-underline-offset: 5px;
-    text-decoration-thickness: 1px;
-  }
-  
-  .buttonGroup button {
-    padding: 10px 25px;
-    border-radius: 20px;
-    font-size: 14px;
-    background-color: #ffffff;
-    border: none;
-    margin: 8px;
-    font-weight: 300;
-    font-size: 14px;
-    font-family: 'Roboto', sans-serif;
-    cursor: pointer;
-  }
-  
-  .contentColumn,
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #0D0D0D;
+}
+
+.mainWrapper {
+  display: flex;
+  max-width: 1500px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.accentText {
+  background-image: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Roboto', sans-serif;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: row;
+  height: 750px;
+  width: 100%;
+}
+
+.stickyHeader {
+  position: sticky;
+  display: flex;
+  flex-direction: row;
+  width: 75%;
+  align-items: center;
+  justify-content: space-between;
+  top: 20px;
+  background-color: #18191a;
+  border-radius: 50px;
+  background: #18191a;
+  border: 1px solid #595656;
+  z-index: 1000;
+  padding: 10px;
+  margin: 0 auto;
+  /* Center the header */
+  box-sizing: border-box;
+}
+
+.leftHeaderGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 45px;
+  align-items: center;
+  justify-content: center;
+}
+
+.onyxGroup {
+  color: #ffffff;
+  font-weight: 700;
+  font-style: italic;
+  font-family: 'Roboto', sans-serif;
+  margin-left: 15px;
+  font-size: 18px;
+}
+
+.navButtonGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.navButtonGroup button {
+  background: #18191a;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  font-weight: 300;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+}
+
+.buttonGroup button {
+  padding: 10px 25px;
+  border-radius: 20px;
+  font-size: 14px;
+  background-color: #ffffff;
+  border: none;
+  margin: 8px;
+  font-weight: 300;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+}
+
+.savvyTitle {
+  position: absolute;
+  top: 30px;
+  background-image: linear-gradient(90deg, hsl(338, 75%, 67%) 0%, hsl(251, 44%, 65%) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: 52px;
+  text-align: center;
+  transition: margin-left 0.3s ease;
+  display: none;
+}
+
+.contentColumn,
+.savvyLogoColumn {
+  flex: 1 1 50%;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 1172px) {
   .savvyLogoColumn {
-    flex: 1 1 50%;
-    display: flex;
-    justify-content: center;
-  }
-  
-  @media (max-width: 1172px) {
-    .savvyLogoColumn {
-      display: none;
-    }
-  
-    .contentColumn {
-      width: 100%;
-    }
-  
-    .contentTitle {
-      margin-left: 0;
-    }
-  
-    .contentBody {
-      margin-left: 0;
-    }
-  
-    .mainWrapper {
-      width: 100%;
-    }
+    display: none;
   }
 
-  .savvyLogoColumn {
-    background-color: #0D0D0D;
-  }
-  
   .contentColumn {
-    background-color: #0D0D0D;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+    width: 100%;
   }
-  
+
   .contentTitle {
-    font-family: 'Roboto', sans-serif;
-    color: #ffff;
-    font-size: 50px;
-    font-weight: 600;
-    margin-left: 50px;
+    margin-left: 0;
   }
 
-  @media (max-width: 845px) {
-    .contentTitle {
-      font-size: 35px;
-    }
-  }
-  
   .contentBody {
-    font-family: 'Roboto', sans-serif;
-    color: #ffff;
-    font-size: 25px;
-    font-weight: 300;
-    margin-top: 25px;
-    margin-left: 50px;
+    margin-left: 0;
   }
-  
-  .savvyLogo {
+
+  .mainWrapper {
     width: 100%;
   }
-  
-  .startButtonContainer {
-    margin-top: 25px;
-    margin-left: 50px;
+}
+
+.savvyLogoColumn {
+  background-color: #0D0D0D;
+}
+
+.contentColumn {
+  background-color: #0D0D0D;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.contentTitle {
+  font-family: 'Roboto', sans-serif;
+  color: #ffff;
+  font-size: 50px;
+  font-weight: 600;
+  margin-left: 50px;
+}
+
+@media (max-width: 845px) {
+  .contentTitle {
+    font-size: 35px;
   }
-  
-  .startButtonContainer button {
-    padding: 10px 25px;
-    border-radius: 20px;
-    font-size: 14px;
-    background-color: #ffffff;
-    border: none;
-    margin: 8px;
-    font-weight: 300;
-    font-family: 'Roboto', sans-serif;
-    cursor: pointer;
-  }
-  
-  /* Tutorial Segment */
-  
+}
+
+.contentBody {
+  font-family: 'Roboto', sans-serif;
+  color: #ffff;
+  font-size: 25px;
+  font-weight: 300;
+  margin-top: 25px;
+  margin-left: 50px;
+}
+
+.savvyLogo {
+  width: 100%;
+}
+
+.startButtonContainer {
+  margin-top: 25px;
+  margin-left: 50px;
+}
+
+.startButtonContainer button {
+  padding: 10px 25px;
+  border-radius: 20px;
+  font-size: 14px;
+  background-color: #ffffff;
+  border: none;
+  margin: 8px;
+  font-weight: 300;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+}
+
+/* Tutorial Segment */
+
+.tutorialContainer {
+  display: flex;
+  flex-direction: row;
+  height: 600px;
+  align-items: center;
+  margin-bottom: 150px;
+}
+
+.tutorialContentColumn,
+.tutorialGifColumn {
+  flex: 1 1 50%;
+  display: flex;
+}
+
+.tutorialContentColumn {
+  background-color: #0D0D0D;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  justify-content: center;
+  width: auto;
+}
+
+.tutorialTitle {
+  font-family: 'Roboto', sans-serif;
+  color: #ffff;
+  font-size: 50px;
+  font-weight: 600;
+  margin-right: 50px;
+  text-align: left;
+}
+
+.tutorialBody {
+  font-family: 'Roboto', sans-serif;
+  color: #ffff;
+  font-size: 25px;
+  font-weight: 300;
+  margin-top: 25px;
+  margin-right: 50px;
+  text-align: left;
+}
+
+.tutorialGifColumn {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tutorialGif video {
+  border-radius: 20px;
+}
+
+@media (max-width: 1420px) {
   .tutorialContainer {
-    display: flex;
-    flex-direction: row;
-    height: 600px;
-    align-items: center;
-    margin-bottom: 150px;
-  }
-  
-  .tutorialContentColumn,
-  .tutorialGifColumn {
-    flex: 1 1 50%;
-    display: flex;
-  }
-  
-  .tutorialContentColumn {
-    background-color: #0D0D0D;
     flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-    justify-content: center;
-    width: 100%;
-  }
-  
-  .tutorialTitle {
-    font-family: 'Roboto', sans-serif;
-    color: #ffff;
-    font-size: 50px;
-    font-weight: 600;
-    margin-right: 50px;
-    text-align: left;
-  }
-  
-  .tutorialBody {
-    font-family: 'Roboto', sans-serif;
-    color: #ffff;
-    font-size: 25px;
-    font-weight: 300;
-    margin-top: 25px;
-    margin-right: 50px;
-    text-align: left;
-  }
-  
-  .tutorialGifColumn {
-    width: 100%;
-    height: 100%;
-    display: flex;
     align-items: center;
     justify-content: center;
+    display: flex;
   }
-  
+
+  .tutorialGifColumn {
+    order: 1;
+  }
+
+  .tutorialContentColumn {
+    order: 0;
+    text-align: center;
+    align-items: flex-start;
+    margin-left: 50px;
+  }
+
+  .tutorialTitle {
+    text-align: left;
+    margin-right: 0px;
+  }
+
+  .tutorialBody {
+    text-align: left;
+    margin-right: 0px;
+
+  }
+}
+
+@media (max-width: 845px) {
+
+  .tutorialContainer {
+    width: 100%;
+  }
+
+  .tutorialTitle {
+    font-size: 35px;
+    overflow-wrap: break-word;
+  }
+
   .tutorialGif video {
-    border-radius: 20px;
+    width: 500px;
+    height: 500px;
+  }
+}
+
+@media (max-width: 715px) {
+  .stickyHeader {
+    display: none;
   }
 
-  @media (max-width: 1420px) {
-    .tutorialContainer {
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      display: flex;
-    }
-
-    .tutorialGifColumn {
-      order: 1;
-    }
-  
-    .tutorialContentColumn {
-      order: 0; 
-      text-align: center;
-      align-items: flex-start;
-      margin-left: 50px;
-    }
-
-    .tutorialTitle {
-      text-align: left;
-      margin-right: 0px;
-    }
-
-    .tutorialBody {
-      text-align: left;
-      margin-right: 0px;
-      
-    }
+  .savvyTitle {
+    display: block;
   }
+}
 
-  @media (max-width: 845px) {
-
-    .tutorialContainer {
-      width: 100%;
-    }
-    
-    .tutorialTitle {
-      font-size: 35px;
-      overflow-wrap: break-word;
-    }
+@media (max-width: 543px) {
+  .tutorialGif video {
+    width: 400px;
+    height: 400px;
   }
-
+}

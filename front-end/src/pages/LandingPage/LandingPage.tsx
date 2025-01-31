@@ -51,6 +51,7 @@ const LandingPage: React.FC = () => {
             <button onClick={handleNavigateToSignIn}>Sign up</button>
           </div>
         </header>
+        <header className={styles.savvyTitle}>SavvyCSV</header>
         <div className={styles.contentContainer}>
           <div className={styles.contentColumn}>
             <Reveal>
