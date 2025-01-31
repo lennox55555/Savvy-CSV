@@ -1,0 +1,125 @@
+.mainContainer {
+    overflow-y: auto;
+    height: 100vh;
+    width: 100%;
+    background-color: #0D0D0D;
+    justify-content: center;
+    align-items: center;
+}
+
+.contentContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
+.teamTitleRow {
+    font-family: 'Roboto', sans-serif;
+    color: #ffff;
+    font-size: 50px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 115px;
+    margin-bottom: 50px;
+}
+  
+.teamContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.teamMembersWrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    row-gap: 25px;
+    column-gap: 65px;
+}
+
+@media (max-width: 1234px) {
+    .teamMembersWrapper {
+        grid-template-columns: repeat(2, 2fr);
+    }
+    .teamTitleRow {
+        margin-bottom: 20px;
+        margin-top: 75px;
+    }
+}
+
+@media (max-width: 600px) {
+.teamMembersWrapper {
+    grid-template-columns: repeat(1, 1fr);
+}
+}
+
+.stickyHeader {
+    position: sticky;
+    display: flex;
+    flex-direction: row;
+    width: 75%;
+    align-items: center;
+    justify-content: space-between;
+    top: 20px;
+    background-color: #18191a;
+    border-radius: 50px;
+    background: #18191a;
+    border: 1px solid #595656;
+    z-index: 1000;
+    padding: 10px;
+    margin: 0 auto;  /* Center the header */
+    box-sizing: border-box;
+}
+
+.leftHeaderGroup {
+    display: flex;
+    flex-direction: row;
+    gap: 45px;
+    align-items: center;
+    justify-content: center;
+}
+
+.onyxGroup {
+    color: #ffffff;
+    font-weight: 700;
+    font-style: italic;
+    font-family: 'Roboto', sans-serif;
+    margin-left: 15px;
+    font-size: 18px;
+}
+
+.navButtonGroup {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.navButtonGroup button {
+    background: #18191a;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-weight: 300;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    text-decoration-thickness: 1px;
+}
+
+.buttonGroup button {
+    padding: 10px 25px;
+    border-radius: 20px;
+    font-size: 14px;
+    background-color: #ffffff;
+    border: none;
+    margin: 8px;
+    font-weight: 300;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+}
+

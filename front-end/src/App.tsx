@@ -11,6 +11,7 @@ import ProtectedRouteProps from './interfaces/ProtectedRouteProps';
 import { ThemeProvider } from './themes/ThemeContext';
 import React from 'react';
 import LandingPage from './pages/LandingPage/LandingPage';
+import TeamPage from './pages/TeamPage/TeamPage';
 
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
@@ -45,6 +46,7 @@ function App() {
   return (
     <Routes>
       <Route path='/' element={<LandingPage />} />
+      <Route path='/team' element={<TeamPage />} />
       <Route path='/signin' element={<SignInPage />} />
       <Route path='/register' element={<RegistrationPage />} />
       <Route
